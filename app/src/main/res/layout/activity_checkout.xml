@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data class=".CheckoutBinding">
+
+        <variable
+            name="viewState"
+            type="com.android.visitormanagementsystem.utils.ProgressBarViewState" />
+
+        <variable
+            name="data"
+            type="com.android.visitormanagementsystem.ui.visitorList.VisitorListUiModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.checkout.CheckoutActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/visitorCheckout_Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="@color/action_bar_bg_color"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+          <!--  <ImageView
+                android:id="@+id/backBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/logoLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/ivLogoText"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginStart="28dp"
+                    android:padding="@dimen/_4sdp"
+                    android:src="@drawable/logo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <ImageView
+                    android:id="@+id/ivLogo"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginStart="15dp"
+                    android:padding="@dimen/_4sdp"
+                    android:src="@drawable/statusneo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivLogoText"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tvToolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/checkout"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/_10sdp"
+                android:text="@string/text_vms"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/checkoutCardView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_20sdp"
+            app:layout_constraintTop_toBottomOf="@+id/visitorCheckout_Toolbar">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/checkout_image"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:padding="@dimen/_2sdp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loadImage="@{String.valueOf(data.visitorImage)}"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                app:strokeColor="@color/statusneo_color_yellow"
+                app:strokeWidth="@dimen/_2sdp" />
+
+            <TextView
+                android:id="@+id/checkoutNameTv"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="@string/visitor_name"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkout_image" />
+
+            <TextView
+                android:id="@+id/checkoutNameTextView"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="@{data.visitorName}"
+                app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+                app:layout_constraintTop_toBottomOf="@+id/checkout_image" />
+
+            <TextView
+                android:id="@+id/checkoutMobileTv"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/visitor_mobile_no"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutNameTv" />
+
+            <TextView
+                android:id="@+id/checkoutMobileTextView"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{data.visitorMobileNo}"
+                app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutNameTextView" />
+
+            <TextView
+                android:id="@+id/checkoutHostNameTv"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/hint_host_name"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutMobileTv" />
+
+            <TextView
+                android:id="@+id/checkoutEmailTextView"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{data.hostName}"
+                app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutMobileTextView" />
+
+            <TextView
+                android:id="@+id/checkoutDateTv"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/visit_date"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutHostNameTv" />
+
+            <TextView
+                android:id="@+id/checkoutDateTextView"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{data.visitDate}"
+                app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutEmailTextView" />
+
+            <TextView
+                android:id="@+id/checkoutTimeTv"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/in_time"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutDateTv" />
+
+            <TextView
+                android:id="@+id/checkoutGenderTextView"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:text="@{data.inTime}"
+                app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutDateTextView" />
+
+            <TextView
+                android:id="@+id/checkoutBatchTv"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/add_batch_number"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutTimeTv" />
+
+            <TextView
+                android:id="@+id/checkoutBatchNoTextView"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{data.batchNo}"
+                app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutGenderTextView" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineDivider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="185dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btn_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_margin="@dimen/margin_twenty_five"
+            android:background="@drawable/rounded_corner"
+            android:text="@string/checkout"
+            android:textAllCaps="false"
+            android:textSize="@dimen/font_size_sixteen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/progressBar_ID"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/purple_700"
+            app:downloadStatusViewVisibility="@{viewState.progressbarEvent}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

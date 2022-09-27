@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data class=".HostVisitorReportsItemBinding">
+        <variable
+            name="data"
+            type="com.android.visitormanagementsystem.ui.host.visitorreports.VisitorReportsUIModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        >
+        <androidx.cardview.widget.CardView
+            android:id="@+id/visitorItemCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardPreventCornerOverlap="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp">
+                <TextView
+                    android:id="@+id/NameTextView"
+                    style="@style/TextStyleBlue12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@{data.visitorName}"
+                    app:layout_constrainedWidth="true"
+                    android:textColor="@color/light_blue_900"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/DateTextView"
+                    style="@style/TextStyleBlack8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:setDate="@{data.visitDate}"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/_10sdp"                app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/NameTextView" />
+
+                <TextView
+                    android:id="@+id/timeTextView"
+                    style="@style/TextStyleBlack8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:setTime="@{String.valueOf(data.visittime)}"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/_10sdp"                app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/DateTextView" />
+
+                <TextView
+                    android:id="@+id/phoneNoTextView"
+                    style="@style/TextStyleBlack8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:setMobileNo="@{data.visitorMobileNo}"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/_10sdp"                app:layout_constraintTop_toBottomOf="@+id/timeTextView" />
+
+                <TextView
+                    android:id="@+id/noOfPersonTextView"
+                    style="@style/TextStyleBlack8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/_5sdp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/_10sdp"                app:layout_constraintTop_toBottomOf="@+id/phoneNoTextView"
+                    app:setNoOfPersons="@{data.noOfPersons}" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

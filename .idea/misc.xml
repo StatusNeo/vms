@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/drawable/editext_box.xml" value="0.1125" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/drawable/ic_arrow_left.xml" value="0.1125" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/drawable/ic_baseline_access_time_24.xml" value="0.1125" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/drawable/ic_baseline_date_range_24.xml" value="0.1125" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_admin_login.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_blacklist_visitor.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_checkout.xml" value="0.13229166666666667" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_host_login.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_host_panel.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_host_reports.xml" value="0.17395833333333333" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_plan_visit.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_planned_visit.xml" value="0.1640625" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_visitor_checkout.xml" value="0.10364583333333334" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_visitor_list.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/activity_visitors_otp.xml" value="0.13229166666666667" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/item_host_reports_list.xml" value="0.18697916666666667" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/item_planned_visit_list.xml" value="0.1640625" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/item_visitor_list.xml" value="0.1" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/item_visitor_otp.xml" value="0.1" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/login_options.xml" value="0.1" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/register_visitor.xml" value="0.16574074074074074" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/security_login.xml" value="0.1" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/security_panel.xml" value="0.16574074074074074" />
+        <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/VisitorManagementSyatem/app/src/main/res/layout/verify_visitor.xml" value="0.1640625" />
+        <entry key="app/src/main/res/layout/activity_about_us.xml" value="0.19238281249999997" />
+        <entry key="app/src/main/res/layout/activity_admin_login.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_admin_panel.xml" value="0.14628623188405798" />
+        <entry key="app/src/main/res/layout/activity_admin_reports.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_blacklist_visitor.xml" value="0.14945652173913043" />
+        <entry key="app/src/main/res/layout/activity_blacklisted_visitor.xml" value="0.15295279682546423" />
+        <entry key="app/src/main/res/layout/activity_checkout.xml" value="0.11574074074074074" />
+        <entry key="app/src/main/res/layout/activity_host_panel.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_host_reports.xml" value="0.11944444444444445" />
+        <entry key="app/src/main/res/layout/activity_host_visitor_reports.xml" value="0.12635869565217392" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_plan_visit.xml" value="0.14628623188405798" />
+        <entry key="app/src/main/res/layout/activity_planned_visit.xml" value="0.14945652173913043" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_visitor_landing.xml" value="0.15489130434782608" />
+        <entry key="app/src/main/res/layout/activity_visitor_list.xml" value="0.13125" />
+        <entry key="app/src/main/res/layout/activity_visitors_otp.xml" value="0.15534420289855072" />
+        <entry key="app/src/main/res/layout/activity_visitors_otp_fireb.xml" value="0.16041666666666668" />
+        <entry key="app/src/main/res/layout/employee_login.xml" value="0.13089005235602094" />
+        <entry key="app/src/main/res/layout/item_admin_reports.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/item_blacklisted_visitor.xml" value="0.11503623188405797" />
+        <entry key="app/src/main/res/layout/item_host_reports_list.xml" value="0.11503623188405797" />
+        <entry key="app/src/main/res/layout/item_host_visitor_reports.xml" value="0.12083333333333333" />
+        <entry key="app/src/main/res/layout/item_planned_visit_list.xml" value="0.15489130434782608" />
+        <entry key="app/src/main/res/layout/item_visitor_list.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/item_visitor_otp.xml" value="0.12222222222222222" />
+        <entry key="app/src/main/res/layout/item_visitor_otp_firb.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/layout/login_options.xml" value="0.16492309570312502" />
+        <entry key="app/src/main/res/layout/register_visitor.xml" value="0.19966735839843752" />
+        <entry key="app/src/main/res/layout/security_panel.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/verify_visitor.xml" value="0.16185150146484378" />
+        <entry key="app/src/main/res/layout/visitor_login.xml" value="0.19676361083984378" />
+        <entry key="app/src/main/res/layout/visitor_navigation.xml" value="0.1" />
+        <entry key="app/src/main/res/xml/provider_paths.xml" value="0.146875" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,49 @@
+<resources>
+
+    <style name="Widget.Theme.VisitorManagementSystem.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="Widget.Theme.VisitorManagementSystem.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/white</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+
+    <style name="AppTheme.WhiteEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/white</item>
+        <item name="colorControlNormal">@color/text_color_grey</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+    </style>
+
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="roundedImageViewRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="TextStyleBlack8">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:padding">@dimen/_1sdp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="TextStyleBlue12">
+        <item name="android:textColor">@color/light_blue_900</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+        <item name="android:padding">@dimen/_3sdp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+
+</resources>

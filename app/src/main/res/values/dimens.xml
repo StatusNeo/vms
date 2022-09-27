@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="font_size_sixteen">16sp</dimen>
+    <dimen name="font_size_tweleve">12sp</dimen>
+    <dimen name="font_size_ten">10sp</dimen>
+    <dimen name="font_size_fourteen">14sp</dimen>
+    <dimen name="font_size_twenty">20sp</dimen>
+    <dimen name="font_size_screen_heading">25sp</dimen>
+    <dimen name="et_padding">25dp</dimen>
+    <dimen name="padding_thirty">30sp</dimen>
+    <dimen name="margin_twenty_five">25sp</dimen>
+    <dimen name="margin_thirty">30sp</dimen>
+    <dimen name="margin_fiftin">15sp</dimen>
+    <dimen name="zero_dp">0dp</dimen>
+    <dimen name="dimens_109dp">107dp</dimen>
+
+
+</resources>

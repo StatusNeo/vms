@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "902096203000",
+    "project_id": "vms-app-6bdf5",
+    "storage_bucket": "vms-app-6bdf5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902096203000:android:cb15eb234fd056ecf05f0d",
+        "android_client_info": {
+          "package_name": "com.android.visitormanagementsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902096203000-vkij3gba6i2cjhsgbe9hop69vpmjt06t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0BsnyC_h0eA4s_yqbNIVPMYGY-31wR3o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902096203000-vkij3gba6i2cjhsgbe9hop69vpmjt06t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
