@@ -27,9 +27,10 @@ object Constants {
     const val EMP_ROLE = "role"
     const val REASON = "reason"
     const val BLACKLIST_VISITOR = "blacklistVisitor"
-    const val VISITOR_LIST = "visitorslist"
+    const val VISITOR_LIST = "visits"
     const val MANAGE_OTP = "manageotp"
     const val EMPLOYEE_LIST = "employee"
+    const val VISITOR_DB= "visitor"
 
     const val TIMESTAMP = "timestamp"
 

@@ -100,38 +100,14 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tILUserName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_twenty_five"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:layout_marginRight="@dimen/margin_twenty_five"
-            android:layout_marginBottom="@dimen/margin_fiftin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_user_name"
-                style="@style/AppTheme.WhiteEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:maxLines="1"
-                android:hint="@string/enter_user_name"
-                android:paddingBottom="@dimen/et_padding"
-                android:textColor="@color/black"
-                android:textColorHint="@color/text_color_grey"
-                app:layout_constraintStart_toStartOf="parent" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tILNameHost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_twenty_five"
             android:layout_marginRight="@dimen/margin_twenty_five"
             android:layout_marginBottom="@dimen/margin_fiftin"
-            app:layout_constraintTop_toBottomOf="@+id/tILUserName">
+            android:layout_marginTop="@dimen/_25sdp"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_host_name"
@@ -144,7 +120,6 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_color_grey" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tILHostMobile"
@@ -170,7 +145,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+      <!--  <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tILHostPwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -190,7 +165,7 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_color_grey" />
         </com.google.android.material.textfield.TextInputLayout>
-
+-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tILHostEmail"
             android:layout_width="match_parent"
@@ -198,7 +173,7 @@
             android:layout_marginLeft="@dimen/margin_twenty_five"
             android:layout_marginRight="@dimen/margin_twenty_five"
             android:layout_marginBottom="@dimen/margin_fiftin"
-            app:layout_constraintTop_toBottomOf="@+id/tILHostPwd">
+            app:layout_constraintTop_toBottomOf="@+id/tILHostMobile">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmailId"
@@ -231,6 +206,7 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_color_grey" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <Button
             android:id="@+id/btn_submit"
             android:layout_width="match_parent"

@@ -15,6 +15,7 @@ import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.android.visitormanagementsystem.VisitorLandingBinding
+import com.android.visitormanagementsystem.ui.addhostprofile.AddHostActivity
 import com.android.visitormanagementsystem.ui.adminpanel.AdminPanelActivity
 import com.android.visitormanagementsystem.ui.host.hostlogin.HostLoginViewModel
 import com.android.visitormanagementsystem.ui.host.hostreports.HostReportsActivity
@@ -35,7 +36,6 @@ class VisitorLandingActivity:AppCompatActivity(), OnVerifyVisitorInterface {
     var progressViewState = ProgressBarViewState()
     var useMobileNo:String=""
     private lateinit var hostLoginViewModel: HostLoginViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,6 +136,7 @@ class VisitorLandingActivity:AppCompatActivity(), OnVerifyVisitorInterface {
     }
 
     override fun checkVisitorType(isEmployee: Boolean, empRole: String) {
+        progressViewState.progressbarEvent=false
         if(isEmployee){
             when(empRole){
                 "E" ->  startActivity(Intent(this@VisitorLandingActivity, HostReportsActivity::class.java))
