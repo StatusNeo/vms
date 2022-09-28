@@ -153,7 +153,6 @@
         android:hint="@string/hint_visitor_name"
         android:textColor="@color/black"
         android:textColorHint="@color/text_color_grey"
-        android:enabled="false"
         android:paddingBottom="@dimen/et_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

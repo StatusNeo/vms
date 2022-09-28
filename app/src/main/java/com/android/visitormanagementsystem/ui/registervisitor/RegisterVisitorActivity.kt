@@ -206,33 +206,54 @@ class RegisterVisitorActivity : AppCompatActivity() {
                 val formattedDate = current.format(formatter)
                 val visitor = hashMapOf(
                     "visitorName" to et_visitor_name.text.toString(),
+                    "visitorMobileNo" to et_mobile_number.text.toString(),
+                    "visitorImage" to imageUrl,
+                    "address" to et_address.text.toString(),
+                    "gender" to gender,
+                )
+
+                val visits = hashMapOf(
+                    "visitorName" to et_visitor_name.text.toString(),
                     "visitorEmail" to et_email.text.toString(),
                     "visitorMobileNo" to et_mobile_number.text.toString(),
                     "visitorImage" to imageUrl,
                     "visitDate" to formattedDate.toString(),
-                    "inTime" to getCurrentTime(),
+                    "checkIn" to getCurrentTime(),
                     "batchNo" to etBatchNo.text.toString(),
                     "hostName" to et_host_name.text.toString(),
                     "hostMobileNo" to et_host_mobile.text.toString(),
                     "purpose" to et_purpose.text.toString(),
                     "noOfPersons" to et_no_person.text.toString(),
-                    "address" to et_address.text.toString(),
                     "gender" to gender,
                     Constants.TIMESTAMP to FieldValue.serverTimestamp(),
-                    "outTime" to "NA"
+                    "checkOut" to "NA"
                 )
 
-                db.collection(Constants.VISITOR_LIST).add(visitor).addOnSuccessListener {
-                    progressViewState.progressbarEvent = false
+                db.collection(Constants.VISITOR_DB).add(visits).addOnSuccessListener {
+//                    progressViewState.progressbarEvent = false
+//
+//                    val intent =
+//                        Intent(this@RegisterVisitorActivity, VisitorListActivity::class.java)
+//                    startActivity(intent)
+//                    this@RegisterVisitorActivity.finish()
+                    db.collection(Constants.VISITOR_LIST).add(visitor).addOnSuccessListener {
+                        progressViewState.progressbarEvent = false
 
-                    val intent =
-                        Intent(this@RegisterVisitorActivity, VisitorListActivity::class.java)
-                    startActivity(intent)
-                    this@RegisterVisitorActivity.finish()
+                        val intent =
+                            Intent(this@RegisterVisitorActivity, VisitorListActivity::class.java)
+                        startActivity(intent)
+                        this@RegisterVisitorActivity.finish()
+                    }.addOnFailureListener { exception ->
+                        progressViewState.progressbarEvent = false
+                        Log.w("users error>>", "Error getting documents.", exception)
+                    }
                 }.addOnFailureListener { exception ->
                     progressViewState.progressbarEvent = false
                     Log.w("users error>>", "Error getting documents.", exception)
                 }
+
+
+
             }
         }
     }
@@ -315,15 +336,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
         }
         return uri
 
-        //        val bytes = ByteArrayOutputStream()
-//        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-//        val path = MediaStore.Images.Media.insertImage(
-//            inContext.contentResolver,
-//            inImage,
-//            "Title",
-//            null
-//        )
-//        return Uri.parse(path)
+
     }
 
     private fun saveImageInQ(bitmap: Bitmap): Uri? {
