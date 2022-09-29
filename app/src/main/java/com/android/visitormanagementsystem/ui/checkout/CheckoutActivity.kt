@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.android.visitormanagementsystem.CheckoutBinding
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListUiModel
+import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.getCurrentTime
 
@@ -23,6 +24,7 @@ class CheckoutActivity : AppCompatActivity() {
             val gson = Gson()
             val strObj = intent.getStringExtra("Clicked_Visitor")
             val uiModel: VisitorListUiModel = gson.fromJson(strObj, VisitorListUiModel::class.java)
+            var doc_id = uiModel.id
             data = uiModel
             executePendingBindings()
             viewState = checkoutViewState
@@ -38,12 +40,20 @@ class CheckoutActivity : AppCompatActivity() {
                 )
                 val db = Firebase.firestore
                 checkoutViewState.progressbarEvent = true
-                var query=db.collection("visitorslist").whereEqualTo("hostMobileNo",uiModel.hostMobileNo)
+
+                db.collection(Constants.VISITOR_LIST).document(doc_id.toString()).set(visitor, SetOptions.merge())
+                showToast("Visitor checked out")
+                checkoutViewState.progressbarEvent = false
+                val intent = Intent(this@CheckoutActivity, VisitorListActivity::class.java)
+                startActivity(intent)
+                this@CheckoutActivity.finish()
+
+            /*    var query=db.collection(Constants.VISITOR_LIST).whereEqualTo("hostMobileNo",uiModel.hostMobileNo)
                     .get()
                 query.addOnSuccessListener {
                     checkoutViewState.progressbarEvent = false
                     for (document in it){
-                        db.collection("visitorslist").document(document.id).set(visitor, SetOptions.merge())
+                        db.collection(Constants.VISITOR_LIST).document(doc_id.toString()).set(visitor, SetOptions.merge())
                         showToast("Visitor checked out")
                         val intent = Intent(this@CheckoutActivity, VisitorListActivity::class.java)
                         startActivity(intent)
@@ -52,7 +62,7 @@ class CheckoutActivity : AppCompatActivity() {
                 } .addOnFailureListener { exception ->
                     checkoutViewState.progressbarEvent = false
                     Log.w("checkout error>>", "Error getting documents.", exception)
-                }
+                }*/
             }
         }.root)
     }

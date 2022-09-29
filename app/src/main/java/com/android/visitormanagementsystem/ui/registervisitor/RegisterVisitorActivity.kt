@@ -197,28 +197,19 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     et_mobile_number.text.toString(),
                     et_email.text.toString(),
                     imageUrl,
-                    false
+                    false,
+                   et_address.text.toString(),
                 )
-
-                var timeStamp = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
                 val current = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)
                 val formattedDate = current.format(formatter)
-                val visitor = hashMapOf(
-                    "visitorName" to et_visitor_name.text.toString(),
-                    "visitorMobileNo" to et_mobile_number.text.toString(),
-                    "visitorImage" to imageUrl,
-                    "address" to et_address.text.toString(),
-                    "gender" to gender,
-                )
-
                 val visits = hashMapOf(
                     "visitorName" to et_visitor_name.text.toString(),
                     "visitorEmail" to et_email.text.toString(),
                     "visitorMobileNo" to et_mobile_number.text.toString(),
                     "visitorImage" to imageUrl,
                     "visitDate" to formattedDate.toString(),
-                    "checkIn" to getCurrentTime(),
+                    "inTime" to getCurrentTime(),
                     "batchNo" to etBatchNo.text.toString(),
                     "hostName" to et_host_name.text.toString(),
                     "hostMobileNo" to et_host_mobile.text.toString(),
@@ -226,17 +217,10 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     "noOfPersons" to et_no_person.text.toString(),
                     "gender" to gender,
                     Constants.TIMESTAMP to FieldValue.serverTimestamp(),
-                    "checkOut" to "NA"
+                    "outTime" to "NA"
                 )
 
-                db.collection(Constants.VISITOR_DB).add(visits).addOnSuccessListener {
-//                    progressViewState.progressbarEvent = false
-//
-//                    val intent =
-//                        Intent(this@RegisterVisitorActivity, VisitorListActivity::class.java)
-//                    startActivity(intent)
-//                    this@RegisterVisitorActivity.finish()
-                    db.collection(Constants.VISITOR_LIST).add(visitor).addOnSuccessListener {
+                    db.collection(Constants.VISITOR_LIST).add(visits).addOnSuccessListener {
                         progressViewState.progressbarEvent = false
 
                         val intent =
@@ -247,13 +231,6 @@ class RegisterVisitorActivity : AppCompatActivity() {
                         progressViewState.progressbarEvent = false
                         Log.w("users error>>", "Error getting documents.", exception)
                     }
-                }.addOnFailureListener { exception ->
-                    progressViewState.progressbarEvent = false
-                    Log.w("users error>>", "Error getting documents.", exception)
-                }
-
-
-
             }
         }
     }
@@ -265,13 +242,12 @@ class RegisterVisitorActivity : AppCompatActivity() {
         iv_photo: ShapeableImageView,
         rg: RadioGroup
     ) {
-        db.collection(Constants.VISITOR_LIST)
-            .whereEqualTo(Constants.VISITOR_MOBILE, intent.getStringExtra("mobile").toString())
-            .orderBy(Constants.TIMESTAMP, Query.Direction.ASCENDING).get()
-            .addOnSuccessListener { result ->
+        val myDB = FirebaseFirestore.getInstance().collection(Constants.VISITOR_DB)
+        val query1: Query = myDB.whereEqualTo(Constants.VISITOR_MOBILE, intent.getStringExtra("mobile").toString())
+        query1.get().addOnSuccessListener { result ->
                 for(document in result) {
-
                     if(result.isEmpty) {
+                        Log.w("users data>>", "Not found.")
 
                     } else {
                         et_visitor_name.setText(document.data["visitorName"].toString())
@@ -381,10 +357,9 @@ class RegisterVisitorActivity : AppCompatActivity() {
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false
-
             }
-
         }
+
     private var openLegacyResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             progressViewState.progressbarEvent = true
@@ -397,28 +372,27 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhoto)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
-
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false
-
             }
         }
 
-
     private fun addNewVisitor(
-        fullName: String, mobile: String, email: String, imageUrl: String, isBlacklisted: Boolean
-    ) {
+        fullName: String, mobile: String, email: String, imageUrl: String,
+        isBlacklisted: Boolean, address : String)
+    {
         var isMobileExisting = false
         val myDB = FirebaseFirestore.getInstance().collection(Constants.VISITOR_DB)
-        myDB.get().addOnSuccessListener { result ->
-
+        val query1: Query = myDB.whereEqualTo(Constants.VISITOR_MOBILE, mobile )
+        query1.get().addOnSuccessListener { result ->
             result.query
             for(document in result) {
-                val resultMobile = document.data[Constants.HOST_MOBILE].toString()
+                isMobileExisting = !result.isEmpty
+              /*  val resultMobile = document.data[Constants.VISITOR_MOBILE].toString()
                 if(!isMobileExisting) {
                     isMobileExisting = resultMobile == mobile
-                }
+                }*/
             }
             if(!isMobileExisting) {
                 val visitor = mapOf(
@@ -427,7 +401,8 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     "visitorMobileNo" to mobile,
                     "visitorImage" to imageUrl,
                     Constants.TIMESTAMP to FieldValue.serverTimestamp(),
-                    "isBlacklisted" to isBlacklisted
+                    "isBlacklisted" to isBlacklisted,
+                    "address" to address,
                 )
                 myDB.add(visitor).addOnSuccessListener {
                     Log.w("visitor added >>", "successfully . ")

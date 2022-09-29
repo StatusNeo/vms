@@ -17,10 +17,12 @@ import com.google.firebase.ktx.Firebase
 import com.android.visitormanagementsystem.VisitorLandingBinding
 import com.android.visitormanagementsystem.ui.addhostprofile.AddHostActivity
 import com.android.visitormanagementsystem.ui.adminpanel.AdminPanelActivity
+import com.android.visitormanagementsystem.ui.adminreports.AdminReportsActivity
 import com.android.visitormanagementsystem.ui.host.hostlogin.HostLoginViewModel
 import com.android.visitormanagementsystem.ui.host.hostreports.HostReportsActivity
 import com.android.visitormanagementsystem.ui.interfaces.OnVerifyVisitorInterface
 import com.android.visitormanagementsystem.ui.registervisitor.RegisterVisitorActivity
+import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListUiModel
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
@@ -152,7 +154,6 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                 )
                 "S" -> print("user is a Security")
             }
-
             this@VisitorLandingActivity.finish()
         } else {
             val intent = Intent(this@VisitorLandingActivity, RegisterVisitorActivity::class.java)

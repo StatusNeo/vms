@@ -35,6 +35,7 @@ object Constants {
     const val TIMESTAMP = "timestamp"
 
     const val VISITOR_NAME = "visitorName"
+    const val VISITOR_EMAIL = "visitorEmail"
     const val VISITOR_MOBILE = "visitorMobileNo"
     const val HOST_NAME = "hostName"
     const val PURPOSE = "purpose"

@@ -30,9 +30,6 @@ class AdminPanelActivity:AppCompatActivity() {
                 val intent = Intent(this@AdminPanelActivity, AddHostActivity::class.java)
                 startActivity(intent)
             }
-            backBtn.setOnClickListener{
-                this@AdminPanelActivity.finish()
-            }
             adminLogoutButton.setOnClickListener{
                 showLogoutDialog(this@AdminPanelActivity)
             }

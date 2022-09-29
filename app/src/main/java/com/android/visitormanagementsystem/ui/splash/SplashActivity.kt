@@ -22,8 +22,8 @@ class SplashActivity : AppCompatActivity(), SplashNavigator {
         setContentView(R.layout.activity_splash)
         listener = this
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-        FirebaseFirestore.setLoggingEnabled(true)
+       /* FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        FirebaseFirestore.setLoggingEnabled(true)*/
 
         initViewModel()
     }
