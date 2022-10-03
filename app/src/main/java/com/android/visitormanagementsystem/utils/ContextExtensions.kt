@@ -46,20 +46,9 @@ fun getCurrentDate() : String{
     return sdf.format(calendar.getTime())
 }
 fun getCurrentTime() : String{
-//    var calendar = Calendar.getInstance()
-//
-//    val sdf = SimpleDateFormat(Constants.TIME_FORMAT, Locale.US)
-//    return sdf.format(calendar.getTime())
-
     var  date =  Date(System.currentTimeMillis());
     var dateFormat =  SimpleDateFormat("hh:mm aa",
         Locale.ENGLISH)
      return dateFormat.format(date)
 }
-@RequiresApi(Build.VERSION_CODES.O)
-fun getCurrentTimeStamp() : String{
-    val localDate = LocalDate.now()   // your current date time
-    val startOfDay: LocalDateTime = localDate.atStartOfDay() // date time at start of the date
-    val timestamp = startOfDay.atZone(ZoneId.of("UTC")).toInstant().epochSecond // start time to timestamp
-    return timestamp.toString()
-}
+

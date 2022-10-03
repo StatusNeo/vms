@@ -36,9 +36,6 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
                 ada = adapter as HostReportAdapter
             }
 
-            backBtn.setOnClickListener {
-                this@HostReportsActivity.finish()
-            }
             btnProceed.setOnClickListener {
                 if(btnSelectDate.text.toString() == "Select Date") {
                     toast(R.string.msg_select_date)
