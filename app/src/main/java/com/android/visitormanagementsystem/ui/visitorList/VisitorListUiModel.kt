@@ -1,5 +1,7 @@
 package com.android.visitormanagementsystem.ui.visitorList
 
+import java.util.*
+
 data class VisitorListUiModel(
     var id: String? = null,
     var visitorName: String? = null,
@@ -16,4 +18,5 @@ data class VisitorListUiModel(
     var address: String? = null,
     var gender: String? = null,
     var outTime: String? = null,
+    var timestamp: Date? = null
     )

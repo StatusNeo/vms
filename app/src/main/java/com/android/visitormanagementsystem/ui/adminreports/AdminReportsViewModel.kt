@@ -2,9 +2,10 @@ package com.android.visitormanagementsystem.ui.adminreports
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.google.firebase.firestore.FirebaseFirestore
 import com.android.visitormanagementsystem.ui.interfaces.OnAdminReportInterface
 import com.android.visitormanagementsystem.utils.Constants
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminReportsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -12,18 +13,16 @@ class AdminReportsViewModel(application: Application) : AndroidViewModel(applica
     var initVisitorList: ArrayList<AdminReportsUiModel> = ArrayList()
     private lateinit var onReportInterface: OnAdminReportInterface
 
-
     fun initVisitorList(selectedDate: String) {
         initVisitorList.clear()
-        val adminDB = FirebaseFirestore.getInstance()
-        adminDB.collection(Constants.VISITOR_LIST).whereEqualTo(Constants.VISIT_DATE, selectedDate)
+        val adminDB = FirebaseFirestore.getInstance().collection(Constants.VISITOR_LIST)
+        adminDB.whereEqualTo(Constants.VISIT_DATE, selectedDate)
             .get().addOnSuccessListener { result ->
                 if(result.isEmpty) {
                     onReportInterface.openReportScreen(
                         initVisitorList
                     )
                 } else {
-
                     for(document in result) {
                         if(document.data[Constants.OUT_TIME]==null){
                             document.data[Constants.OUT_TIME]="NA"
@@ -34,8 +33,11 @@ class AdminReportsViewModel(application: Application) : AndroidViewModel(applica
 
                         }else{
                             document.data["visitorImage"].toString()
-
                         }
+
+                        val stamp = document.data[Constants.TIMESTAMP] as Timestamp
+                        val date = stamp.toDate()
+
                         initVisitorList.add(
                             AdminReportsUiModel(
                                 document.id,
@@ -45,12 +47,12 @@ class AdminReportsViewModel(application: Application) : AndroidViewModel(applica
                                 document.data[Constants.BATCH_NO].toString(),
                                 visitorImage,
                                 document.data[Constants.IN_TIME].toString(),
-                                document.data[Constants.OUT_TIME].toString()
-
+                                document.data[Constants.OUT_TIME].toString(),
+                                date
                             )
                         )
                     }
-
+                    initVisitorList.sortByDescending { it.timestamp  }
                     onReportInterface.openReportScreen(initVisitorList)
                 }
             }.addOnFailureListener {

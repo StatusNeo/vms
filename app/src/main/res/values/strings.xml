@@ -157,4 +157,10 @@
     <string name="visitor_mobile_no">Visitor Mobile #</string>
     <string name="in_time">In Time</string>
     <string name="visit_date">Visit Date</string>
+    <string name="enter_your_mobile_number">Enter your \nmobile number</string>
+    <string name="change_phone_number">Change phone number</string>
+    <string name="send_the_code_again">Send the code again</string>
+    <string name="enter_your_10_digit_mobile_n_number_below">Enter your 10 digit mobile \n number below</string>
+    <string name="enter_your_verification_code">Enter your \nverification code</string>
+    <string name="we_send_verification_code">We have sent verification code to</string>
 </resources>

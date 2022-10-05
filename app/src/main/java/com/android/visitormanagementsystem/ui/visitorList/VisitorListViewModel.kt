@@ -1,14 +1,13 @@
 package com.android.visitormanagementsystem.ui.visitorList
 
 import android.app.Application
-import android.content.ContentValues
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.binding.SnackbarEvent
 import com.android.visitormanagementsystem.ui.interfaces.OnVisitorListInterface
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.getCurrentDate
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
@@ -30,7 +29,6 @@ class VisitorListViewModel(application: Application) : AndroidViewModel(applicat
         val myDB = FirebaseFirestore.getInstance().collection(Constants.VISITOR_LIST)
         var chainedQuery1: Query =
             myDB.whereEqualTo(Constants.VISIT_DATE, getCurrentDate()).whereEqualTo("outTime", "NA")
-        chainedQuery1 .orderBy(Constants.TIMESTAMP, Query.Direction.DESCENDING)
         chainedQuery1.get().addOnSuccessListener { result ->
             viewState.progressbarEvent = false
             if(result.isEmpty) {
@@ -52,6 +50,8 @@ class VisitorListViewModel(application: Application) : AndroidViewModel(applicat
                     } else {
                         document.data["visitorImage"].toString()
                     }
+                    val stamp = document.data[Constants.TIMESTAMP] as Timestamp
+                    val date = stamp.toDate()
                     initVisitorList.add(
                         VisitorListUiModel(
                             document.id.toString(),
@@ -68,11 +68,13 @@ class VisitorListViewModel(application: Application) : AndroidViewModel(applicat
                             document.data["noOfPersons"].toString(),
                             document.data["address"].toString(),
                             document.data["gender"].toString(),
-                            document.data["outTime"].toString()
+                            document.data["outTime"].toString(),
+                            date
                         )
                     )
                 }
 
+                initVisitorList.sortByDescending { it.timestamp  }
                 visitorListViewState.initReportsList = initVisitorList
                 onReportInterface.openVisitorsListScreen(
                     initVisitorList
@@ -87,10 +89,8 @@ class VisitorListViewModel(application: Application) : AndroidViewModel(applicat
                     initVisitorList
                 )
             }
-
     }
     fun setReportInterface(onReportInterface: OnVisitorListInterface) {
         this.onReportInterface = onReportInterface
     }
-
 }
