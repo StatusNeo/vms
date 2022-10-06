@@ -99,7 +99,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                     tv4Landing.visibility = View.VISIBLE
                     tv1Landing.setText( R.string.enter_your_verification_code)
                     tv2Landing.text = "We have sent verification code to \n $useMobileNo"
-
+                    imageLanding.setImageResource( R.drawable.landing_enter_otp)
                     // Send OTP view invisible
                     tILMobile.visibility = View.GONE
                     fmLayoutSendOtp.visibility = View.GONE
@@ -151,6 +151,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                 fmLayoutSendOtp.visibility = View.VISIBLE
                 tv1Landing.setText( "Enter your \nmobile number")
                 tv2Landing.setText("Enter your 10 digit mobile \n number below")
+                imageLanding.setImageResource( R.drawable.landing_login)
             }
         }.root)
     }
