@@ -2,9 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data class=".VisitorLandingBinding">
-
         <variable
             name="viewStateProgress"
             type="com.android.visitormanagementsystem.utils.ProgressBarViewState" />
@@ -107,6 +105,7 @@
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="@dimen/_18ssp"
+            android:fontFamily="@font/montserrat_semibold"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -116,8 +115,9 @@
             android:id="@+id/tv2_Landing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:ellipsize="end"
+            android:fontFamily="@font/montserrat_regular"
             android:text="@string/enter_your_10_digit_mobile_n_number_below"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -128,10 +128,10 @@
 
         <ImageView
             android:id="@+id/image_Landing"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="@dimen/_100sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:src="@drawable/logo"
+            android:src="@drawable/landing_login"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv2_Landing" />
@@ -141,8 +141,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginRight="@dimen/_30sdp"
-            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_50sdp"
+            android:layout_marginLeft="@dimen/_50sdp"
             android:layout_marginBottom="@dimen/_25sdp"
             app:helperTextTextColor="@color/statusneo_color_yellow"
             app:layout_constraintTop_toBottomOf="@+id/image_Landing">
@@ -152,8 +152,10 @@
                 style="@style/AppTheme.WhiteEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/_12ssp"
                 android:layout_marginTop="@dimen/_30sdp"
                 android:hint="@string/hint_mobile_number"
+                android:fontFamily="@font/montserrat_regular"
                 android:inputType="number"
                 android:maxLength="10"
                 android:paddingBottom="@dimen/et_padding"
@@ -179,10 +181,11 @@
                 android:id="@+id/btn_send_otp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_50sdp"
+                android:layout_marginLeft="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_20sdp"
-                android:layout_marginRight="@dimen/_30sdp"
-                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginRight="@dimen/_50sdp"
                 android:background="@drawable/rounded_corner"
+                android:fontFamily="@font/montserrat_semibold"
                 android:text="@string/btn_text_send_otp"
                 android:textAllCaps="false"
                 android:textSize="@dimen/font_size_sixteen"
@@ -211,7 +214,7 @@
                 android:maxLines="1"
                 android:maxLength="1"
                 android:textStyle="bold"
-
+                android:fontFamily="@font/montserrat_regular"
                 android:textAlignment="center"
                 android:textSize="@dimen/_14ssp"
                 android:background="@drawable/round_back_blue10"
@@ -229,6 +232,7 @@
                 android:inputType="number"
                 android:maxLines="1"
                 android:maxLength="1"
+                android:fontFamily="@font/montserrat_regular"
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -250,6 +254,7 @@
                 android:textAlignment="center"
                 android:maxLines="1"
                 android:maxLength="1"
+                android:fontFamily="@font/montserrat_regular"
                 android:textStyle="bold"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:textSize="@dimen/_14ssp"
@@ -269,6 +274,7 @@
                 android:inputType="number"
                 android:maxLines="1"
                 android:textAlignment="center"
+                android:fontFamily="@font/montserrat_regular"
                 android:maxLength="1"
                 android:textStyle="bold"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -289,6 +295,7 @@
                 android:inputType="number"
                 android:maxLines="1"
                 android:maxLength="1"
+                android:fontFamily="@font/montserrat_regular"
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -310,6 +317,7 @@
                 android:maxLines="1"
                 android:maxLength="1"
                 android:textStyle="bold"
+                android:fontFamily="@font/montserrat_regular"
                 android:textAlignment="center"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:textSize="@dimen/_14ssp"
@@ -323,24 +331,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-      <!--  <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_otp"
-            style="@style/AppTheme.WhiteEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_30sdp"
-            android:layout_marginRight="@dimen/_30sdp"
-            android:layout_marginLeft="@dimen/_30sdp"
-            android:hint="@string/hint_otp"
-            android:inputType="number"
-            android:maxLength="6"
-            android:paddingBottom="@dimen/et_padding"
-            android:textColor="@color/black"
-            android:textColorHint="@color/text_color_grey"
-            android:visibility="visible"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_Landing" />
--->
         <FrameLayout
             android:id="@+id/fm_layout_verify_btn"
             android:layout_width="match_parent"
@@ -355,11 +345,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_30sdp"
-                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginRight="@dimen/_50sdp"
+                android:layout_marginLeft="@dimen/_50sdp"
                 android:background="@drawable/rounded_corner"
                 android:text="@string/btn_text_verify_otp"
                 android:textAllCaps="false"
+                android:fontFamily="@font/montserrat_semibold"
                 android:textSize="@dimen/font_size_sixteen"
                 app:layout_constraintLeft_toLeftOf="parent" />
         </FrameLayout>
@@ -368,7 +359,7 @@
             android:id="@+id/tv3_Landing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             android:ellipsize="end"
             android:text="@string/send_the_code_again"
             android:textAlignment="center"
@@ -376,6 +367,7 @@
             android:visibility="gone"
             android:textColor="@color/black"
             android:textSize="@dimen/_12ssp"
+            android:fontFamily="@font/montserrat_semibold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fm_layout_verify_btn" />
@@ -384,7 +376,7 @@
             android:id="@+id/tv4_Landing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_12sdp"
             android:ellipsize="end"
             android:visibility="gone"
             android:text="@string/change_phone_number"
@@ -392,10 +384,10 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="@dimen/_12ssp"
+            android:fontFamily="@font/montserrat_semibold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv3_Landing" />
-
 
         <ProgressBar
             android:id="@+id/progressBar_ID"
