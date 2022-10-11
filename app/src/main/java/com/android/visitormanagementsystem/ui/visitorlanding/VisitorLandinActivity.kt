@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -66,12 +67,14 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                     progressViewState.progressbarEvent = false
 
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     Log.d(ContentValues.TAG, "onVerificationCompleted:$credential")
                     //  signInWithPhoneAuthCredential(credential,et_user_name.text.toString())
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
                     progressViewState.progressbarEvent = false
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     //  etOtp.visibility= View.VISIBLE
                     Log.w(ContentValues.TAG, "onVerificationFailed", e)
                     if(e is FirebaseAuthInvalidCredentialsException) {
@@ -88,6 +91,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                     verificationId: String, token: PhoneAuthProvider.ForceResendingToken
                 ) {
                     progressViewState.progressbarEvent = false
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     Log.d(ContentValues.TAG, "onCodeSent:$verificationId")
                     storedVerificationId = verificationId
                     resendToken = token
@@ -113,6 +117,9 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                 if(getOTP.length == 6){
                     // handle verification process
                     progressViewState.progressbarEvent = true
+                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
                     val credential = PhoneAuthProvider.getCredential(storedVerificationId!!, getOTP)
                     signInWithPhoneAuthCredential(credential, useMobileNo)
                 }else{
@@ -133,6 +140,14 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
             }
 
             tv3Landing.setOnClickListener {
+                selectedPosition = 0
+                showKeyboard(binding.otp1)
+                otp1.setText("")
+                otp2.setText("")
+                otp3.setText("")
+                otp4.setText("")
+                otp5.setText("")
+                otp6.setText("")
                 sendOTPClick()
             }
 
@@ -157,6 +172,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
     }
 
     private fun sendOTPClick(){
+
         useMobileNo = binding.etMobileNumber.text.toString()
         if(useMobileNo.isBlank()) {
             binding.etMobileNumber.requestFocus()
@@ -168,6 +184,8 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
             binding.etMobileNumber.error = "Invalid Mobile Number"
         } else {
             progressViewState.progressbarEvent = true
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             startPhoneNumberVerification("+91$useMobileNo")
         }
     }
@@ -188,6 +206,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                     hostLoginViewModel.getHostDetails(mobile)
                 } else {
                     progressViewState.progressbarEvent = false
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     Log.w(ContentValues.TAG, "signInWithCredential:failure", task.exception)
                     toast(R.string.msg_otp_invalid)
                     if(task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -199,6 +218,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
 
     override fun checkVisitorType(isEmployee: Boolean, empRole: String) {
         progressViewState.progressbarEvent = false
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         if(isEmployee) {
             when(empRole) {
                 "E" -> startActivity(
