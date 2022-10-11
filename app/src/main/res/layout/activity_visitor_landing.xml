@@ -18,7 +18,7 @@
             android:id="@+id/toolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="@color/action_bar_bg_color"
+            android:background="@color/otp_box_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -68,12 +68,13 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
             <TextView
                 android:id="@+id/tvToolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:text="@string/title_verify_visitor"
+                android:text="Visitor Management"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -81,17 +82,17 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_vms"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:text="@string/text_vms"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12ssp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_vms"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginEnd="@dimen/_10sdp"-->
+<!--                android:text="@string/text_vms"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="@dimen/_12ssp"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
