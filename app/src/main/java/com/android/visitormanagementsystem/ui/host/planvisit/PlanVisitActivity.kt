@@ -41,9 +41,6 @@ class PlanVisitActivity : AppCompatActivity() {
             viewState = progressBarViewState
             setDatePickerDialog(this)
             setTimePickerDialog(this)
-            backBtn.setOnClickListener {
-                this@PlanVisitActivity.finish()
-            }
             btnNext.setOnClickListener {
                 this@PlanVisitActivity.finish()
             }

@@ -20,10 +20,6 @@ class AddHostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(AddHostBinding.inflate(layoutInflater).apply {
             viewState = addHostViewState
-            backBtn.setOnClickListener {
-                this@AddHostActivity.finish()
-            }
-
           //  etUserName.requestFocus()
             btnSubmit.setOnClickListener {
                  if(etHostName.text.isNullOrBlank()) {

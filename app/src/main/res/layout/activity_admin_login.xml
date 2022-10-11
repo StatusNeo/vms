@@ -137,6 +137,8 @@
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
+            app:backgroundTint="@null"
+            android:textColor="@color/black"
             android:layout_marginLeft="@dimen/margin_twenty_five"
             android:layout_marginTop="@dimen/margin_twenty_five"
             android:layout_marginRight="@dimen/margin_twenty_five"

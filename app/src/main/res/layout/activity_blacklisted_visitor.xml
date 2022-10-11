@@ -134,6 +134,8 @@
                 android:text="@string/btn_text_proceed"
                 android:textAllCaps="false"
                 android:layout_width="match_parent"
+                app:backgroundTint="@null"
+                android:textColor="@color/black"
                 app:layout_constraintTop_toBottomOf="@+id/tvFromDate"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

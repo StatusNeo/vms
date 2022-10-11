@@ -16,81 +16,37 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbarLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="?actionBarSize"
-            android:background="@color/action_bar_bg_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!--            <ImageView-->
-            <!--                android:id="@+id/backBtn"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:padding="@dimen/_5sdp"-->
-            <!--                android:src="@drawable/ic_arrow_left"-->
-            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"-->
-            <!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/logoLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_marginLeft="@dimen/_4sdp"
-                android:layout_marginTop="@dimen/_15sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <ImageView
+                android:id="@+id/ivLogoText"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginStart="28dp"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/logo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/ivLogoText"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:layout_marginStart="28dp"
-                    android:padding="@dimen/_4sdp"
-                    android:src="@drawable/logo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0" />
-
-                <ImageView
-                    android:id="@+id/ivLogo"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_marginStart="15dp"
-                    android:padding="@dimen/_4sdp"
-                    android:src="@drawable/statusneo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivLogoText"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
 
             <TextView
                 android:id="@+id/tvToolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:text="@string/title_verify_visitor"
+                android:text="@string/string_vms"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
+                android:fontFamily="@font/montserrat_regular"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="@dimen/_5sdp"
+                app:layout_constraintLeft_toRightOf="@+id/ivLogoText"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_vms"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:text="@string/text_vms"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12ssp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -144,15 +100,16 @@
             android:layout_marginRight="@dimen/_50sdp"
             android:layout_marginLeft="@dimen/_50sdp"
             android:layout_marginBottom="@dimen/_25sdp"
-            app:helperTextTextColor="@color/statusneo_color_yellow"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+
             app:layout_constraintTop_toBottomOf="@+id/image_Landing">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_mobile_number"
-                style="@style/AppTheme.WhiteEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_12ssp"
+                app:backgroundTint="@null"
                 android:layout_marginTop="@dimen/_30sdp"
                 android:hint="@string/hint_mobile_number"
                 android:fontFamily="@font/montserrat_regular"
@@ -184,6 +141,8 @@
                 android:layout_marginLeft="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginRight="@dimen/_50sdp"
+                app:backgroundTint="@null"
+                android:textColor="@color/black"
                 android:background="@drawable/rounded_corner"
                 android:fontFamily="@font/montserrat_semibold"
                 android:text="@string/btn_text_send_otp"
@@ -349,7 +308,9 @@
                 android:layout_marginLeft="@dimen/_50sdp"
                 android:background="@drawable/rounded_corner"
                 android:text="@string/btn_text_verify_otp"
+                app:backgroundTint="@null"
                 android:textAllCaps="false"
+                android:textColor="@color/black"
                 android:fontFamily="@font/montserrat_semibold"
                 android:textSize="@dimen/font_size_sixteen"
                 app:layout_constraintLeft_toLeftOf="parent" />

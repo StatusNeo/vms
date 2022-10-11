@@ -26,10 +26,13 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
     lateinit var listAdapter: AdminReportsAdapter
     var adminReportsViewState = ProgressBarViewState()
 
+    lateinit var binding : ActivityAdminReportsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adminViewModel = ViewModelProvider(this)[AdminReportsViewModel::class.java]
         setContentView(ActivityAdminReportsBinding.inflate(layoutInflater).apply {
+            binding = this
             viewStateProgress = adminReportsViewState
             adminViewModel.setReportInterface(this@AdminReportsActivity)
 
@@ -57,6 +60,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
                     toast(R.string.msg_select_to_time)
                 }*/ else {
                     adminReportsViewState.progressbarEvent = true
+                    binding.btnProceed.isEnabled = false
                     adminViewModel.initVisitorList(tvSelectDate.text.toString())
                     homeReportsRecyclerView.visibility = View.VISIBLE
                 }
@@ -188,6 +192,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
 
     override fun openReportScreen(items: List<AdminReportsUiModel>) {
         adminReportsViewState.progressbarEvent = false
+        binding.btnProceed.isEnabled = true
         if(items.isEmpty()) {
             toast(R.string.msg_no_data)
         }

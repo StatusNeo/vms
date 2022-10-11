@@ -146,6 +146,8 @@
         android:id="@+id/btn_next"
         android:text="@string/btn_text_login"
         android:textAllCaps="false"
+        app:backgroundTint="@null"
+        android:textColor="@color/black"
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/et_password"
         app:layout_constraintLeft_toLeftOf="parent"

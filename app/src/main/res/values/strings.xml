@@ -51,6 +51,8 @@
     <string name="security_login">Security Login</string>
     <string name="title_verify_visitor">Verify your number</string>
     <string name="title_visitor_managment">Visit Process</string>
+    <string name="string_vms"><b>Visitor</b>Management</string>
+
     <string name="btn_text_submit">Submit</string>
 
     <string name="visitorOTP">Visitor OTPs</string>
@@ -127,8 +129,8 @@
     <string name="btn_text_add_host">Add Host</string>
 
     <string name="text_from_date">From Date</string>
-    <string name="text_visitor_details">Visitor Details:</string>
-    <string name="text_host_details">Host Details:</string>
+    <string name="text_visitor_details">Enter Visitor Details</string>
+    <string name="text_host_details">Enter Host Details</string>
     <string name="to_date">To Date</string>
     <string name="msg_select_dates">Please select From Date and To Date</string>
     <string name="msg_from_date">Please select From Date</string>
@@ -163,4 +165,6 @@
     <string name="enter_your_10_digit_mobile_n_number_below">Enter your 10 digit mobile \n number below</string>
     <string name="enter_your_verification_code">Enter your \nverification code</string>
     <string name="we_send_verification_code">We have sent verification code to</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="powered_by">Powered by</string>
 </resources>

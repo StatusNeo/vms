@@ -34,10 +34,6 @@ class VisitorReportsActivity:AppCompatActivity() {
                 adapter = VisitorReportsAdapter(items)
                 ada = adapter as VisitorReportsAdapter
             }
-
-            backBtn.setOnClickListener {
-                this@VisitorReportsActivity.finish()
-            }
             btnProceed.setOnClickListener {
                 if(btnSelectDate.text.toString() == "Select Date") {
                     toast(R.string.msg_select_date)

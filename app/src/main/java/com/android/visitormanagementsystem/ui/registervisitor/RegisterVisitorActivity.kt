@@ -44,13 +44,8 @@ import kotlin.Exception
 
 class RegisterVisitorActivity : AppCompatActivity() {
     private val db = Firebase.firestore
-
     var isPhotoUploaded: Boolean = false
-
-    // lateinit var imageUri:Uri
     private var imageUri: Uri? = null
-
-    //var storageRef = storage.reference
     var imageUrl: String = ""
     private val rootDatabase = FirebaseDatabase.getInstance().getReference("images")
     var progressViewState = ProgressBarViewState()

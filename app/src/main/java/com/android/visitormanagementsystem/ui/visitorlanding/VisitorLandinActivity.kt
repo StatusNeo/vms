@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.VisitorLandingBinding
 import com.android.visitormanagementsystem.ui.adminpanel.AdminPanelActivity
+import com.android.visitormanagementsystem.ui.adminreports.AdminReportsActivity
 import com.android.visitormanagementsystem.ui.host.hostlogin.HostLoginViewModel
 import com.android.visitormanagementsystem.ui.host.hostreports.HostReportsActivity
 import com.android.visitormanagementsystem.ui.interfaces.OnVerifyVisitorInterface
@@ -40,7 +41,6 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
     var useMobileNo: String = ""
     private lateinit var hostLoginViewModel: HostLoginViewModel
     lateinit var binding: VisitorLandingBinding
-
     var selectedPosition : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
