@@ -167,4 +167,6 @@
     <string name="we_send_verification_code">We have sent verification code to</string>
     <string name="change_photo">Change Photo</string>
     <string name="powered_by">Powered by</string>
+    <string name="upload_visitor_s_photo">Upload Visitor\'s Photo</string>
+    <string name="visitor_s_list">Visitor\'s List</string>
 </resources>

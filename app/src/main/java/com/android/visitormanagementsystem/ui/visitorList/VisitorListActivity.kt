@@ -43,7 +43,7 @@ class VisitorListActivity : AppCompatActivity(), OnVisitorListInterface {
                     }
                 })
             }
-            btnViewReports.setOnClickListener {
+            btnViewReport.setOnClickListener {
                 val intent = Intent(this@VisitorListActivity, AdminReportsActivity::class.java)
                 startActivity(intent)
             }

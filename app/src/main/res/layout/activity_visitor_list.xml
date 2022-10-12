@@ -11,15 +11,18 @@
         <variable
             name="viewState"
             type="com.android.visitormanagementsystem.ui.visitorList.VisitorListViewState" />
-         <variable
-                name="viewStateProgress"
-                type="com.android.visitormanagementsystem.utils.ProgressBarViewState" />
 
+        <variable
+            name="viewStateProgress"
+            type="com.android.visitormanagementsystem.utils.ProgressBarViewState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/otp_box_bg"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         tools:context=".ui.visitorList.VisitorListActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,43 +40,43 @@
                 android:layout_marginStart="28dp"
                 android:padding="@dimen/_4sdp"
                 android:src="@drawable/logo"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvToolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
                 android:ellipsize="end"
+                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/string_vms"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
-                android:fontFamily="@font/montserrat_regular"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="@dimen/_5sdp"
                 app:layout_constraintLeft_toRightOf="@+id/ivLogoText"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
-            android:id="@+id/btn_view_reports"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_margin="@dimen/margin_twenty_five"
-            app:backgroundTint="@null"
+        <TextView
+            android:id="@+id/tv1_Landing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:ellipsize="end"
+            android:text="@string/visitor_s_list"
+            android:textAlignment="center"
             android:textColor="@color/black"
-            android:background="@drawable/rounded_corner"
-            android:text="@string/text_visitor_reports"
-            android:textAllCaps="false"
-            android:textSize="@dimen/font_size_sixteen"
-            app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar"
+            android:textSize="@dimen/_18ssp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/homeReportsRecyclerView"
@@ -83,23 +86,79 @@
             android:divider="@null"
             android:dividerHeight="@dimen/zero_dp"
             android:fadingEdge="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/cardview_bottom_menu"
             android:fadingEdgeLength="@dimen/_4sdp"
             android:requiresFadingEdge="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:items="@{viewState.initReportsList}"
-            app:layout_constraintTop_toBottomOf="@+id/btn_view_reports"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/tv1_Landing" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardview_bottom_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:cardPreventCornerOverlap="true"
+            android:divider="@android:color/darker_gray"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:elevation="@dimen/_5sdp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bottom_menu"
+                android:padding="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+                <ImageView
+                    android:id="@+id/btn_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/home"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btn_add_visitor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/add_visitor_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btn_view_report"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/report"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
         <ProgressBar
             android:id="@+id/progressBar_ID"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminateTint="@color/purple_700"
+            app:downloadStatusViewVisibility="@{viewStateProgress.progressbarEvent}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:downloadStatusViewVisibility="@{viewStateProgress.progressbarEvent}"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

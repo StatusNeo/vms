@@ -150,7 +150,6 @@
                 android:textSize="@dimen/font_size_sixteen"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
         </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

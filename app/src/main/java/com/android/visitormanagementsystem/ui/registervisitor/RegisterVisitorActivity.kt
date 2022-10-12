@@ -13,6 +13,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -36,7 +37,6 @@ import com.android.visitormanagementsystem.utils.*
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.*
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -58,7 +58,6 @@ class RegisterVisitorActivity : AppCompatActivity() {
 
         }.root)
         var gender: String = "Male"
-
         var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhoto)
         var tvPhoto = findViewById<TextView>(R.id.tv_photo)
 
@@ -187,6 +186,8 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     gender = "Female"
                 }
                 progressViewState.progressbarEvent = true
+                blockUserClick()
+
                 addNewVisitor(
                     et_visitor_name.text.toString(),
                     et_mobile_number.text.toString(),
@@ -217,6 +218,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
 
                     db.collection(Constants.VISITOR_LIST).add(visits).addOnSuccessListener {
                         progressViewState.progressbarEvent = false
+                        unBlockTouch()
 
                         val intent =
                             Intent(this@RegisterVisitorActivity, VisitorListActivity::class.java)
@@ -224,6 +226,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
                         this@RegisterVisitorActivity.finish()
                     }.addOnFailureListener { exception ->
                         progressViewState.progressbarEvent = false
+                        unBlockTouch()
                         Log.w("users error>>", "Error getting documents.", exception)
                     }
             }
@@ -282,10 +285,12 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     imageUrl = uri.toString()
                     isPhotoUploaded = true
                     progressViewState.progressbarEvent = false
+                    unBlockTouch()
                     Log.d("uri>>>", uri.toString())
                 })
             }.addOnFailureListener {
                 progressViewState.progressbarEvent = false
+                unBlockTouch()
             }
         }
     }
@@ -303,11 +308,8 @@ class RegisterVisitorActivity : AppCompatActivity() {
             uri = FileProvider.getUriForFile(
                 inContext.applicationContext, BuildConfig.APPLICATION_ID + ".provider", file
             )
-        } catch(e: FileNotFoundException) {
-        }
+        } catch(e: FileNotFoundException) {}
         return uri
-
-
     }
 
     private fun saveImageInQ(bitmap: Bitmap): Uri? {
@@ -330,17 +332,16 @@ class RegisterVisitorActivity : AppCompatActivity() {
         }
 
         fos?.use { bitmap.compress(Bitmap.CompressFormat.JPEG, 70, it) }
-
         contentValues.clear()
         contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
         imageUri?.let { contentResolver.update(it, contentValues, null, null) }
-
         return imageUri
     }
 
     private var openCVResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             progressViewState.progressbarEvent = true
+            blockUserClick()
             try {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
@@ -351,14 +352,15 @@ class RegisterVisitorActivity : AppCompatActivity() {
 
                 }
             } catch(e: Exception) {
+                unBlockTouch()
                 progressViewState.progressbarEvent = false
             }
-        }
+    }
 
     private var openLegacyResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             progressViewState.progressbarEvent = true
-
+            blockUserClick()
             try {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var extras: Bundle? = result.data?.extras
@@ -370,8 +372,9 @@ class RegisterVisitorActivity : AppCompatActivity() {
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false
+                unBlockTouch()
             }
-        }
+   }
 
     private fun addNewVisitor(
         fullName: String, mobile: String, email: String, imageUrl: String,
@@ -409,5 +412,14 @@ class RegisterVisitorActivity : AppCompatActivity() {
         }.addOnFailureListener {
             Log.w("visitor already exist error>>", "Error . " + it.message.toString())
         }
+    }
+
+    fun blockUserClick(){
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    fun unBlockTouch(){
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 }

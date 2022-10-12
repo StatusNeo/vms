@@ -17,6 +17,6 @@
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
     <color name="colorDarkOrange">#f76211</color>
-    <color name="otp_box_bg">#FFFDEE</color>
+    <color name="otp_box_bg">#FFFFFF</color>
 
 </resources>
