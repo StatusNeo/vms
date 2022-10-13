@@ -31,6 +31,7 @@
         <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/vms/app/src/main/res/layout/activity_add_host.xml" value="0.21" />
         <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/vms/app/src/main/res/layout/activity_admin_panel.xml" value="0.17239583333333333" />
         <entry key="..\:/Users/Pooja Poonam/AndroidStudioProjects/vms/app/src/main/res/layout/register_visitor.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/rounded_corner.xml" value="0.151" />
         <entry key="app/src/main/res/layout/activity_about_us.xml" value="0.19238281249999997" />
         <entry key="app/src/main/res/layout/activity_admin_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_admin_panel.xml" value="0.14628623188405798" />
@@ -46,7 +47,8 @@
         <entry key="app/src/main/res/layout/activity_plan_visit.xml" value="0.14628623188405798" />
         <entry key="app/src/main/res/layout/activity_planned_visit.xml" value="0.14945652173913043" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_visitor_landing.xml" value="0.3392857142857143" />
+        <entry key="app/src/main/res/layout/activity_visitir_photo.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_visitor_landing.xml" value="0.11363636363636363" />
         <entry key="app/src/main/res/layout/activity_visitor_list.xml" value="0.13125" />
         <entry key="app/src/main/res/layout/activity_visitors_otp.xml" value="0.15534420289855072" />
         <entry key="app/src/main/res/layout/activity_visitors_otp_fireb.xml" value="0.16041666666666668" />

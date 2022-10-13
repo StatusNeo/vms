@@ -20,6 +20,7 @@ import com.android.visitormanagementsystem.ui.host.hostreports.HostReportsActivi
 import com.android.visitormanagementsystem.ui.interfaces.OnVerifyVisitorInterface
 import com.android.visitormanagementsystem.ui.registervisitor.RegisterVisitorActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListUiModel
+import com.android.visitormanagementsystem.ui.visitorphoto.VisitiorPhotoActivity
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.toast
@@ -218,7 +219,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
             }
             this@VisitorLandingActivity.finish()
         } else {
-            val intent = Intent(this@VisitorLandingActivity, RegisterVisitorActivity::class.java)
+            val intent = Intent(this@VisitorLandingActivity, VisitiorPhotoActivity::class.java)
             intent.putExtra("mobile", useMobileNo)
             startActivity(intent)
             this@VisitorLandingActivity.finish()

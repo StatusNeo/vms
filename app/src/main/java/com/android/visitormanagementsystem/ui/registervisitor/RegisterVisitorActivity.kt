@@ -81,7 +81,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
         var scrollView = findViewById<NestedScrollView>(R.id.scrollView)
         // var btnBack = findViewById<ImageView>(R.id.backBtn)
         var radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
-        et_mobile_number.setText(intent.getStringExtra("mobile").toString())
+       // et_mobile_number.setText(intent.getStringExtra("mobile").toString())
 
         checkVisitorData(et_visitor_name, et_email, et_address, ivPhoto, radioGroup)
 //        btnBack.setOnClickListener {

@@ -29,6 +29,7 @@
          <u>Upload Photo</u>
     </string>
     <string name="btn_text_send_otp">Send OTP</string>
+    <string name="btn_text_use_camera">Use Camera</string>
     <string name="btn_text_verify_otp">Verify OTP</string>
     <string name="msg_not_verified">Mobile Number is Not Verified</string>
     <string name="msg_verified">Mobile Number is Verified</string>
@@ -51,6 +52,8 @@
     <string name="security_login">Security Login</string>
     <string name="title_verify_visitor">Verify your number</string>
     <string name="title_visitor_managment">Visit Process</string>
+    <string name="string_vms"><b>Visitor</b>Management</string>
+
     <string name="btn_text_submit">Submit</string>
 
     <string name="visitorOTP">Visitor OTPs</string>
@@ -159,6 +162,7 @@
     <string name="visit_date">Visit Date</string>
     <string name="enter_your_mobile_number">Enter your \nmobile number</string>
     <string name="change_phone_number">Change phone number</string>
+    <string name="upload_visitor_photo">Upload Visitor\'s Photo</string>
     <string name="send_the_code_again">Send the code again</string>
     <string name="enter_your_10_digit_mobile_n_number_below">Enter your 10 digit mobile \n number below</string>
     <string name="enter_your_verification_code">Enter your \nverification code</string>
