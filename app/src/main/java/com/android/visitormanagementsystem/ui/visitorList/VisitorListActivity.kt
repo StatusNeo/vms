@@ -39,21 +39,33 @@ class VisitorListActivity : AppCompatActivity(), OnVisitorListInterface {
                         val visitorGson = gson.toJson(uiModel)
                         intent.putExtra("Clicked_Visitor", visitorGson)
                         startActivity(intent)
-                        finish()
                     }
                 })
             }
+            btnViewReports.setOnClickListener {
+                val intent = Intent(this@VisitorListActivity, AdminReportsActivity::class.java)
+                startActivity(intent)
+            }
+
             btnViewReport.setOnClickListener {
                 val intent = Intent(this@VisitorListActivity, AdminReportsActivity::class.java)
                 startActivity(intent)
+            }
+            homeBtn.setOnClickListener{
+                val intent = Intent(this@VisitorListActivity, VisitorLandingActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                this@VisitorListActivity.finish()
             }
         }.root)
     }
 
     override fun onBackPressed() {
         val intent = Intent(this@VisitorListActivity, VisitorLandingActivity::class.java)
+
         startActivity(intent)
-        this@VisitorListActivity.finish()    }
+        this@VisitorListActivity.finish()
+    }
 
     override fun openVisitorsListScreen(items: List<VisitorListUiModel>) {
         if(items.isEmpty()) {
