@@ -153,6 +153,15 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
 
             tv4Landing.setOnClickListener {
 
+                selectedPosition = 0
+                showKeyboard(binding.otp1)
+                otp1.setText("")
+                otp2.setText("")
+                otp3.setText("")
+                otp4.setText("")
+                otp5.setText("")
+                otp6.setText("")
+
                 // Verify OTP view invisible
                 etOtp.visibility = View.GONE
                 fmLayoutVerifyBtn.visibility = View.GONE
@@ -221,12 +230,13 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         if(isEmployee) {
             when(empRole) {
-                "E" -> startActivity(
-                    Intent(
-                        this@VisitorLandingActivity,
-                        HostReportsActivity::class.java
-                    )
-                )
+                "E" -> {
+                    val intent =
+                        Intent(this@VisitorLandingActivity, HostReportsActivity::class.java)
+                    intent.putExtra("mobile", useMobileNo)
+                    startActivity(intent)
+                    this@VisitorLandingActivity.finish()
+                }
                 "M" -> print("user is a Manager")
                 "A" -> startActivity(
                     Intent(

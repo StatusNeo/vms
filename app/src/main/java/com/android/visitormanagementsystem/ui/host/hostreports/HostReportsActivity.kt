@@ -1,6 +1,7 @@
 package com.android.visitormanagementsystem.ui.host.hostreports
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -9,6 +10,7 @@ import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.databinding.ActivityHostReportsBinding
 import com.android.visitormanagementsystem.ui.adapters.HostReportAdapter
 import com.android.visitormanagementsystem.ui.interfaces.OnReportDownloadInterface
+import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.Prefs
 import com.android.visitormanagementsystem.utils.Prefs.userMobileNo
@@ -41,17 +43,28 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
                     toast(R.string.msg_select_date)
                 } else {
                     hostReportsViewState.progressbarEvent = true
-                    val prefs =
-                        Prefs.customPreference(this@HostReportsActivity, Constants.LoggedIn_Pref)
-                    hostReportViewModel.initHostReport(
+                        hostReportViewModel.initHostReport(
                         btnSelectDate.text.toString(),
-                        prefs.userMobileNo.toString(),
+                        intent.getStringExtra("mobile").toString(),
                     )
                 }
             }
             setDatePickerDialog(this)
+            homeBtn.setOnClickListener{
+                val intent = Intent(this@HostReportsActivity, VisitorLandingActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                this@HostReportsActivity.finish()
+            }
+
         }.root)
 
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this@HostReportsActivity, VisitorLandingActivity::class.java)
+        startActivity(intent)
+        this@HostReportsActivity.finish()
     }
 
     private fun setDatePickerDialog(reportsBinding: ActivityHostReportsBinding) {

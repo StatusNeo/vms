@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.ui.interfaces.SplashNavigator
 import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
@@ -21,10 +19,6 @@ class SplashActivity : AppCompatActivity(), SplashNavigator {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         listener = this
-
-       /* FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-        FirebaseFirestore.setLoggingEnabled(true)*/
-
         initViewModel()
     }
 

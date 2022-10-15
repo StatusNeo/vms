@@ -62,6 +62,20 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <Button
+            android:id="@+id/btn_view_reports"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_margin="@dimen/margin_twenty_five"
+            app:backgroundTint="@null"
+            android:background="@drawable/rounded_corner"
+            android:text="@string/text_visitor_reports"
+            android:textAllCaps="false"
+            android:textSize="@dimen/font_size_sixteen"
+            app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
         <TextView
             android:id="@+id/tv1_Landing"
             android:layout_width="wrap_content"
@@ -76,7 +90,7 @@
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_view_reports" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/homeReportsRecyclerView"
@@ -101,6 +115,7 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             app:cardPreventCornerOverlap="true"
+            android:visibility="gone"
             android:divider="@android:color/darker_gray"
             android:layout_marginTop="@dimen/_5sdp"
             android:elevation="@dimen/_5sdp"
@@ -148,6 +163,20 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/homeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:srcCompat="@drawable/home"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="@dimen/_10sdp"
+            android:backgroundTint="@color/statusneo_color_yellow"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_editor_absoluteX="330dp"
+            tools:layout_editor_absoluteY="631dp"
+            android:focusable="true" />
+
 
         <ProgressBar
             android:id="@+id/progressBar_ID"
@@ -160,6 +189,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
