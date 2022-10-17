@@ -6,7 +6,6 @@ data class PlannedVisitUiModel(
     var visittime: String? = null,
     var hostName: String? = null,
     var hostMobileNo: String? = null,
-    var noOfPersons: String? = null,
     var purpose: String? = null,
     var visitorName: String? = null,
     var visitorImage: String? = null

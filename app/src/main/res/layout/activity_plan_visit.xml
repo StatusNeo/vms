@@ -152,28 +152,6 @@
                 tools:layout_editor_absoluteX="25dp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tIlNoOfPersons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_twenty_five"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:layout_marginRight="@dimen/margin_twenty_five"
-                android:layout_marginBottom="@dimen/margin_fiftin"
-                app:layout_constraintTop_toBottomOf="@+id/btn_selectTime">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_visitor_noOfPerson"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_no_of_person"
-                    android:paddingBottom="@dimen/et_padding"
-                    android:textColor="@color/black"
-                    android:maxLength="2"
-                    android:inputType="number"
-                    android:textColorHint="@color/text_color_grey" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tIlPurpose"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -181,7 +159,7 @@
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginRight="@dimen/margin_twenty_five"
                 android:layout_marginBottom="@dimen/margin_fiftin"
-                app:layout_constraintTop_toBottomOf="@+id/tIlNoOfPersons">
+                app:layout_constraintTop_toBottomOf="@+id/btn_selectTime">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_visitor_purpose"

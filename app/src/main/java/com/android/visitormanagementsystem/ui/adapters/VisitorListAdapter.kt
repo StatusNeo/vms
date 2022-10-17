@@ -30,7 +30,7 @@ class VisitorListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(visitorViewModel, items[position], position)
-        holder.binding.visitorItemCardView.setOnClickListener {
+        holder.binding.nextImage.setOnClickListener {
             itemClickListener.onVisitorClick(
                 items[position], position
             )

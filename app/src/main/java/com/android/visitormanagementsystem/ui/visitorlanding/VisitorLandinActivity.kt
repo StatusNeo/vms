@@ -21,6 +21,7 @@ import com.android.visitormanagementsystem.ui.host.hostlogin.HostLoginViewModel
 import com.android.visitormanagementsystem.ui.host.hostreports.HostReportsActivity
 import com.android.visitormanagementsystem.ui.interfaces.OnVerifyVisitorInterface
 import com.android.visitormanagementsystem.ui.registervisitor.RegisterVisitorActivity
+import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListUiModel
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState

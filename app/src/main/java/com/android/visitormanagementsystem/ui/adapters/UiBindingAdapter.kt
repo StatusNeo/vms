@@ -63,11 +63,6 @@ fun TextView.setOutTime(time: String){
     text = context.getString(R.string.out_time_string, time)
 }
 
-@BindingAdapter("setNoOfPersons")
-fun TextView.setNoOfPersons(noOfPersons: String){
-    text = context.getString(R.string.noOfPersons_string, noOfPersons)
-}
-
 @BindingAdapter("setPurpose")
 fun TextView.setPurpose(purpose: String){
     text = context.getString(R.string.purpose_string, purpose)

@@ -44,7 +44,6 @@ class PlannedVisitViewModel (application: Application) : AndroidViewModel(applic
                                    document.data[Constants.IN_TIME].toString(),
                            document.data[Constants.HOST_NAME].toString(),
                            document.data[Constants.HOST_MOBILE].toString(),
-                           document.data[Constants.NO_OF_PERSONS].toString(),
                            document.data[Constants.PURPOSE].toString(),
                             document.data[Constants.VISITOR_NAME].toString(),
                             document.data[Constants.VISITOR_IMAGE].toString(),
@@ -90,7 +89,6 @@ class PlannedVisitViewModel (application: Application) : AndroidViewModel(applic
                             document.data[Constants.IN_TIME].toString(),
                             document.data[Constants.HOST_NAME].toString(),
                             document.data[Constants.HOST_MOBILE].toString(),
-                            document.data[Constants.NO_OF_PERSONS].toString(),
                             document.data[Constants.PURPOSE].toString(),
                             document.data[Constants.VISITOR_NAME].toString(),
                             ))

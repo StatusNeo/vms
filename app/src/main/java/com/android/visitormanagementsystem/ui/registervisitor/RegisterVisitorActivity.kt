@@ -70,7 +70,6 @@ class RegisterVisitorActivity : AppCompatActivity() {
         var et_host_mobile = findViewById<EditText>(R.id.et_host_mobile)
         var et_email = findViewById<EditText>(R.id.etEmailId)
         var et_purpose = findViewById<EditText>(R.id.et_purpose)
-        var et_no_person = findViewById<EditText>(R.id.et_no_person)
         var et_address = findViewById<EditText>(R.id.et_address)
         var scrollView = findViewById<NestedScrollView>(R.id.scrollView)
         // var btnBack = findViewById<ImageView>(R.id.backBtn)
@@ -123,11 +122,6 @@ class RegisterVisitorActivity : AppCompatActivity() {
         }
 
         btnRegister.setOnClickListener {
-            var noOfPerson = 0
-            if(et_no_person.text.isNotBlank()) {
-                noOfPerson = et_no_person.text.toString().toInt()
-            }
-
             if(et_mobile_number.text.isBlank()) {
                 et_mobile_number.requestFocus()
             } else if(et_visitor_name.text.isBlank()) {
@@ -140,13 +134,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
             } else if(et_purpose.text.isBlank()) {
                 et_purpose.requestFocus()
                 et_purpose.error = "Please enter purpose of visit"
-            } else if(et_no_person.text.isBlank()) {
-                et_no_person.requestFocus()
-                et_no_person.error = "Please enter no. of persons visiting"
-            } else if(noOfPerson !in 0..5) {
-                et_no_person.requestFocus()
-                et_no_person.error = "No. of persons visiting should not be more than 5"
-            } else if(et_address.text.isBlank()) {
+            }  else if(et_address.text.isBlank()) {
                 et_address.requestFocus()
                 et_address.error = "Please enter your address"
             } else if(radioGroup.checkedRadioButtonId == -1) {
@@ -210,7 +198,6 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     "hostName" to et_host_name.text.toString(),
                     "hostMobileNo" to et_host_mobile.text.toString(),
                     "purpose" to et_purpose.text.toString(),
-                    "noOfPersons" to et_no_person.text.toString(),
                     "gender" to gender,
                     Constants.TIMESTAMP to FieldValue.serverTimestamp(),
                     "outTime" to "NA"

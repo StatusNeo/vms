@@ -6,5 +6,4 @@ data class VisitorReportsUIModel (
     var visitDate: String? = null,
     var visittime: String? = null,
     var visitorMobileNo: String? = null,
-    var noOfPersons: String? = null
 )

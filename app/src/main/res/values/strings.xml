@@ -76,7 +76,6 @@
     <string name="date_string">Date: %s</string>
     <string name="time_string">Time: %s</string>
     <string name="purpose_string">Purpose: %s</string>
-    <string name="noOfPersons_string">No of Person: %s</string>
     <string name="in_time_string">In Time: %s</string>
     <string name="out_time_string">Out Time: %s</string>
     <string name="host_name_string">Host Name: %s</string>

@@ -45,10 +45,6 @@ class PlanVisitActivity : AppCompatActivity() {
                 this@PlanVisitActivity.finish()
             }
             btnNext.setOnClickListener{
-                var noOfPerson=0
-                if(etVisitorNoOfPerson.text?.isNotBlank() == true){
-                    noOfPerson= etVisitorNoOfPerson.text.toString().toInt()
-                }
                 if(etMobileNumber.text.isNullOrBlank() && etVisitorName.text.isNullOrBlank()
                     && etVisitorCompanyname.text.isNullOrBlank()) {
                     etMobileNumber.requestFocus()
@@ -74,12 +70,6 @@ class PlanVisitActivity : AppCompatActivity() {
                     showToast("Please select visit date.")
                 } else if(selectedTime.isNullOrBlank()) {
                     showToast("Please select visit time.")
-                }else if(etVisitorNoOfPerson.text.isNullOrBlank()){
-                    etVisitorNoOfPerson.requestFocus()
-                    etVisitorNoOfPerson.error="Please enter no. of persons visiting"
-                } else if (noOfPerson !in 0..5){
-                    etVisitorNoOfPerson.requestFocus()
-                    etVisitorNoOfPerson.error="No. of persons visiting should not be more than 5"
                 }else if(etVisitorPurpose.text.isNullOrBlank()){
                     etVisitorPurpose.requestFocus()
                     etVisitorPurpose.error="Please enter purpose of visit"
@@ -93,7 +83,6 @@ class PlanVisitActivity : AppCompatActivity() {
                         "visitorCompanyName" to etVisitorCompanyname.text.toString(),
                         "visitDate" to selectedDate,
                         "inTime" to selectedTime,
-                        "noOfPersons" to etVisitorNoOfPerson.text.toString(),
                         "purpose" to etVisitorPurpose.text.toString(),
                         Constants.TIMESTAMP to FieldValue.serverTimestamp(),
                         Constants.HOST_NAME to prefs.hostName.toString(),

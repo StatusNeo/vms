@@ -8,6 +8,5 @@ data class HostReportUiModel(
     var visitDate: String? = null,
     var visittime: String? = null,
     var visitorMobileNo: String? = null,
-    var noOfPersons: String? = null,
     var timestamp: Date? = null
 )

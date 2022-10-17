@@ -42,7 +42,6 @@ class VisitorReportsViewModel (application: Application) : AndroidViewModel(appl
                         document.data[Constants.VISIT_DATE].toString(),
                         document.data[Constants.IN_TIME].toString(),
                         document.data[Constants.VISITOR_MOBILE].toString(),
-                        document.data[Constants.NO_OF_PERSONS].toString()
                     )
                 )
             }

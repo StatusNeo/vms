@@ -65,7 +65,6 @@ class VisitorListViewModel(application: Application) : AndroidViewModel(applicat
                             document.data["hostName"].toString(),
                             document.data["hostMobileNo"].toString(),
                             document.data["purpose"].toString(),
-                            document.data["noOfPersons"].toString(),
                             document.data["address"].toString(),
                             document.data["gender"].toString(),
                             document.data["outTime"].toString(),

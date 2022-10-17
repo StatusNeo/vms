@@ -14,7 +14,6 @@ data class VisitorListUiModel(
     var hostName: String? = null,
     var hostMobileNo: String? = null,
     var purpose: String? = null,
-    var noOfPersons: String? = null,
     var address: String? = null,
     var gender: String? = null,
     var outTime: String? = null,

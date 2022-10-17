@@ -24,11 +24,13 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
     private lateinit var hostReportViewModel: HostReportsViewModel
     lateinit var ada : HostReportAdapter
     var hostReportsViewState = ProgressBarViewState()
+    lateinit var binding : ActivityHostReportsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hostReportViewModel = ViewModelProvider(this)[HostReportsViewModel::class.java]
         setContentView(ActivityHostReportsBinding.inflate(layoutInflater).apply {
+            binding = this
             viewState = hostReportsViewState
             hostReportViewModel.setReportInterface(this@HostReportsActivity)
             with(hostRecyclerView) {
@@ -42,6 +44,7 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
                 if(btnSelectDate.text.toString() == "Select Date") {
                     toast(R.string.msg_select_date)
                 } else {
+                    binding.btnProceed.isEnabled = false
                     hostReportsViewState.progressbarEvent = true
                         hostReportViewModel.initHostReport(
                         btnSelectDate.text.toString(),
@@ -93,6 +96,7 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
 
     override fun openReportScreen(items: List<HostReportUiModel>) {
         hostReportsViewState.progressbarEvent = false
+        binding.btnProceed.isEnabled = true
         if(items.isEmpty()){
             toast(R.string.msg_no_data)
         }

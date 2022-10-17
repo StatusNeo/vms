@@ -41,7 +41,6 @@ object Constants {
     const val PURPOSE = "purpose"
     const val USER_NAME = "userName"
     const val HOST_MOBILE = "hostMobileNo"
-    const val NO_OF_PERSONS = "noOfPersons"
     const val BATCH_NO = "batchNo"
     const val VISITOR_IMAGE = "visitorImage"
     const val IN_TIME = "inTime"
