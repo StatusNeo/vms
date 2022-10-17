@@ -46,6 +46,11 @@
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name="com.android.visitormanagementsystem.ui.visitorphoto.VisitiorPhotoActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name="com.android.visitormanagementsystem.ui.aboutus.AboutUsActivity"
             android:exported="false"
             android:screenOrientation="fullSensor"
