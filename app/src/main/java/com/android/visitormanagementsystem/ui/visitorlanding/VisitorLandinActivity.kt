@@ -23,6 +23,7 @@ import com.android.visitormanagementsystem.ui.interfaces.OnVerifyVisitorInterfac
 import com.android.visitormanagementsystem.ui.registervisitor.RegisterVisitorActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListUiModel
+import com.android.visitormanagementsystem.ui.visitorphoto.VisitiorPhotoActivity
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.toast
@@ -231,7 +232,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         if(isEmployee) {
             when(empRole) {
-                "E" -> {
+                "Employee" -> {
                     val intent =
                         Intent(this@VisitorLandingActivity, HostReportsActivity::class.java)
                     intent.putExtra("mobile", useMobileNo)
@@ -239,19 +240,24 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                     this@VisitorLandingActivity.finish()
                 }
                 "M" -> print("user is a Manager")
-                "A" -> startActivity(
+                "Admin" -> startActivity(
                     Intent(
                         this@VisitorLandingActivity,
                         AdminPanelActivity::class.java
                     )
                 )
-                "S" -> print("user is a Security")
+                "Security" -> print("user is a Security")
             }
             this@VisitorLandingActivity.finish()
         } else {
-            val intent = Intent(this@VisitorLandingActivity, RegisterVisitorActivity::class.java)
+
+            val intent = Intent(this@VisitorLandingActivity, VisitiorPhotoActivity::class.java)
             intent.putExtra("mobile", useMobileNo)
+            println("Mobile $useMobileNo")
             startActivity(intent)
+        /*    val intent = Intent(this@VisitorLandingActivity, RegisterVisitorActivity::class.java)
+            intent.putExtra("mobile", useMobileNo)
+            startActivity(intent)*/
             this@VisitorLandingActivity.finish()
         }
     }

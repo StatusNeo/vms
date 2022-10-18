@@ -74,7 +74,7 @@ class AddHostActivity : AppCompatActivity() {
                         Constants.EMAIL to email,
                         Constants.DESIGNATION to designation,
                         Constants.TIMESTAMP to FieldValue.serverTimestamp(),
-                        Constants.EMP_ROLE to "E"
+                        Constants.EMP_ROLE to "Employee"
                     )
 
                         saveNewHost(host,myDB)

@@ -46,6 +46,7 @@ class VisitiorPhotoActivity:AppCompatActivity() {
 
     // lateinit var imageUri:Uri
     private var imageUri: Uri? = null
+    var useMobileNo: String = ""
 
     //var storageRef = storage.reference
     var imageUrl: String = ""
@@ -53,6 +54,9 @@ class VisitiorPhotoActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(VisitorPhotoBinding.inflate(layoutInflater).apply{
             viewStateProgress = progressViewState
+
+            useMobileNo = intent.getStringExtra("mobile").toString()
+            println("Mobile 22  $useMobileNo")
 
             btnUploadPhoto.setOnClickListener {
                 if (!isPhotoUploaded) {
@@ -78,8 +82,10 @@ class VisitiorPhotoActivity:AppCompatActivity() {
                     }
                 }else{
                     val intent = Intent(this@VisitiorPhotoActivity, RegisterVisitorActivity::class.java)
-                    intent.putExtra("mobile", intent.getStringExtra("mobile"))
+                    intent.putExtra("mobile", useMobileNo)
+                    intent.putExtra("imageUrl", imageUrl)
                     startActivity(intent)
+                    finish()
                 }
                 }
 
@@ -95,11 +101,6 @@ class VisitiorPhotoActivity:AppCompatActivity() {
             }
 
         }.root)
-
-
-
-
-
     }
     private fun saveTheImageLegacyStyle(inContext: Context, inImage: Bitmap): Uri? {
         var imagesFolder: File = File(inContext.cacheDir, "images")

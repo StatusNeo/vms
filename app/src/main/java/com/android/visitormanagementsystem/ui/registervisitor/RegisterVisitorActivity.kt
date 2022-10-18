@@ -32,9 +32,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.android.visitormanagementsystem.BuildConfig
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.RegisterVisitorBinding
+import com.android.visitormanagementsystem.ui.adapters.loadImage
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.utils.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 import java.io.*
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -47,6 +49,8 @@ class RegisterVisitorActivity : AppCompatActivity() {
     var isPhotoUploaded: Boolean = false
     private var imageUri: Uri? = null
     var imageUrl: String = ""
+    lateinit var registerVisitorBinding : RegisterVisitorBinding
+    lateinit var radioGroup : RadioGroup
     private val rootDatabase = FirebaseDatabase.getInstance().getReference("images")
     var progressViewState = ProgressBarViewState()
 
@@ -55,6 +59,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(RegisterVisitorBinding.inflate(layoutInflater).apply {
             viewStateProgress = progressViewState
+            registerVisitorBinding = this
 
         }.root)
         var gender: String = "Male"
@@ -73,13 +78,14 @@ class RegisterVisitorActivity : AppCompatActivity() {
         var et_address = findViewById<EditText>(R.id.et_address)
         var scrollView = findViewById<NestedScrollView>(R.id.scrollView)
         // var btnBack = findViewById<ImageView>(R.id.backBtn)
-        var radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
+         radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
         et_mobile_number.setText(intent.getStringExtra("mobile").toString())
+        imageUrl =  intent.getStringExtra("imageUrl").toString()
+        isPhotoUploaded = true
+        Picasso.get().load(imageUrl).placeholder(R.drawable.profile_icon).into(ivPhoto)
 
         checkVisitorData(et_visitor_name, et_email, et_address, ivPhoto, radioGroup)
-//        btnBack.setOnClickListener {
-//            this@RegisterVisitorActivity.finish()
-//        }
+
         ivPhoto.setOnClickListener {
             if(ActivityCompat.checkSelfPermission(
                     this, android.Manifest.permission.CAMERA
@@ -238,6 +244,18 @@ class RegisterVisitorActivity : AppCompatActivity() {
                         et_visitor_name.setText(document.data["visitorName"].toString())
                         et_email.setText(document.data["visitorEmail"].toString())
                         et_address.setText(document.data["address"].toString())
+                        var gender = document.data["gender"].toString()
+
+                        if(gender.equals("Male")) {
+                            registerVisitorBinding.radioMale.isChecked = true
+                        } else {
+                            registerVisitorBinding.radioFemale.isChecked = true
+                        }
+
+                        registerVisitorBinding.radioMale.isEnabled = false
+                        registerVisitorBinding.radioFemale.isEnabled = false
+                        et_visitor_name.isEnabled = false
+                        et_email.isEnabled = false
 
 //                        iv_photo.loadImage(document.data[Constants.VISITOR_IMAGE].toString())
 //                        isPhotoUploaded=true
