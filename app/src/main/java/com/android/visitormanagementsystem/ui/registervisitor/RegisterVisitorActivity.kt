@@ -11,48 +11,65 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import android.widget.AdapterView.OnItemClickListener
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.NestedScrollView
+import com.android.visitormanagementsystem.BuildConfig
+import com.android.visitormanagementsystem.R
+import com.android.visitormanagementsystem.RegisterVisitorBinding
+import com.android.visitormanagementsystem.ui.gethost.HostProfileUiModel
+import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
+import com.android.visitormanagementsystem.utils.*
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.firebase.Timestamp
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.android.visitormanagementsystem.BuildConfig
-import com.android.visitormanagementsystem.R
-import com.android.visitormanagementsystem.RegisterVisitorBinding
-import com.android.visitormanagementsystem.ui.adapters.loadImage
-import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
-import com.android.visitormanagementsystem.utils.*
-import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
+import timber.log.Timber
 import java.io.*
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.Exception
+
 
 class RegisterVisitorActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     var isPhotoUploaded: Boolean = false
     private var imageUri: Uri? = null
     var imageUrl: String = ""
+    lateinit var et_host_mobile : EditText
     lateinit var registerVisitorBinding : RegisterVisitorBinding
     lateinit var radioGroup : RadioGroup
     private val rootDatabase = FirebaseDatabase.getInstance().getReference("images")
     var progressViewState = ProgressBarViewState()
+
+    var initHostNameList: ArrayList<String> = ArrayList()
+    var initHostList: ArrayList<HostProfileUiModel> = ArrayList()
+    lateinit var adapter: ArrayAdapter<String>
+    lateinit var listView: ListView
+    lateinit var alertDialog: AlertDialog.Builder
+    lateinit var dialog: AlertDialog
+    var hostMobileNo: String = ""
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +89,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
         var et_mobile_number = findViewById<EditText>(R.id.et_mobile_number)
         var et_visitor_name = findViewById<EditText>(R.id.et_visitor_name)
         var et_host_name = findViewById<EditText>(R.id.et_host_name)
-        var et_host_mobile = findViewById<EditText>(R.id.et_host_mobile)
+         et_host_mobile = findViewById<EditText>(R.id.et_host_mobile)
         var et_email = findViewById<EditText>(R.id.etEmailId)
         var et_purpose = findViewById<EditText>(R.id.et_purpose)
         var et_address = findViewById<EditText>(R.id.et_address)
@@ -85,7 +102,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
         Picasso.get().load(imageUrl).placeholder(R.drawable.profile_icon).into(ivPhoto)
 
         checkVisitorData(et_visitor_name, et_email, et_address, ivPhoto, radioGroup)
-
+/*
         ivPhoto.setOnClickListener {
             if(ActivityCompat.checkSelfPermission(
                     this, android.Manifest.permission.CAMERA
@@ -125,7 +142,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     openLegacyResultLauncher.launch(intent)
                 }
             }
-        }
+        }*/
 
         btnRegister.setOnClickListener {
             if(et_mobile_number.text.isBlank()) {
@@ -224,6 +241,69 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     }
             }
         }
+
+        et_host_name.setOnKeyListener(object : View.OnKeyListener{
+            override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                if ((event?.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                    var hostName : String =  et_host_name.text.toString()
+                    // Perform action on key press
+                    println("Name is : "+hostName)
+                    initHostList.clear()
+                    initHostNameList.clear()
+
+                    val myDB = db.collection(Constants.EMPLOYEE_LIST)
+                    val query: Query = myDB.whereEqualTo(Constants.HOST_NAME, hostName)
+                    myDB.get()
+                        .addOnSuccessListener { result ->
+                            if(!result.isEmpty) {
+                                var hostList: ArrayList<HostProfileUiModel> = ArrayList()
+                                for(document in result) {
+                                    val stamp = document.data[Constants.TIMESTAMP] as Timestamp
+                                    val date = stamp.toDate()
+
+                                    hostList.add(
+                                        HostProfileUiModel(
+                                            document.id,
+                                            document.data[Constants.HOST_NAME].toString(),
+                                            document.data[Constants.HOST_MOBILE].toString(),
+                                            document.data[Constants.EMAIL].toString(),
+                                            document.data[Constants.DESIGNATION].toString(),
+                                            date,
+                                            document.data[Constants.EMP_ROLE].toString()
+                                        )
+                                    )
+                                }
+                                for (item in hostList.indices) {
+                                    if(hostList[item].hostName?.contains(hostName) == true){
+                                        initHostList.add( HostProfileUiModel(
+                                            hostList[item].id,
+                                            hostList[item].hostName,
+                                            hostList[item].hostMobileNo,
+                                            hostList[item].hostEmail,
+                                            hostList[item].designation,
+                                            hostList[item].timestamp,
+                                            hostList[item].role
+                                        )
+                                        )
+                                        initHostNameList.add( hostList[item].hostName ?: "")
+                                    }
+                                }
+                                if(initHostList.isNotEmpty()) {
+                                    // Set List in Dialog
+                                    openDialog(et_host_name.rootView)
+                                }
+
+                            }
+                        }.addOnFailureListener { exception ->
+                            Timber.tag("PlanVisit error>>").w(exception, "Error getting documents.")
+                        }
+                    return true
+                }
+                return false
+            }
+        })
     }
 
     private fun checkVisitorData(
@@ -427,4 +507,24 @@ class RegisterVisitorActivity : AppCompatActivity() {
     fun unBlockTouch(){
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
+
+    fun openDialog(view: View) {
+        alertDialog = AlertDialog.Builder(this)
+        val rowList: View = layoutInflater.inflate(R.layout.host_list_dialog_row, null)
+        listView = rowList.findViewById(R.id.listView)
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, initHostNameList)
+        listView.adapter = adapter
+        adapter.notifyDataSetChanged()
+        alertDialog.setView(rowList)
+        dialog = alertDialog.create()
+        dialog.show()
+
+        listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+            Log.d("selected Item", initHostNameList.get(position))
+            hostMobileNo = initHostList.get(position).hostMobileNo.toString()
+            et_host_mobile.setText( hostMobileNo)
+            dialog.dismiss()
+        }
+    }
+
 }
