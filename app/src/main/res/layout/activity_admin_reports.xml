@@ -52,118 +52,58 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-       <androidx.constraintlayout.widget.ConstraintLayout
-           android:id="@+id/layout"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar">
-           <ImageView
-               android:id="@+id/ivCalender"
-               android:layout_width="@dimen/_35sdp"
-               android:layout_height="@dimen/_35sdp"
-               android:layout_marginStart="@dimen/_30sdp"
-               android:layout_marginTop="@dimen/_25sdp"
-               android:src="@drawable/ic_baseline_date_range_24"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar"
+            tools:layout_editor_absoluteX="205dp">
 
-           <TextView
-               android:id="@+id/tvSelectDate"
-               android:layout_width="wrap_content"
-               android:paddingTop="@dimen/_15sdp"
-               android:paddingBottom="@dimen/_15sdp"
-               android:paddingLeft="@dimen/_2sdp"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/_20sdp"
-               android:text="@string/text_select_date"
-               android:textColor="@color/light_blue_900"
-               android:textSize="@dimen/_14ssp"
-               app:layout_constraintStart_toEndOf="@+id/ivCalender"
-               app:layout_constraintTop_toTopOf="parent"
-               />
-<!--           <TextView-->
-<!--               android:id="@+id/tvSelectDate"-->
-<!--               android:layout_width="wrap_content"-->
-<!--               android:drawableLeft="@drawable/ic_baseline_date_range_24"-->
-<!--               android:drawablePadding="@dimen/_10sdp"-->
-<!--               android:padding="@dimen/_15sdp"-->
-<!--               android:layout_height="wrap_content"-->
-<!--               android:layout_marginStart="@dimen/_12sdp"-->
-<!--               android:layout_marginTop="@dimen/_38sdp"-->
-<!--               android:text="@string/text_select_date"-->
-<!--               android:textColor="@color/light_blue_900"-->
-<!--               android:textSize="@dimen/_14ssp"-->
-<!--               app:layout_constraintTop_toTopOf="parent"-->
-<!--               app:layout_constraintStart_toStartOf="parent"-->
-<!--               />-->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_right_vertical"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.75" />
 
-<!--
-           <ImageView
-               android:id="@+id/ivInTime"
-               android:layout_width="@dimen/_35sdp"
-               android:layout_height="@dimen/_35sdp"
-               android:layout_marginStart="@dimen/_30sdp"
-               android:layout_marginTop="@dimen/_15sdp"
-               android:src="@drawable/ic_baseline_access_time_24"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toBottomOf="@+id/tvSelectDate" />
-           <TextView
-               android:id="@+id/tv_from_time"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginStart="@dimen/_20sdp"
-               android:layout_marginTop="@dimen/_5sdp"
-               android:text="@string/text_from_time"
-               android:textColor="@color/light_blue_900"
-               android:textSize="@dimen/_14ssp"
-               app:layout_constraintTop_toBottomOf="@+id/ivInTime"
-               app:layout_constraintStart_toStartOf="parent"
-               />
-           <ImageView
-               android:id="@+id/ivOutTime"
-               android:layout_width="@dimen/_35sdp"
-               android:layout_height="@dimen/_35sdp"
-               android:layout_marginEnd="@dimen/_25sdp"
-               android:layout_marginTop="@dimen/_15sdp"
-               android:src="@drawable/ic_baseline_access_time_24"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintTop_toBottomOf="@+id/tvSelectDate" />
-           <TextView
-               android:id="@+id/tv_to_time"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginEnd="@dimen/_15sdp"
-               android:layout_marginTop="@dimen/_5sdp"
-               android:text="@string/text_to_time"
-               android:textColor="@color/light_blue_900"
-               android:textSize="@dimen/_14ssp"
-               app:layout_constraintTop_toBottomOf="@+id/ivOutTime"
-               app:layout_constraintEnd_toEndOf="parent"
-               />-->
-           <Button
-               android:id="@+id/btn_proceed"
-               android:text="@string/btn_text_proceed"
-               android:textAllCaps="false"
-               android:layout_width="match_parent"
-               app:backgroundTint="@null"
-               android:textColor="@color/black"
-               app:layout_constraintTop_toBottomOf="@+id/tvSelectDate"
-               app:layout_constraintLeft_toLeftOf="parent"
-               app:layout_constraintRight_toRightOf="parent"
-               android:layout_marginTop="@dimen/margin_twenty_five"
-               android:layout_marginLeft="@dimen/margin_twenty_five"
-               android:layout_marginRight="@dimen/margin_twenty_five"
-               android:textSize="@dimen/font_size_sixteen"
-               android:background="@drawable/rounded_corner"
-               android:layout_height="@dimen/_50sdp" />
+                <EditText
+                    android:id="@+id/et_searchName"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="textStart"
+                    android:maxLines="1"
+                    android:inputType="textCapSentences"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:background="@drawable/search_box"
+                    android:drawableLeft="@drawable/search"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/text_color_grey"
+                    android:textSize="@dimen/_12ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_right_vertical"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-       </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/ivCalender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:src="@drawable/ic_calendar_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/homeReportsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/cardview_bottom_menu"
             android:layout_marginHorizontal="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_20sdp"
             android:layout_marginBottom="@dimen/_10sdp"
@@ -173,7 +113,6 @@
             android:fadingEdgeLength="@dimen/_4sdp"
             android:requiresFadingEdge="vertical"
             app:layout_constraintTop_toBottomOf="@+id/layout"
-            app:layout_constraintBottom_toBottomOf="parent"
             />
 
         <ProgressBar
@@ -187,6 +126,86 @@
             app:layout_constraintRight_toRightOf="parent"
             app:downloadStatusViewVisibility="@{viewStateProgress.progressbarEvent}"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/no_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/visitor_report_no_data"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/no_data_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_14sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/search_for_a_visitor_or_select_a_date_to_view_the_visitor_s_report"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/no_data_view" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardview_bottom_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:cardPreventCornerOverlap="true"
+            android:visibility="visible"
+            android:divider="@android:color/darker_gray"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:elevation="@dimen/_5sdp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bottom_menu"
+                android:padding="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+                <ImageView
+                    android:id="@+id/btn_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/home_black"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btn_add_visitor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/add_visitor_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btn_view_report"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/report_yellow"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

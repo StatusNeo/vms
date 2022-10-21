@@ -9,6 +9,7 @@ data class AdminReportsUiModel (
     var hostName: String? = null,
     var batchNo: String? = null,
     var visitorImage: String? = null,
+    var visitDate: String? = null,
     var inTime: String? = null,
     var outTime: String? = null,
     var timestamp: Date? = null
