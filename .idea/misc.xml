@@ -37,7 +37,7 @@
         <entry key="app/src/main/res/layout/activity_admin_reports.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_blacklist_visitor.xml" value="0.14945652173913043" />
         <entry key="app/src/main/res/layout/activity_blacklisted_visitor.xml" value="0.15295279682546423" />
-        <entry key="app/src/main/res/layout/activity_checkout.xml" value="0.11574074074074074" />
+        <entry key="app/src/main/res/layout/activity_checkout.xml" value="0.11465385736549147" />
         <entry key="app/src/main/res/layout/activity_host_panel.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_host_reports.xml" value="0.11944444444444445" />
         <entry key="app/src/main/res/layout/activity_host_visitor_reports.xml" value="0.12635869565217392" />
@@ -46,10 +46,11 @@
         <entry key="app/src/main/res/layout/activity_plan_visit.xml" value="0.14628623188405798" />
         <entry key="app/src/main/res/layout/activity_planned_visit.xml" value="0.14945652173913043" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_visitor_landing.xml" value="0.3392857142857143" />
+        <entry key="app/src/main/res/layout/activity_visitor_landing.xml" value="0.2838291713169643" />
         <entry key="app/src/main/res/layout/activity_visitor_list.xml" value="0.13125" />
         <entry key="app/src/main/res/layout/activity_visitors_otp.xml" value="0.15534420289855072" />
         <entry key="app/src/main/res/layout/activity_visitors_otp_fireb.xml" value="0.16041666666666668" />
+        <entry key="app/src/main/res/layout/checkout.xml" value="0.16621376811594202" />
         <entry key="app/src/main/res/layout/employee_login.xml" value="0.13089005235602094" />
         <entry key="app/src/main/res/layout/item_admin_reports.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_blacklisted_visitor.xml" value="0.11503623188405797" />

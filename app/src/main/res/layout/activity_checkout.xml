@@ -56,12 +56,25 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="@string/string_checkout"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp"
+            android:fontFamily="@font/montserrat_regular"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/visitorCheckout_Toolbar"
+           />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/checkoutCardView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_20sdp"
-            app:layout_constraintTop_toBottomOf="@+id/visitorCheckout_Toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/heading">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/checkout_image"
@@ -124,27 +137,28 @@
                 app:layout_constraintTop_toBottomOf="@+id/checkoutNameTextView" />
 
             <TextView
-                android:id="@+id/checkoutHostNameTv"
+                android:id="@+id/checkoutPurpose"
                 style="@style/TextStyleBlack8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:text="@string/hint_host_name"
+                android:text="@string/visit_purpose"
                 android:textAlignment="textStart"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/checkoutMobileTv" />
 
             <TextView
-                android:id="@+id/checkoutEmailTextView"
+                android:id="@+id/checkoutPurposeTextView"
                 style="@style/TextStyleBlack8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:text="@{data.hostName}"
+                android:text="@{data.purpose}"
                 app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
                 app:layout_constraintTop_toBottomOf="@+id/checkoutMobileTextView" />
+
 
             <TextView
                 android:id="@+id/checkoutDateTv"
@@ -155,7 +169,7 @@
                 android:text="@string/visit_date"
                 android:textAlignment="textStart"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkoutHostNameTv" />
+                app:layout_constraintTop_toBottomOf="@+id/checkoutPurpose" />
 
             <TextView
                 android:id="@+id/checkoutDateTextView"
@@ -167,7 +181,8 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@{data.visitDate}"
                 app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
-                app:layout_constraintTop_toBottomOf="@+id/checkoutEmailTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/checkoutPurposeTextView" />
+
 
             <TextView
                 android:id="@+id/checkoutTimeTv"
@@ -181,7 +196,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/checkoutDateTv" />
 
             <TextView
-                android:id="@+id/checkoutGenderTextView"
+                android:id="@+id/checkoutTimeTextView"
                 style="@style/TextStyleBlack8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -193,6 +208,28 @@
                 app:layout_constraintTop_toBottomOf="@+id/checkoutDateTextView" />
 
             <TextView
+                android:id="@+id/checkoutHostNameTv"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/host_name_ck"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutTimeTv" />
+
+            <TextView
+                android:id="@+id/checkoutHostTextView"
+                style="@style/TextStyleBlack8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{data.hostName}"
+                app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutTimeTextView" />
+            <TextView
                 android:id="@+id/checkoutBatchTv"
                 style="@style/TextStyleBlack8"
                 android:layout_width="wrap_content"
@@ -201,7 +238,7 @@
                 android:text="@string/add_batch_number"
                 android:textAlignment="textStart"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkoutTimeTv" />
+                app:layout_constraintTop_toBottomOf="@+id/checkoutHostNameTv" />
 
             <TextView
                 android:id="@+id/checkoutBatchNoTextView"
@@ -213,7 +250,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@{data.batchNo}"
                 app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
-                app:layout_constraintTop_toBottomOf="@+id/checkoutGenderTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/checkoutHostTextView" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guidelineDivider"

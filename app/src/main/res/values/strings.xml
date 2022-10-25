@@ -49,6 +49,7 @@
     <string name="visitorList">Visitor\'s List</string>
     <string name="register_title">Visitor Registration</string>
     <string name="security_login">Security Login</string>
+    <string name="string_checkout"><b>Checkout Visitor</b></string>
     <string name="title_verify_visitor">Verify your number</string>
     <string name="title_visitor_managment">Visit Process</string>
     <string name="string_vms"><b>Visitor</b>Management</string>
@@ -154,8 +155,12 @@
     <string name="host_username_already_exist">User name already exists.</string>
     <string name="host_mobile_already_exist">Mobile number already exists.</string>
     <string name="host_already_exist">Host already exists.</string>
-    <string name="visitor_name">Visitor name</string>
-    <string name="visitor_mobile_no">Visitor Mobile #</string>
+    <string name="host_name_ck">Host\'s name</string>
+    <string name="visitor_name">Visitor\'s name</string>
+    <string name="visitor_mobile_no">Visitor\'s Mobile </string>
+    <string name="visit_purpose">Purpose of visit</string>
+    <string name="visitor_m">Visitor\'s Mobile </string>
+
     <string name="in_time">In Time</string>
     <string name="visit_date">Visit Date</string>
     <string name="enter_your_mobile_number">Enter your \nmobile number</string>
