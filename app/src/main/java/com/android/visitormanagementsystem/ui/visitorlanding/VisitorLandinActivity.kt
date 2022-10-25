@@ -182,6 +182,10 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
         }.root)
     }
 
+    override fun onBackPressed() {
+        this@VisitorLandingActivity.finish()
+    }
+
     private fun sendOTPClick(){
 
         useMobileNo = binding.etMobileNumber.text.toString()
@@ -246,7 +250,12 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                         AdminPanelActivity::class.java
                     )
                 )
-                "Security" -> print("user is a Security")
+                "Security" -> startActivity(
+                    Intent(
+                        this@VisitorLandingActivity,
+                        VisitorListActivity::class.java
+                    )
+                )
             }
             this@VisitorLandingActivity.finish()
         } else {
@@ -255,9 +264,6 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
             intent.putExtra("mobile", useMobileNo)
             println("Mobile $useMobileNo")
             startActivity(intent)
-        /*    val intent = Intent(this@VisitorLandingActivity, RegisterVisitorActivity::class.java)
-            intent.putExtra("mobile", useMobileNo)
-            startActivity(intent)*/
             this@VisitorLandingActivity.finish()
         }
     }

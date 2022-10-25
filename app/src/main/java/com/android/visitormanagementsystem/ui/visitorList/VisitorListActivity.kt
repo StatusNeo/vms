@@ -42,29 +42,20 @@ class VisitorListActivity : AppCompatActivity(), OnVisitorListInterface {
                     }
                 })
             }
-            btnViewReports.setOnClickListener {
+          /*  btnViewReports.setOnClickListener {
                 val intent = Intent(this@VisitorListActivity, AdminReportsActivity::class.java)
                 startActivity(intent)
             }
-
+*/
             btnViewReport.setOnClickListener {
                 val intent = Intent(this@VisitorListActivity, AdminReportsActivity::class.java)
                 startActivity(intent)
             }
-            homeBtn.setOnClickListener{
+            btnAddVisitor.setOnClickListener{
                 val intent = Intent(this@VisitorListActivity, VisitorLandingActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
-                this@VisitorListActivity.finish()
             }
         }.root)
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this@VisitorListActivity, VisitorLandingActivity::class.java)
-
-        startActivity(intent)
-        this@VisitorListActivity.finish()
     }
 
     override fun openVisitorsListScreen(items: List<VisitorListUiModel>) {
