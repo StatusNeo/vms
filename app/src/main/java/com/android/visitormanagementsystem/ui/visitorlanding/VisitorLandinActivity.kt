@@ -46,12 +46,6 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
     lateinit var binding: VisitorLandingBinding
     var selectedPosition : Int = 0
 
-    override fun onStart() {
-        super.onStart()
-        val intent = Intent(this@VisitorLandingActivity, AdminReportsActivity::class.java)
-        startActivity(intent)
-    }
-
       override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth

@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.databinding.ActivityAdminReportsBinding
 import com.android.visitormanagementsystem.ui.adapters.AdminReportsAdapter
+import com.android.visitormanagementsystem.ui.addhostprofile.AddHostActivity
+import com.android.visitormanagementsystem.ui.adminpanel.AdminPanelActivity
 import com.android.visitormanagementsystem.ui.gethost.HostProfileUiModel
 import com.android.visitormanagementsystem.ui.interfaces.OnAdminReportInterface
 import com.android.visitormanagementsystem.ui.interfaces.OnVisitorReportClickInterface
@@ -41,12 +43,13 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
     lateinit var listAdapter: AdminReportsAdapter
     var adminReportsViewState = ProgressBarViewState()
     var selectedDate: String = ""
-
+    var calledFrom : String = ""
     lateinit var binding : ActivityAdminReportsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adminViewModel = ViewModelProvider(this)[AdminReportsViewModel::class.java]
+        calledFrom = intent.getStringExtra("Called_From").toString()
         setContentView(ActivityAdminReportsBinding.inflate(layoutInflater).apply {
             binding = this
             viewStateProgress = adminReportsViewState
@@ -69,13 +72,25 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
 
             searchByName()
             btnHome.setOnClickListener {
-                val intent = Intent(this@AdminReportsActivity, VisitorListActivity::class.java)
-                startActivity(intent)
-                this@AdminReportsActivity.finish()
+                if(calledFrom.equals("Admin")){
+                    val intent = Intent(this@AdminReportsActivity, AdminPanelActivity::class.java)
+                    startActivity(intent)
+                    this@AdminReportsActivity.finish()
+                }else {
+                    val intent = Intent(this@AdminReportsActivity, VisitorListActivity::class.java)
+                    startActivity(intent)
+                    this@AdminReportsActivity.finish()
+                }
             }
             btnAddVisitor.setOnClickListener{
-                val intent = Intent(this@AdminReportsActivity, VisitorLandingActivity::class.java)
-                startActivity(intent)
+                if(calledFrom.equals("Admin")){
+                    val intent = Intent(this@AdminReportsActivity, AddHostActivity::class.java)
+                    startActivity(intent)
+                }else {
+                    val intent =
+                        Intent(this@AdminReportsActivity, VisitorLandingActivity::class.java)
+                    startActivity(intent)
+                }
             }
 
 

@@ -170,4 +170,6 @@
     <string name="upload_visitor_s_photo">Upload Visitor\'s Photo</string>
     <string name="visitor_s_list">Visitor\'s List</string>
     <string name="search_for_a_visitor_or_select_a_date_to_view_the_visitor_s_report">Search for a visitor or select a date \n to view the visitor’s report</string>
+    <string name="host_s_name">Host\'s Name</string>
+    <string name="employee_role">Employee Role</string>
 </resources>
