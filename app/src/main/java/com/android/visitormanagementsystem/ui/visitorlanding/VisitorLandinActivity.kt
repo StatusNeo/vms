@@ -3,6 +3,7 @@ package com.android.visitormanagementsystem.ui.visitorlanding
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -101,8 +102,27 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                     // Verify OTP view visible
                     etOtp.visibility = View.VISIBLE
                     fmLayoutVerifyBtn.visibility = View.VISIBLE
-                    tv3Landing.visibility = View.VISIBLE
                     tv4Landing.visibility = View.VISIBLE
+                    tvOtpTimer.visibility=View.VISIBLE
+
+                    // time count down for 30 seconds,
+                    // with 1 second as countDown interval
+                    object : CountDownTimer(30000, 1000) {
+
+                        // Callback function, fired on regular interval
+                        override fun onTick(millisUntilFinished: Long) {
+                            tvOtpTimer.text = "Resend OTP after: " + millisUntilFinished / 1000
+                        }
+
+                        // Callback function, fired
+                        // when the time is up
+                        override fun onFinish() {
+                           // tvOtpTimer.setText("done!")
+                            tvOtpTimer.visibility=View.GONE
+                            tv3Landing.visibility = View.VISIBLE
+                        }
+                    }.start()
+
                     tv1Landing.setText( R.string.enter_your_verification_code)
                     tv2Landing.text = "We have sent verification code to \n $useMobileNo"
                     imageLanding.setImageResource( R.drawable.landing_enter_otp)
@@ -151,6 +171,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                 otp5.setText("")
                 otp6.setText("")
                 sendOTPClick()
+                tv3Landing.visibility=View.GONE
             }
 
             tv4Landing.setOnClickListener {
