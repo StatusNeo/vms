@@ -171,7 +171,7 @@
                     android:fontFamily="@font/montserrat_regular"
                     app:backgroundTint="@null"
                     android:hint="@string/hint_visitor_name"
-                    android:inputType="text"
+                    android:inputType="textCapSentences"
                     android:maxLines="1"
                     android:textColor="@color/black"
                     android:textColorHint="@color/text_color_grey"
@@ -317,7 +317,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_visit_purpose"
-                    android:inputType="text"
+                    android:inputType="textCapSentences"
                     android:maxLines="1"
                     android:textSize="@dimen/_12ssp"
                     android:fontFamily="@font/montserrat_regular"
@@ -382,12 +382,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_host_name"
-                    android:inputType="text"
+                    android:inputType="textCapSentences"
                     android:maxLines="1"
                     android:paddingBottom="@dimen/et_padding"
                     android:textSize="@dimen/_12ssp"
                     android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/black"                    android:textColorHint="@color/text_color_grey" />
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/text_color_grey" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

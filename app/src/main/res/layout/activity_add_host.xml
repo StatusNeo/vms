@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data class=".AddHostBinding">
@@ -10,9 +11,9 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/otp_box_bg"
         tools:context=".ui.addhostprofile.AddHostActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,26 +53,44 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/tv_host_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_twenty_five"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:text="@string/text_host_details"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_18ssp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tILNameHost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_marginLeft="@dimen/margin_twenty_five"
             android:layout_marginRight="@dimen/margin_twenty_five"
             android:layout_marginBottom="@dimen/margin_fiftin"
             android:layout_marginTop="@dimen/_25sdp"
-            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+            app:layout_constraintTop_toBottomOf="@+id/tv_host_details">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_host_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_full_name"
+                android:hint="@string/host_s_name"
                 android:paddingBottom="@dimen/et_padding"
-                android:inputType="text"
+                android:fontFamily="@font/montserrat_regular"
+                app:backgroundTint="@null"
+                android:inputType="textCapSentences"
                 android:maxLines="1"
                 android:textColor="@color/black"
-                android:textColorHint="@color/text_color_grey" />
+                android:textColorHint="@color/text_color_grey"
+                android:textSize="@dimen/_12ssp"  />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -81,6 +100,8 @@
             android:layout_marginLeft="@dimen/margin_twenty_five"
             android:layout_marginRight="@dimen/margin_twenty_five"
             android:layout_marginBottom="@dimen/margin_fiftin"
+            android:layout_marginTop="@dimen/_10sdp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tILNameHost">
 
@@ -93,9 +114,13 @@
                 android:inputType="number"
                 android:hint="@string/enter_host_mobileNo"
                 android:paddingBottom="@dimen/et_padding"
+                android:fontFamily="@font/montserrat_regular"
+                app:backgroundTint="@null"
+                android:maxLines="1"
                 android:textColor="@color/black"
                 android:textColorHint="@color/text_color_grey"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:textSize="@dimen/_12ssp"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
       <!--  <com.google.android.material.textfield.TextInputLayout
@@ -126,6 +151,8 @@
             android:layout_marginLeft="@dimen/margin_twenty_five"
             android:layout_marginRight="@dimen/margin_twenty_five"
             android:layout_marginBottom="@dimen/margin_fiftin"
+            android:layout_marginTop="@dimen/_10sdp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintTop_toBottomOf="@+id/tILHostMobile">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -135,8 +162,13 @@
                 android:paddingBottom="@dimen/et_padding"
                 android:hint="@string/enter_host_email"
                 android:inputType="textEmailAddress"
+                android:fontFamily="@font/montserrat_regular"
+                app:backgroundTint="@null"
+                android:maxLines="1"
                 android:textColor="@color/black"
-                android:textColorHint="@color/text_color_grey" />
+                android:textColorHint="@color/text_color_grey"
+                android:textSize="@dimen/_12ssp"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -145,7 +177,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_twenty_five"
             android:layout_marginRight="@dimen/margin_twenty_five"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_marginBottom="@dimen/margin_fiftin"
+            android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintTop_toBottomOf="@+id/tILHostEmail">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -154,10 +188,13 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_host_designation"
                 android:paddingBottom="@dimen/et_padding"
-                android:inputType="text"
+                android:fontFamily="@font/montserrat_regular"
+                app:backgroundTint="@null"
+                android:inputType="textCapSentences"
                 android:maxLines="1"
                 android:textColor="@color/black"
-                android:textColorHint="@color/text_color_grey" />
+                android:textColorHint="@color/text_color_grey"
+                android:textSize="@dimen/_12ssp"  />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -168,9 +205,10 @@
             android:layout_marginLeft="@dimen/_26sdp"
             android:layout_marginRight="@dimen/margin_twenty_five"
             android:layout_marginBottom="@dimen/margin_fiftin"
+            android:layout_marginTop="@dimen/_10sdp"
             android:textSize="@dimen/_12ssp"
             android:fontFamily="@font/montserrat_regular"
-            android:text="Employee Role"
+            android:text="@string/employee_role"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tILHostDesignation"
@@ -214,18 +252,18 @@
             android:id="@+id/btn_submit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            app:backgroundTint="@null"
-            android:textColor="@color/black"
             android:layout_margin="@dimen/_25sdp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_corner"
+            android:fontFamily="@font/montserrat_regular"
             android:text="@string/btn_text_submit"
             android:textAllCaps="false"
+            android:textColor="@color/black"
             android:textSize="@dimen/font_size_sixteen"
-            android:layout_marginTop="@dimen/_15sdp"
+            app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            />
+            app:layout_constraintRight_toRightOf="parent" />
 
         <ProgressBar
             android:id="@+id/progressBar_ID"

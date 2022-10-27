@@ -39,13 +39,13 @@
     <string name="btn_text_register">Register</string>
     <string name="btn_text_visitor_login">Visitor Login</string>
     <string name="btn_text_login">Login</string>
-    <string name="add_batch_number">Batch Number</string>
+    <string name="add_batch_number">Badge Number</string>
     <string name="btn_text_verify">Verify</string>
     <string name="btn_text_view">View</string>
     <string name="btn_text_manage_otp">Manage OTP</string>
     <string name="action_bar_login_title">Login</string>
     <string name="text_vms">VMS</string>
-    <string name="batch_number">Batch no : %s</string>
+    <string name="batch_number">Badge no : %s</string>
     <string name="visitorList">Visitor\'s List</string>
     <string name="register_title">Visitor Registration</string>
     <string name="security_login">Security Login</string>
@@ -174,4 +174,7 @@
     <string name="powered_by">Powered by</string>
     <string name="upload_visitor_s_photo">Upload Visitor\'s Photo</string>
     <string name="visitor_s_list">Visitor\'s List</string>
+    <string name="search_for_a_visitor_or_select_a_date_to_view_the_visitor_s_report">Search for a visitor or select a date \n to view the visitor’s report</string>
+    <string name="host_s_name">Host\'s Name</string>
+    <string name="employee_role">Employee Role</string>
 </resources>

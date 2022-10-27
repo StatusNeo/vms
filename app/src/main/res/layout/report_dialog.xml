@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/_20sdp"
+    >
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/checkout_image"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_margin="@dimen/_5sdp"
+            android:padding="@dimen/_2sdp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            app:strokeColor="@color/statusneo_color_yellow"
+            app:strokeWidth="@dimen/_2sdp" />
+
+        <TextView
+            android:id="@+id/checkoutNameTv"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="@string/visitor_name"
+            android:textAlignment="textStart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkout_image" />
+
+        <TextView
+            android:id="@+id/checkoutNameTextView"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintTop_toBottomOf="@+id/checkout_image" />
+
+        <TextView
+            android:id="@+id/checkoutMobileTv"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/visitor_mobile_no"
+            android:textAlignment="textStart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutNameTv" />
+
+        <TextView
+            android:id="@+id/checkoutMobileTextView"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutNameTextView" />
+
+        <TextView
+            android:id="@+id/checkoutHostNameTv"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/hint_host_name"
+            android:textAlignment="textStart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutMobileTv" />
+
+        <TextView
+            android:id="@+id/checkoutEmailTextView"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutMobileTextView" />
+
+        <TextView
+            android:id="@+id/checkoutDateTv"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/visit_date"
+            android:textAlignment="textStart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutHostNameTv" />
+
+        <TextView
+            android:id="@+id/checkoutDateTextView"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutEmailTextView" />
+
+        <TextView
+            android:id="@+id/checkoutTimeTv"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/in_time"
+            android:textAlignment="textStart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutDateTv" />
+
+        <TextView
+            android:id="@+id/checkoutGenderTextView"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutDateTextView" />
+
+        <TextView
+            android:id="@+id/checkoutBatchTv"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/add_batch_number"
+            android:textAlignment="textStart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutTimeTv" />
+
+        <TextView
+            android:id="@+id/checkoutBatchNoTextView"
+            style="@style/TextStyleBlack8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutGenderTextView" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineDivider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="185dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

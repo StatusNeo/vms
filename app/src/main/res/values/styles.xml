@@ -18,6 +18,11 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
         <!-- rest of your style items-->
         <item name="textInputStyle">@style/Widget.MyApp.TextInputLayout</item>
+
+        <item name="materialCalendarStyle">@style/Widget.MaterialComponents.MaterialCalendar</item>
+        <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen</item>
+        <item name="materialCalendarTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar</item>
+
     </style>
 
     <style name="Widget.MyApp.TextInputLayout" parent="Widget.Design.TextInputLayout">
@@ -62,6 +67,13 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="ThemeOverlay.App.MaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <!-- just override the colors used in the default style -->
+        <item name="android:colorAccent">@color/statusneo_color_yellow</item>
+        <item name="colorOnPrimary">@color/statusneo_color_yellow</item>
+        <item name="colorPrimary">@color/black</item>
     </style>
 
 </resources>

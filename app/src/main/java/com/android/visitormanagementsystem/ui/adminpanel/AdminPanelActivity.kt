@@ -24,6 +24,7 @@ class AdminPanelActivity:AppCompatActivity() {
             }*/
             btnReports.setOnClickListener{
                 val intent = Intent(this@AdminPanelActivity, AdminReportsActivity::class.java)
+                intent.putExtra("Called_From","Admin")
                 startActivity(intent)
             }
 
@@ -31,9 +32,9 @@ class AdminPanelActivity:AppCompatActivity() {
                 val intent = Intent(this@AdminPanelActivity, AddHostActivity::class.java)
                 startActivity(intent)
             }
-            adminLogoutButton.setOnClickListener{
+           /* adminLogoutButton.setOnClickListener{
                 showLogoutDialog(this@AdminPanelActivity)
-            }
+            }*/
 
             homeBtn.setOnClickListener{
                 val intent = Intent(this@AdminPanelActivity, VisitorLandingActivity::class.java)

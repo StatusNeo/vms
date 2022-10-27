@@ -49,6 +49,7 @@ class VisitorListActivity : AppCompatActivity(), OnVisitorListInterface {
 */
             btnViewReport.setOnClickListener {
                 val intent = Intent(this@VisitorListActivity, AdminReportsActivity::class.java)
+                intent.putExtra("Called_From","Visitor List")
                 startActivity(intent)
             }
             btnAddVisitor.setOnClickListener{

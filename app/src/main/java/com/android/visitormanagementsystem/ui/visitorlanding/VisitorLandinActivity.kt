@@ -47,7 +47,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
     lateinit var binding: VisitorLandingBinding
     var selectedPosition : Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         hostLoginViewModel = ViewModelProvider(this)[HostLoginViewModel::class.java]
