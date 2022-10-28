@@ -15,7 +15,7 @@
         tools:context=".ui.host.hostreports.HostReportsActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/toolbarLayout"
+            android:id="@+id/visitorList_Toolbar"
             android:layout_width="wrap_content"
             android:layout_height="?actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,37 +51,46 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/btn_selectDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:drawableLeft="@drawable/ic_baseline_date_range_24"
-            android:drawablePadding="@dimen/_8sdp"
-            android:paddingBottom="@dimen/_10sdp"
-            android:text="@string/select_date"
-            android:textColor="@color/black"
-            android:textColorHint="@color/text_color_grey"
-            android:textSize="@dimen/_14ssp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbarLayout"
-            tools:layout_editor_absoluteX="25dp" />
-
-        <Button
-            android:id="@+id/btn_proceed"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_margin="@dimen/_20sdp"
-            android:background="@drawable/rounded_corner"
-            app:backgroundTint="@null"
-            android:textColor="@color/black"
-            android:text="@string/btn_text_proceed"
-            android:textAllCaps="false"
-            android:textSize="@dimen/font_size_sixteen"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_selectDate" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:paddingLeft="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar"
+            tools:layout_editor_absoluteX="205dp">
+
+            <EditText
+                android:id="@+id/et_searchName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="textStart"
+                android:maxLines="1"
+                android:inputType="textCapSentences"
+                android:fontFamily="@font/montserrat_regular"
+                android:background="@drawable/search_box"
+                android:drawableLeft="@drawable/search"
+                android:drawablePadding="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_color_grey"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_proceed"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btn_proceed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_calendar_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/hostRecyclerView"
@@ -93,10 +102,12 @@
             android:fadingEdge="vertical"
             android:fadingEdgeLength="@dimen/_4sdp"
             android:paddingBottom="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             android:requiresFadingEdge="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_proceed" />
+            app:layout_constraintTop_toBottomOf="@+id/layout" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/homeBtn"
@@ -104,6 +115,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             app:srcCompat="@drawable/home"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_margin="@dimen/_10sdp"
             android:backgroundTint="@color/statusneo_color_yellow"
@@ -111,7 +123,6 @@
             tools:layout_editor_absoluteX="330dp"
             tools:layout_editor_absoluteY="631dp"
             android:focusable="true" />
-
 
         <ProgressBar
             android:id="@+id/progressBar_ID"
@@ -124,6 +135,29 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/no_data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/visitor_report_no_data"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/no_data_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_14sdp"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/search_for_a_visitor_or_select_a_date_to_view_the_visitor_s_report"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/no_data_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

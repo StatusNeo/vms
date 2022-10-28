@@ -6,8 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.visitormanagementsystem.HostReportsItemBinding
 import com.android.visitormanagementsystem.ui.adapters.HostReportAdapter.ViewHolder
 import com.android.visitormanagementsystem.ui.host.hostreports.HostReportUiModel
+import com.android.visitormanagementsystem.ui.interfaces.OnHostReportClickInterface
+import com.android.visitormanagementsystem.ui.interfaces.OnVisitorReportClickInterface
 
-class HostReportAdapter( var items: ArrayList<HostReportUiModel>) :
+class HostReportAdapter( var items: ArrayList<HostReportUiModel>,
+                         private val itemClickListener: OnHostReportClickInterface
+) :
     RecyclerView.Adapter<ViewHolder>()
 {
     fun setUserList(updatedUserList: List<HostReportUiModel>) {
@@ -25,6 +29,11 @@ class HostReportAdapter( var items: ArrayList<HostReportUiModel>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(items[position])
+        holder.binding.nextImage.setOnClickListener {
+            itemClickListener.onVisitorClick(
+                items[position], position
+            )
+        }
     }
 
     override fun getItemCount(): Int = items.size

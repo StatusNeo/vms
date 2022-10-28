@@ -50,7 +50,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-
 class RegisterVisitorActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     var isPhotoUploaded: Boolean = false

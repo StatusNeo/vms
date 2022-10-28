@@ -56,20 +56,15 @@
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:padding="@dimen/_5sdp"
             app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar"
             tools:layout_editor_absoluteX="205dp">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_right_vertical"
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.75" />
-
-                <EditText
+            <EditText
                     android:id="@+id/et_searchName"
-                    android:layout_width="260dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textStart"
                     android:maxLines="1"
@@ -78,19 +73,20 @@
                     android:background="@drawable/search_box"
                     android:drawableLeft="@drawable/search"
                     android:drawablePadding="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:textColor="@color/black"
                     android:textColorHint="@color/text_color_grey"
                     android:textSize="@dimen/_12ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline_right_vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ivCalender"
                     app:layout_constraintTop_toTopOf="parent" />
-
 
             <ImageView
                 android:id="@+id/ivCalender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_5sdp"
                 android:src="@drawable/ic_calendar_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -107,13 +103,14 @@
             android:layout_marginHorizontal="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_20sdp"
             android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             android:divider="@null"
             android:dividerHeight="@dimen/zero_dp"
             android:fadingEdge="vertical"
             android:fadingEdgeLength="@dimen/_4sdp"
             android:requiresFadingEdge="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/layout"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/layout" />
 
         <ProgressBar
             android:id="@+id/progressBar_ID"

@@ -19,7 +19,6 @@ import com.android.visitormanagementsystem.databinding.ActivityAdminReportsBindi
 import com.android.visitormanagementsystem.ui.adapters.AdminReportsAdapter
 import com.android.visitormanagementsystem.ui.addhostprofile.AddHostActivity
 import com.android.visitormanagementsystem.ui.adminpanel.AdminPanelActivity
-import com.android.visitormanagementsystem.ui.gethost.HostProfileUiModel
 import com.android.visitormanagementsystem.ui.interfaces.OnAdminReportInterface
 import com.android.visitormanagementsystem.ui.interfaces.OnVisitorReportClickInterface
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
@@ -28,10 +27,7 @@ import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.toast
 import com.google.android.material.imageview.ShapeableImageView
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.Query
 import com.squareup.picasso.Picasso
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -132,7 +128,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
     }
 
     private fun showDialog(model: AdminReportsUiModel, context : Context) {
-        val dialog = Dialog(context)
+        val dialog = Dialog(context, R.style.Theme_Dialog)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.report_dialog)
