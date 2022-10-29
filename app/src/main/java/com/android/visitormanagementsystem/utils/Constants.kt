@@ -38,6 +38,7 @@ object Constants {
     const val VISITOR_EMAIL = "visitorEmail"
     const val VISITOR_MOBILE = "visitorMobileNo"
     const val HOST_NAME = "hostName"
+    const val HOST_PHOTO = "hostImage"
     const val PURPOSE = "purpose"
     const val USER_NAME = "userName"
     const val HOST_MOBILE = "hostMobileNo"
