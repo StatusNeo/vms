@@ -22,7 +22,9 @@
 
         <TextView
             android:id="@+id/checkoutNameTv"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
@@ -33,18 +35,22 @@
 
         <TextView
             android:id="@+id/checkoutNameTextView"
-            style="@style/TextStyleBlack8"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
             android:textStyle="bold"
+            android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/checkout_image" />
 
         <TextView
             android:id="@+id/checkoutMobileTv"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
@@ -55,40 +61,46 @@
 
         <TextView
             android:id="@+id/checkoutMobileTextView"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textColor="@color/black"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/checkoutNameTextView" />
 
         <TextView
             android:id="@+id/checkoutHostNameTv"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:text="@string/hint_host_name"
+            android:text="@string/host_name_dialog"
             android:textAlignment="textStart"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/checkoutMobileTv" />
 
         <TextView
             android:id="@+id/checkoutEmailTextView"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textColor="@color/black"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/checkoutMobileTextView" />
 
         <TextView
             android:id="@+id/checkoutDateTv"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
@@ -99,18 +111,21 @@
 
         <TextView
             android:id="@+id/checkoutDateTextView"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/checkoutEmailTextView" />
 
         <TextView
             android:id="@+id/checkoutTimeTv"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
@@ -121,18 +136,21 @@
 
         <TextView
             android:id="@+id/checkoutGenderTextView"
-            style="@style/TextStyleBlack8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/checkoutDateTextView" />
 
         <TextView
             android:id="@+id/checkoutBatchTv"
-            style="@style/TextStyleBlack8"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
@@ -143,20 +161,15 @@
 
         <TextView
             android:id="@+id/checkoutBatchNoTextView"
-            style="@style/TextStyleBlack8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintStart_toEndOf="@+id/guidelineDivider"
-            app:layout_constraintTop_toBottomOf="@+id/checkoutGenderTextView" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineDivider"
+            android:textSize="@dimen/_10ssp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="185dp" />
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutGenderTextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
