@@ -59,33 +59,36 @@ class VisitiorPhotoActivity:AppCompatActivity() {
             println("Mobile 22  $useMobileNo")
 
             btnUploadPhoto.setOnClickListener {
-                if (!isPhotoUploaded) {
-                    if (ActivityCompat.checkSelfPermission(
-                            this@VisitiorPhotoActivity, android.Manifest.permission.CAMERA
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        ActivityCompat.requestPermissions(
-                            this@VisitiorPhotoActivity,
-                            arrayOf(android.Manifest.permission.CAMERA),
-                            123
-                        )
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                            intent.putExtra("selectContent", 4)
-                            openCVResultLauncher.launch(intent)
+                if (!progressViewState.progressbarEvent) {
+                    if (!isPhotoUploaded) {
+                        if (ActivityCompat.checkSelfPermission(
+                                this@VisitiorPhotoActivity, android.Manifest.permission.CAMERA
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            ActivityCompat.requestPermissions(
+                                this@VisitiorPhotoActivity,
+                                arrayOf(android.Manifest.permission.CAMERA),
+                                123
+                            )
                         } else {
-                            var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                            openLegacyResultLauncher.launch(intent)
-                        }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                intent.putExtra("selectContent", 4)
+                                openCVResultLauncher.launch(intent)
+                            } else {
+                                var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                openLegacyResultLauncher.launch(intent)
+                            }
 
+                        }
+                    } else {
+                        val intent =
+                            Intent(this@VisitiorPhotoActivity, RegisterVisitorActivity::class.java)
+                        intent.putExtra("mobile", useMobileNo)
+                        intent.putExtra("imageUrl", imageUrl)
+                        startActivity(intent)
+                        finish()
                     }
-                }else{
-                    val intent = Intent(this@VisitiorPhotoActivity, RegisterVisitorActivity::class.java)
-                    intent.putExtra("mobile", useMobileNo)
-                    intent.putExtra("imageUrl", imageUrl)
-                    startActivity(intent)
-                    finish()
                 }
                 }
 
@@ -161,6 +164,9 @@ class VisitiorPhotoActivity:AppCompatActivity() {
                     uploadImage()
 
 
+                }else{
+                    progressViewState.progressbarEvent = false
+
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false
@@ -179,6 +185,9 @@ class VisitiorPhotoActivity:AppCompatActivity() {
                     var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhoto)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
+                }else{
+                    progressViewState.progressbarEvent = false
+
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false

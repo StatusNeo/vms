@@ -91,25 +91,27 @@ class AddHostActivity : AppCompatActivity() {
                 }
             }
             layoutPhoto.setOnClickListener {
-                if (ActivityCompat.checkSelfPermission(
-                        this@AddHostActivity, android.Manifest.permission.CAMERA
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        this@AddHostActivity,
-                        arrayOf(android.Manifest.permission.CAMERA),
-                        123
-                    )
-                } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        intent.putExtra("selectContent", 4)
-                        openCVResultLauncher.launch(intent)
+                if (!addHostViewState.progressbarEvent ) {
+                    if (ActivityCompat.checkSelfPermission(
+                            this@AddHostActivity, android.Manifest.permission.CAMERA
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        ActivityCompat.requestPermissions(
+                            this@AddHostActivity,
+                            arrayOf(android.Manifest.permission.CAMERA),
+                            123
+                        )
                     } else {
-                        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        openLegacyResultLauncher.launch(intent)
-                    }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            intent.putExtra("selectContent", 4)
+                            openCVResultLauncher.launch(intent)
+                        } else {
+                            var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            openLegacyResultLauncher.launch(intent)
+                        }
 
+                    }
                 }
             }
 
@@ -190,6 +192,9 @@ class AddHostActivity : AppCompatActivity() {
                     uploadImage()
 
 
+                }else{
+                    addHostViewState.progressbarEvent = false
+
                 }
             } catch(e: Exception) {
                 addHostViewState.progressbarEvent = false
@@ -207,6 +212,9 @@ class AddHostActivity : AppCompatActivity() {
                     var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhotoVisitor)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
+                }else{
+                    addHostViewState.progressbarEvent = false
+
                 }
             } catch(e: Exception) {
                 addHostViewState.progressbarEvent = false

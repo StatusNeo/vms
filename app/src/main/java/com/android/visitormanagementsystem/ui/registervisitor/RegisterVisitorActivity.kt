@@ -434,6 +434,8 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
 
+                }else{
+                    progressViewState.progressbarEvent = false
                 }
             } catch(e: Exception) {
                 unBlockTouch()
@@ -453,6 +455,9 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhoto)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
+                }else{
+                    progressViewState.progressbarEvent = false
+
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false

@@ -6,8 +6,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.android.visitormanagementsystem.R
+import com.android.visitormanagementsystem.ui.addhostprofile.AddHostActivity
 import com.android.visitormanagementsystem.ui.interfaces.SplashNavigator
 import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
+import com.android.visitormanagementsystem.ui.visitorphoto.VisitiorPhotoActivity
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity(), SplashNavigator {
