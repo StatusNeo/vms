@@ -127,6 +127,7 @@
                 android:layout_height="@dimen/_50sdp"
                 android:layout_marginLeft="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:textColor="@color/black"
                 android:background="@drawable/rounded_corner"
                 app:backgroundTint="@null"
                 android:layout_marginRight="@dimen/_50sdp"

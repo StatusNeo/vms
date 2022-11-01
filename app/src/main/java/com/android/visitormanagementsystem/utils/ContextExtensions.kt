@@ -2,17 +2,15 @@ package com.android.visitormanagementsystem.utils
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.content.SharedPreferences
+import android.view.LayoutInflater
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import com.android.visitormanagementsystem.R
-import com.android.visitormanagementsystem.ui.loginoption.LoginOptionActivity
-import com.android.visitormanagementsystem.utils.Prefs.clearValues
+import com.android.visitormanagementsystem.databinding.LogoutDialogBinding
+import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 fun Context.toast(message: Int, duration: Int = Toast.LENGTH_SHORT) {
@@ -20,24 +18,35 @@ fun Context.toast(message: Int, duration: Int = Toast.LENGTH_SHORT) {
 }
 
 fun Context.showLogoutDialog(context: Context) {
-    val alertDialog = AlertDialog.Builder(context)
-    alertDialog.apply {
-        setIcon(R.drawable.logo)
-        setTitle("Log Out?")
-        setMessage("Are you sure want to log out?")
-        setPositiveButton("Logout") { _, _ ->
+    val dialogBinding: LogoutDialogBinding? =
+        DataBindingUtil.inflate(
+            LayoutInflater.from(this),
+            R.layout.logout_dialog,
+            null,
+            false
+        )
 
-            val prefs = Prefs.customPreference(context, Constants.LoggedIn_Pref)
-            prefs.clearValues
+    val customDialog = AlertDialog.Builder(context, 0).create()
+    customDialog.apply {
+        setView(dialogBinding?.root)
+        setCancelable(false)
+    }.show()
 
-            val intent = Intent(context, LoginOptionActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            context.startActivity(intent)
-        }
-        setNegativeButton("Cancel") { dialog, _ ->
-            dialog.dismiss()
-        }
-    }.create().show()
+    dialogBinding?.tv2Cancel?.setOnClickListener {
+        customDialog.dismiss()
+    }
+
+    dialogBinding?.tv2Yes?.setOnClickListener {
+        val prefs = Prefs.customPreference(context, Constants.LoggedIn_Pref)
+        val editor: SharedPreferences.Editor = prefs.edit()
+        editor.clear()
+        editor.apply()
+
+        val intent = Intent(context, VisitorLandingActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivity(intent)
+        customDialog.dismiss()
+    }
 }
 
 fun getCurrentDate() : String{

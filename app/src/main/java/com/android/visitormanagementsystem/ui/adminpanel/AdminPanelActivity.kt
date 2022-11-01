@@ -13,28 +13,18 @@ class AdminPanelActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ActivityAdminPanelBinding.inflate(layoutInflater).apply {
-
-          /*  btnBlacklisted.setOnClickListener{
-                val intent = Intent(this@AdminPanelActivity, BlacklistedVisitorActivity::class.java)
-                startActivity(intent)
-            }
-            btnBlocklist.setOnClickListener {
-                val intent = Intent(this@AdminPanelActivity, BlackListVisitorActivity::class.java)
-                startActivity(intent)
-            }*/
             btnReports.setOnClickListener{
                 val intent = Intent(this@AdminPanelActivity, AdminReportsActivity::class.java)
                 intent.putExtra("Called_From","Admin")
                 startActivity(intent)
             }
-
             btnAddHost.setOnClickListener{
                 val intent = Intent(this@AdminPanelActivity, AddHostActivity::class.java)
                 startActivity(intent)
             }
-           /* adminLogoutButton.setOnClickListener{
+            ivLogout.setOnClickListener{
                 showLogoutDialog(this@AdminPanelActivity)
-            }*/
+            }
 
             homeBtn.setOnClickListener{
                 val intent = Intent(this@AdminPanelActivity, VisitorLandingActivity::class.java)

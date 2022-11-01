@@ -14,6 +14,7 @@ import com.android.visitormanagementsystem.ui.interfaces.OnVisitorClickInterface
 import com.android.visitormanagementsystem.ui.interfaces.OnVisitorListInterface
 import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
+import com.android.visitormanagementsystem.utils.showLogoutDialog
 import com.android.visitormanagementsystem.utils.toast
 
 class VisitorListActivity : AppCompatActivity(), OnVisitorListInterface {
@@ -42,11 +43,9 @@ class VisitorListActivity : AppCompatActivity(), OnVisitorListInterface {
                     }
                 })
             }
-          /*  btnViewReports.setOnClickListener {
-                val intent = Intent(this@VisitorListActivity, AdminReportsActivity::class.java)
-                startActivity(intent)
+            ivLogout.setOnClickListener{
+                showLogoutDialog(this@VisitorListActivity)
             }
-*/
             btnViewReport.setOnClickListener {
                 val intent = Intent(this@VisitorListActivity, AdminReportsActivity::class.java)
                 intent.putExtra("Called_From","Visitor List")

@@ -22,6 +22,7 @@ import com.android.visitormanagementsystem.ui.interfaces.OnReportDownloadInterfa
 import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
+import com.android.visitormanagementsystem.utils.showLogoutDialog
 import com.android.visitormanagementsystem.utils.toast
 import com.google.android.material.imageview.ShapeableImageView
 import com.squareup.picasso.Picasso
@@ -56,11 +57,12 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
             }
             setDatePickerDialog(this)
             searchByName()
-            homeBtn.setOnClickListener{
-                val intent = Intent(this@HostReportsActivity, VisitorLandingActivity::class.java)
+            ivLogout.setOnClickListener{
+               /* val intent = Intent(this@HostReportsActivity, VisitorLandingActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
-                this@HostReportsActivity.finish()
+                this@HostReportsActivity.finish()*/
+                showLogoutDialog(this@HostReportsActivity)
             }
 
         }.root)

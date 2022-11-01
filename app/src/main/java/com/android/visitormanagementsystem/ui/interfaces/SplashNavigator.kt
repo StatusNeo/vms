@@ -2,6 +2,7 @@ package com.android.visitormanagementsystem.ui.interfaces
 
 interface SplashNavigator {
     fun openLoginActivity()
-
-    fun openMainActivity()
+    fun openHostActivity()
+    fun openAdminActivity()
+    fun openSecurityActivity()
 }
