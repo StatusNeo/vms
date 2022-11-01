@@ -25,6 +25,7 @@ import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
+import com.android.visitormanagementsystem.utils.showLogoutDialog
 import com.android.visitormanagementsystem.utils.toast
 import com.google.android.material.imageview.ShapeableImageView
 import com.squareup.picasso.Picasso
@@ -89,6 +90,9 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
                 }
             }
 
+            ivLogout.setOnClickListener{
+                showLogoutDialog(this@AdminReportsActivity)
+            }
 
          /*   backBtn.setOnClickListener {
                 this@AdminReportsActivity.finish()

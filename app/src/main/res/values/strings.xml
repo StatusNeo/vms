@@ -178,4 +178,6 @@
     <string name="host_s_name">Host\'s Name</string>
     <string name="employee_role">Employee Role</string>
     <string name="host_name_dialog">Host Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
 </resources>

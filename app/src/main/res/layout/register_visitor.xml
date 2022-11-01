@@ -452,7 +452,7 @@
                     android:textColor="@color/black"
                     android:hint="@string/add_batch_number"
                     android:inputType="number"
-                    android:maxLength="4"
+                    android:maxLength="3"
                     android:paddingBottom="@dimen/et_padding"
                     android:textColorHint="@color/text_color_grey"
                     android:visibility="gone" />

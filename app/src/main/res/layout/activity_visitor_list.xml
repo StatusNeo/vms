@@ -33,49 +33,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/ivLogoText"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:layout_marginStart="28dp"
-                android:padding="@dimen/_4sdp"
-                android:src="@drawable/logo"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/tvToolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:ellipsize="end"
-                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/string_vms"
-                android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
+                android:drawablePadding="@dimen/_5sdp"
+                android:textColor="@color/black"
+                android:drawableLeft="@drawable/logo"
+                android:fontFamily="@font/montserrat_regular"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/ivLogoText"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ImageView
+                android:id="@+id/ivLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:src="@drawable/logout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvToolbarTitle" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-       <!-- <Button
-            android:id="@+id/btn_view_reports"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_margin="@dimen/margin_twenty_five"
-            app:backgroundTint="@null"
-            android:background="@drawable/rounded_corner"
-            android:text="@string/text_visitor_reports"
-            android:textAllCaps="false"
-            android:textSize="@dimen/font_size_sixteen"
-            app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
--->
         <TextView
             android:id="@+id/tv1_Landing"
             android:layout_width="wrap_content"

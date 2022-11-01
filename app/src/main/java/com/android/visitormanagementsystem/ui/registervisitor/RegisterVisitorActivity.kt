@@ -183,10 +183,10 @@ class RegisterVisitorActivity : AppCompatActivity() {
         btnSubmit.setOnClickListener {
             if(etBatchNo.text.isBlank()) {
                 etBatchNo.requestFocus()
-                etBatchNo.error = "Please enter batch number"
-            } else if(etBatchNo.text.length != 4) {
+                etBatchNo.error = "Please enter badge number"
+            } else if(etBatchNo.text.length != 3) {
                 etBatchNo.requestFocus()
-                etBatchNo.error = "Batch number should be 4 digits"
+                etBatchNo.error = "Badge number should be 3 digits"
             } else if(imageUrl.isBlank() || imageUrl.isEmpty()) {
                 toast(R.string.error_photo_upload)
             } else {

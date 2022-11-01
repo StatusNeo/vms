@@ -2,6 +2,7 @@ package com.android.visitormanagementsystem.ui.visitorlanding
 
 import android.content.ContentValues
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -26,6 +27,9 @@ import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListUiModel
 import com.android.visitormanagementsystem.ui.visitorphoto.VisitiorPhotoActivity
 import com.android.visitormanagementsystem.utils.Constants
+import com.android.visitormanagementsystem.utils.Prefs
+import com.android.visitormanagementsystem.utils.Prefs.LoggedInFrom
+import com.android.visitormanagementsystem.utils.Prefs.userMobileNo
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.toast
 import com.google.firebase.FirebaseException
@@ -46,11 +50,13 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
     private lateinit var hostLoginViewModel: HostLoginViewModel
     lateinit var binding: VisitorLandingBinding
     var selectedPosition : Int = 0
+    lateinit var prefs : SharedPreferences
 
       override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         hostLoginViewModel = ViewModelProvider(this)[HostLoginViewModel::class.java]
+          prefs = Prefs.customPreference(this@VisitorLandingActivity, Constants.LoggedIn_Pref)
         setContentView(VisitorLandingBinding.inflate(layoutInflater).apply {
             binding = this
             viewStateProgress = progressViewState
@@ -258,6 +264,8 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
         if(isEmployee) {
             when(empRole) {
                 "Employee" -> {
+                    prefs.LoggedInFrom = Constants.VALUE_HOST_LOGIN
+                    prefs.userMobileNo = useMobileNo
                     val intent =
                         Intent(this@VisitorLandingActivity, HostReportsActivity::class.java)
                     intent.putExtra("mobile", useMobileNo)
@@ -265,22 +273,17 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                     this@VisitorLandingActivity.finish()
                 }
                 "M" -> print("user is a Manager")
-                "Admin" -> startActivity(
-                    Intent(
-                        this@VisitorLandingActivity,
-                        AdminPanelActivity::class.java
-                    )
-                )
-                "Security" -> startActivity(
-                    Intent(
-                        this@VisitorLandingActivity,
-                        VisitorListActivity::class.java
-                    )
-                )
+                "Admin" -> {
+                    prefs.LoggedInFrom = Constants.VALUE_ADMIN_LOGIN
+                    startActivity(Intent(this@VisitorLandingActivity, AdminPanelActivity::class.java))
+                }
+                "Security" -> {
+                    prefs.LoggedInFrom = Constants.VALUE_SECURITY_LOGIN
+                    startActivity(Intent(this@VisitorLandingActivity, VisitorListActivity::class.java))
+                }
             }
             this@VisitorLandingActivity.finish()
         } else {
-
             val intent = Intent(this@VisitorLandingActivity, VisitiorPhotoActivity::class.java)
             intent.putExtra("mobile", useMobileNo)
             println("Mobile $useMobileNo")
@@ -288,7 +291,6 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
             this@VisitorLandingActivity.finish()
         }
     }
-
 
     private fun EditText.afterTextChanged() {
         this.addTextChangedListener(object : TextWatcher {
