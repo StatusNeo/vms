@@ -13,8 +13,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/otp_box_bg"
-        tools:context=".ui.addhostprofile.AddHostActivity">
-
+        >
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            tools:context=".ui.addhostprofile.AddHostActivity">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/otp_box_bg">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbarLayout"
             android:layout_width="wrap_content"
@@ -65,6 +74,51 @@
             android:fontFamily="@font/montserrat_semibold"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/toolbarLayout"/>
+<!--        <com.google.android.material.imageview.ShapeableImageView-->
+<!--            android:id="@+id/ivPhoto"-->
+<!--            android:layout_width="@dimen/_140sdp"-->
+<!--            android:layout_height="@dimen/_115sdp"-->
+<!--            android:layout_margin="@dimen/_20sdp"-->
+<!--            android:src="@drawable/photo_avatar"-->
+<!--            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"-->
+<!--            app:strokeColor="@color/white"-->
+<!--            app:strokeWidth="1dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/tv_host_details" />-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_photo"
+        android:layout_width="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_host_details"
+
+       android:layout_height="180dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivPhotoVisitor"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_margin="@dimen/_10sdp"
+            android:src="@drawable/photo_avatar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp" />
+
+        <TextView
+            android:id="@+id/tv_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/_5sdp"
+            android:text="@string/text_upload_photo"
+            android:textColor="@color/light_blue_900"
+            android:textSize="@dimen/_16ssp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivPhotoVisitor" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tILNameHost"
@@ -75,7 +129,7 @@
             android:layout_marginRight="@dimen/margin_twenty_five"
             android:layout_marginBottom="@dimen/margin_fiftin"
             android:layout_marginTop="@dimen/_25sdp"
-            app:layout_constraintTop_toBottomOf="@+id/tv_host_details">
+            app:layout_constraintTop_toBottomOf="@+id/layout_photo">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_host_name"
@@ -260,9 +314,11 @@
             android:textColor="@color/black"
             android:textSize="@dimen/font_size_sixteen"
             app:backgroundTint="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
             app:layout_constraintRight_toRightOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <ProgressBar
             android:id="@+id/progressBar_ID"

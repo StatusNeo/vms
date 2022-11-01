@@ -67,6 +67,7 @@
     <string name="please_enter_reason">Please enter Reason</string>
     <string name="msg_valid_creds">Please enter valid credentials</string>
     <string name="error_photo_upload">Please upload your photo</string>
+    <string name="error_photo_upload_host">Please upload host photo</string>
     <string name="msg_blacklisted">This number is Blacklisted</string>
     <string name="text_prev_visit">Previous Visit(s)</string>
     <string name="text_plan_visit">Planned Visit(s)</string>
@@ -165,8 +166,8 @@
     <string name="in_time">In Time</string>
     <string name="visit_date">Visit Date</string>
     <string name="enter_your_mobile_number">Enter your \nmobile number</string>
-    <string name="change_phone_number">Change phone number</string>
-    <string name="send_the_code_again">Send the code again</string>
+    <string name="change_phone_number"><u> Change mobile number </u></string>
+    <string name="send_the_code_again"><u> Resend OTP</u></string>
     <string name="enter_your_10_digit_mobile_n_number_below">Enter your 10 digit mobile \n number below</string>
     <string name="enter_your_verification_code">Enter your \nverification code</string>
     <string name="we_send_verification_code">We have sent verification code to</string>
