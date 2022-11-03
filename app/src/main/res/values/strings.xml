@@ -79,7 +79,7 @@
     <string name="time_string">Time: %s</string>
     <string name="purpose_string">Purpose: %s</string>
     <string name="in_time_string">In Time: %s</string>
-    <string name="out_time_string">Out Time: %s</string>
+    <string name="out_time_string">Out Time</string>
     <string name="host_name_string">Host Name: %s</string>
     <string name="blacklist_visitor">Blacklist Visitor</string>
     <string name="text_mobile">Mobile #</string>
@@ -181,4 +181,5 @@
     <string name="host_name_dialog">Host Name</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
+    <string name="visitor_s_report">Visitor’s Report</string>
 </resources>

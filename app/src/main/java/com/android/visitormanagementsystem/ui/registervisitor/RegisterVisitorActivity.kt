@@ -4,15 +4,12 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -23,7 +20,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.NestedScrollView
 import com.android.visitormanagementsystem.BuildConfig
@@ -31,9 +27,12 @@ import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.RegisterVisitorBinding
 import com.android.visitormanagementsystem.ui.gethost.HostProfileUiModel
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
-import com.android.visitormanagementsystem.utils.*
+import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
+import com.android.visitormanagementsystem.utils.Constants
+import com.android.visitormanagementsystem.utils.ProgressBarViewState
+import com.android.visitormanagementsystem.utils.getCurrentTime
+import com.android.visitormanagementsystem.utils.toast
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.Timestamp
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
@@ -43,8 +42,12 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import timber.log.Timber
-import java.io.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -79,7 +82,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
 
         }.root)
         var gender: String = "Male"
-        var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhoto)
+        var ivPhoto = findViewById<CircleImageView>(R.id.ivPhoto)
         var tvPhoto = findViewById<TextView>(R.id.tv_photo)
 
         var btnRegister = findViewById<Button>(R.id.btn_register)
@@ -216,7 +219,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     "visitorImage" to imageUrl,
                     "visitDate" to formattedDate.toString(),
                     "inTime" to getCurrentTime(),
-                    "batchNo" to etBatchNo.text.toString(),
+                    "BadgeNumber" to etBatchNo.text.toString(),
                     "hostName" to et_host_name.text.toString(),
                     "hostMobileNo" to et_host_mobile.text.toString(),
                     "purpose" to et_purpose.text.toString(),
@@ -309,7 +312,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
         et_visitor_name: EditText,
         et_email: EditText,
         et_address: EditText,
-        iv_photo: ShapeableImageView,
+        iv_photo: CircleImageView,
         rg: RadioGroup
     ) {
         val myDB = FirebaseFirestore.getInstance().collection(Constants.VISITOR_DB)
@@ -430,7 +433,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
                     imageUri = saveImageInQ(bmp)
-                    var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhoto)
+                    var ivPhoto = findViewById<CircleImageView>(R.id.ivPhoto)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
 
@@ -452,7 +455,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     var extras: Bundle? = result.data?.extras
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
                     imageUri = saveTheImageLegacyStyle(this, bmp)
-                    var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhoto)
+                    var ivPhoto = findViewById<CircleImageView>(R.id.ivPhoto)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
                 }else{
@@ -529,6 +532,12 @@ class RegisterVisitorActivity : AppCompatActivity() {
             et_host_mobile.setText( hostMobileNo)
             dialog.dismiss()
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this@RegisterVisitorActivity, VisitorLandingActivity::class.java)
+        startActivity(intent)
+        this@RegisterVisitorActivity.finish()
     }
 
 }

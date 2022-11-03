@@ -52,6 +52,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
     var selectedPosition : Int = 0
     lateinit var prefs : SharedPreferences
 
+
       override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
@@ -117,7 +118,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
 
                         // Callback function, fired on regular interval
                         override fun onTick(millisUntilFinished: Long) {
-                            tvOtpTimer.text = "Resend OTP after: " + millisUntilFinished / 1000
+                            tvOtpTimer.text = "Resend OTP in: " + millisUntilFinished / 1000
                         }
 
                         // Callback function, fired
@@ -270,7 +271,6 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                         Intent(this@VisitorLandingActivity, HostReportsActivity::class.java)
                     intent.putExtra("mobile", useMobileNo)
                     startActivity(intent)
-                    this@VisitorLandingActivity.finish()
                 }
                 "M" -> print("user is a Manager")
                 "Admin" -> {

@@ -32,7 +32,6 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginStart="28dp"
-                android:padding="@dimen/_4sdp"
                 android:src="@drawable/logo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -64,7 +63,7 @@
             android:text="@string/string_checkout"
             android:textColor="@color/black"
             android:textSize="@dimen/_14ssp"
-            android:fontFamily="@font/montserrat_regular"
+            android:fontFamily="@font/montserrat_semibold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/visitorCheckout_Toolbar"
@@ -76,7 +75,7 @@
             android:padding="@dimen/_20sdp"
             app:layout_constraintTop_toBottomOf="@+id/heading">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/checkout_image"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_100sdp"
@@ -87,8 +86,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:loadImage="@{String.valueOf(data.visitorImage)}"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-                app:strokeColor="@color/statusneo_color_yellow"
-                app:strokeWidth="@dimen/_2sdp" />
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/black" />
 
             <TextView
                 android:id="@+id/checkoutNameTv"

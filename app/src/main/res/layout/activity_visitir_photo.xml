@@ -27,7 +27,6 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginStart="28dp"
-                android:padding="@dimen/_4sdp"
                 android:src="@drawable/logo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -67,8 +66,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbarLayout" />
 
-
-        <com.google.android.material.imageview.ShapeableImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivPhotoVisitor"
             android:layout_width="150dp"
             android:layout_height="150dp"
@@ -78,8 +76,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv1_Landing"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-            app:strokeColor="@color/white"
-            app:strokeWidth="1dp" />
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/black" />
 <!--        <ImageView-->
 <!--            android:id="@+id/image_Landing"-->
 <!--            android:layout_width="wrap_content"-->
@@ -100,12 +98,13 @@
             android:paddingTop="@dimen/_10sdp"
             android:text="Change Photo"
             android:visibility="gone"
-            android:textColor="@color/light_blue_900"
+            android:textColor="@color/statusneo_color_yellow"
             android:textSize="@dimen/_16ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivPhotoVisitor"
          />
+
         <FrameLayout
             android:id="@+id/fm_layout_send_otp"
             android:layout_width="match_parent"
@@ -139,13 +138,6 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
         </FrameLayout>
-
-
-
-
-
-
-
 
         <ProgressBar
             android:id="@+id/progressBar_ID"

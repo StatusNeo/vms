@@ -12,18 +12,12 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.android.visitormanagementsystem.AddHostBinding
 import com.android.visitormanagementsystem.BuildConfig
 import com.android.visitormanagementsystem.R
@@ -31,8 +25,11 @@ import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.toast
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.material.imageview.ShapeableImageView
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -134,6 +131,7 @@ class AddHostActivity : AppCompatActivity() {
             })
         }.root)
     }
+
     private fun saveTheImageLegacyStyle(inContext: Context, inImage: Bitmap): Uri? {
         var imagesFolder: File = File(inContext.cacheDir, "images")
         var uri: Uri? = null
@@ -150,9 +148,8 @@ class AddHostActivity : AppCompatActivity() {
         } catch(e: FileNotFoundException) {
         }
         return uri
-
-
     }
+
     private fun saveImageInQ(bitmap: Bitmap): Uri? {
         val filename = "IMG_${System.currentTimeMillis()}.jpg"
         var fos: OutputStream? = null
@@ -180,6 +177,7 @@ class AddHostActivity : AppCompatActivity() {
 
         return imageUri
     }
+
    private var openCVResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             addHostViewState.progressbarEvent = true
@@ -187,7 +185,7 @@ class AddHostActivity : AppCompatActivity() {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
                     imageUri = saveImageInQ(bmp)
-                    var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhotoVisitor)
+                    var ivPhoto = findViewById<CircleImageView>(R.id.ivPhotoVisitor)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
 
@@ -200,6 +198,7 @@ class AddHostActivity : AppCompatActivity() {
                 addHostViewState.progressbarEvent = false
             }
         }
+
     var openLegacyResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             addHostViewState.progressbarEvent = true
@@ -209,7 +208,7 @@ class AddHostActivity : AppCompatActivity() {
                     var extras: Bundle? = result.data?.extras
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
                     imageUri = saveTheImageLegacyStyle(this, bmp)
-                    var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhotoVisitor)
+                    var ivPhoto = findViewById<CircleImageView>(R.id.ivPhotoVisitor)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
                 }else{
@@ -220,6 +219,7 @@ class AddHostActivity : AppCompatActivity() {
                 addHostViewState.progressbarEvent = false
             }
         }
+
     private fun uploadImage() {
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
         val now = Date()

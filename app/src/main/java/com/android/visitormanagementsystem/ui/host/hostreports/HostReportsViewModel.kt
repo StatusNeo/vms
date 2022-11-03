@@ -59,6 +59,7 @@ class HostReportsViewModel(application: Application) : AndroidViewModel(applicat
 
                         val stamp = document.data[Constants.TIMESTAMP] as Timestamp
                         val date = stamp.toDate()
+
                         initReportList.add(
                             HostReportUiModel(
                                 document.id,
@@ -70,6 +71,7 @@ class HostReportsViewModel(application: Application) : AndroidViewModel(applicat
                                 document.data[Constants.HOST_NAME].toString(),
                                 document.data[Constants.BATCH_NO].toString(),
                                 visitorImage,
+                                document.data[Constants.OUT_TIME].toString()
                             )
                         )
                     }
@@ -100,6 +102,7 @@ class HostReportsViewModel(application: Application) : AndroidViewModel(applicat
                             document.data[Constants.HOST_NAME].toString(),
                             document.data[Constants.BATCH_NO].toString(),
                             visitorImage,
+                            document.data[Constants.OUT_TIME].toString()
                         )
                     )
                 }

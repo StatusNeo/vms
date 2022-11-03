@@ -24,7 +24,7 @@
                 android:layout_margin="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp">
 
-                <com.google.android.material.imageview.ShapeableImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/itemImage"
                     android:layout_width="@dimen/_70sdp"
                     android:layout_height="@dimen/_70sdp"
@@ -35,8 +35,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:loadImage="@{String.valueOf(data.visitorImage)}"
                     app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-                    app:strokeColor="@color/statusneo_color_yellow"
-                    app:strokeWidth="@dimen/_2sdp"
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="@color/black"
                      />
 
                 <TextView

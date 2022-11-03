@@ -42,6 +42,7 @@ class SplashActivity : AppCompatActivity(), SplashNavigator {
     override fun openLoginActivity() {
         val intent = Intent(this@SplashActivity, VisitorLandingActivity::class.java)
         startActivity(intent)
+        this@SplashActivity.finish()
     }
 
     override fun openHostActivity() {
@@ -53,11 +54,11 @@ class SplashActivity : AppCompatActivity(), SplashNavigator {
 
     override fun openAdminActivity() {
         startActivity(Intent(this@SplashActivity, AdminPanelActivity::class.java))
+        this@SplashActivity.finish()
     }
 
     override fun openSecurityActivity() {
         startActivity(Intent(this@SplashActivity, VisitorListActivity::class.java))
+        this@SplashActivity.finish()
     }
-
-
 }

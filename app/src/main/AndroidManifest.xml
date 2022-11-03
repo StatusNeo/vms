@@ -102,6 +102,7 @@
             android:name="com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
