@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
         android:ellipsize="end"
-        android:text="@string/visitor_s_list"
+        android:text="@string/host_s_list"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="@dimen/_18ssp"

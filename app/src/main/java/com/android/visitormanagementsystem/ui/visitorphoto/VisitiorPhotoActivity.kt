@@ -42,6 +42,7 @@ class VisitiorPhotoActivity:AppCompatActivity() {
     private val db = Firebase.firestore
 
     var isPhotoUploaded: Boolean = false
+    lateinit var binding: VisitorPhotoBinding
 
     // lateinit var imageUri:Uri
     private var imageUri: Uri? = null
@@ -53,7 +54,7 @@ class VisitiorPhotoActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(VisitorPhotoBinding.inflate(layoutInflater).apply{
             viewStateProgress = progressViewState
-
+            binding = this
             useMobileNo = intent.getStringExtra("mobile").toString()
             println("Mobile 22  $useMobileNo")
 
@@ -152,6 +153,7 @@ class VisitiorPhotoActivity:AppCompatActivity() {
     private var openCVResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             progressViewState.progressbarEvent = true
+            binding.btnUploadPhoto.alpha = 0.5f
             try {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
@@ -159,21 +161,20 @@ class VisitiorPhotoActivity:AppCompatActivity() {
                     var ivPhoto = findViewById<CircleImageView>(R.id.ivPhotoVisitor)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
-
-
                 }else{
                     progressViewState.progressbarEvent = false
-
+                    binding.btnUploadPhoto.alpha = 1.0f
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false
+                binding.btnUploadPhoto.alpha = 1.0f
             }
         }
 
     var openLegacyResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             progressViewState.progressbarEvent = true
-
+            binding.btnUploadPhoto.alpha = 0.5f
             try {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var extras: Bundle? = result.data?.extras
@@ -184,12 +185,14 @@ class VisitiorPhotoActivity:AppCompatActivity() {
                     uploadImage()
                 }else{
                     progressViewState.progressbarEvent = false
-
+                    binding.btnUploadPhoto.alpha = 1.0f
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false
+                binding.btnUploadPhoto.alpha = 1.0f
             }
         }
+
     private fun uploadImage() {
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
         val now = Date()
@@ -201,6 +204,7 @@ class VisitiorPhotoActivity:AppCompatActivity() {
                     imageUrl = uri.toString()
                     isPhotoUploaded = true
                     progressViewState.progressbarEvent = false
+                    binding.btnUploadPhoto.alpha = 1.0f
                     var tvPhoto = findViewById<TextView>(R.id.tv_change_photo)
                     tvPhoto.visibility=View.VISIBLE;
                     var btn_upload_photo = findViewById<Button>(R.id.btn_upload_photo)
@@ -209,6 +213,7 @@ class VisitiorPhotoActivity:AppCompatActivity() {
                 })
             }.addOnFailureListener {
                 progressViewState.progressbarEvent = false
+                binding.btnUploadPhoto.alpha = 1.0f
             }
         }
     }

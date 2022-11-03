@@ -57,10 +57,6 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
             setDatePickerDialog(this)
             searchByName()
             ivLogout.setOnClickListener{
-               /* val intent = Intent(this@HostReportsActivity, VisitorLandingActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                this@HostReportsActivity.finish()*/
                 showLogoutDialog(this@HostReportsActivity)
             }
 
@@ -110,12 +106,6 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
         dialog.show()
     }
 
-    override fun onBackPressed() {
-        val intent = Intent(this@HostReportsActivity, VisitorLandingActivity::class.java)
-        startActivity(intent)
-        this@HostReportsActivity.finish()
-    }
-
     private fun setDatePickerDialog(reportsBinding: ActivityHostReportsBinding) {
         // create an OnDateSetListener
         var calendar = Calendar.getInstance()
@@ -129,6 +119,7 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
                 if(selectedDate.isEmpty()) {
                     toast(R.string.msg_select_date)
                 }else {
+                    binding.ivCircle.visibility = View.VISIBLE
                     binding.btnProceed.isEnabled = false
                     hostReportsViewState.progressbarEvent = true
                     hostReportViewModel.initHostReport(
@@ -158,9 +149,10 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
                 if((event?.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     var enteredName = binding.etSearchName.text.toString()
                     if(enteredName.isNotBlank()) {
+
+                        binding.ivCircle.visibility = View.GONE
                             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                             imm?.hideSoftInputFromWindow(p0?.windowToken, 0)
-
                         hostReportsViewState.progressbarEvent = true
                         hostReportViewModel.searchByName(enteredName, hostMobileNo)
                     }

@@ -57,35 +57,42 @@ class AddHostActivity : AppCompatActivity() {
                }else
                 if(etHostName.text.isNullOrBlank()) {
                     etHostName.requestFocus()
-                    etHostName.error = "Please enter Host Full name"
-                } else if(etHostMobile.text.isNullOrBlank()) {
+                    etHostName.error = "Please enter Full name"
+                }
+                else if(etHostMobile.text.isNullOrBlank()) {
                     etHostMobile.requestFocus()
-                    etHostMobile.error = "Please enter Host mobile no."
+                    etHostMobile.error = "Please enter mobile no."
                 } else if(etHostMobile.text.toString()
-                        .isNotEmpty() && etHostMobile.text?.length != 10
-                ) {
+                        .isNotEmpty() && etHostMobile.text?.length != 10) {
                     etHostMobile.requestFocus()
                     etHostMobile.error = "Mobile number should be 10 digit's"
-                } else if(!etHostMobile.text.toString()
-                        .matches(Constants.MOBILE_NUMBER_REGEX.toRegex())
-                ) {
+                } else if(!etHostMobile.text.toString().matches(Constants.MOBILE_NUMBER_REGEX.toRegex())) {
                     etHostMobile.requestFocus()
                     etHostMobile.error = "Invalid Mobile Number"
-                } else if(etEmailId.text.toString().isNotEmpty() && !etEmailId.text.toString()
-                        .matches(Constants.EMAIL_REGEX.toRegex())
-                ) {
-                    etEmailId.error = "Please enter valid Email"
-                } else if(radioGroup.checkedRadioButtonId == -1) {
-                    toast(R.string.text_role)
-                } else {
-                    addNewHost(
-                        etHostName.text.toString(),
-                        etHostMobile.text.toString(),
-                        etEmailId.text.toString() ?: "",
-                        etHostDesignation.text.toString() ?: "",
-                        role
-                    )
                 }
+                else if(etEmailId.text.toString().isNullOrBlank() ){
+                    etEmailId.requestFocus()
+                    etEmailId.error = "Please enter Email Id"
+                    }else if(etEmailId.text.toString().isNotEmpty() &&
+                        !etEmailId.text.toString().matches(Constants.EMAIL_REGEX.toRegex())) {
+                        etEmailId.requestFocus()
+                        etEmailId.error = "Please enter valid Email Id"
+                    }
+                else if(etHostDesignation.text.toString().isNullOrBlank() ){
+                         etHostDesignation.requestFocus()
+                         etHostDesignation.error = "Please enter Designation"
+                    } else if(radioGroup.checkedRadioButtonId == -1) {
+                        toast(R.string.text_role)
+                    }
+                else {
+                        addNewHost(
+                            etHostName.text.toString(),
+                            etHostMobile.text.toString(),
+                            etEmailId.text.toString() ?: "",
+                            etHostDesignation.text.toString() ?: "",
+                            role
+                        )
+                    }
             }
             layoutPhoto.setOnClickListener {
                 if (!addHostViewState.progressbarEvent ) {
@@ -111,7 +118,6 @@ class AddHostActivity : AppCompatActivity() {
                     }
                 }
             }
-
 
             radioGroup.setOnCheckedChangeListener(object : RadioGroup.OnCheckedChangeListener {
                 override fun onCheckedChanged(p0: RadioGroup?, checkedId: Int) {

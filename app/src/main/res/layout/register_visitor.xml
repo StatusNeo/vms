@@ -448,7 +448,7 @@
                     android:textSize="@dimen/_12ssp"
                     android:fontFamily="@font/montserrat_regular"
                     android:textColor="@color/black"
-                    android:hint="@string/add_batch_number"
+                    android:hint="@string/badge_number"
                     android:inputType="number"
                     android:maxLength="3"
                     android:paddingBottom="@dimen/et_padding"

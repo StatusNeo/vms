@@ -122,6 +122,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
                     if((event?.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                         var enteredName = binding.etSearchName.text.toString()
                         if(enteredName.isNotBlank()) {
+                            binding.ivCircle.visibility = View.GONE
                             adminViewModel.searchByName(enteredName)
                         }
                         return true
@@ -274,6 +275,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
                 if(selectedDate.isEmpty()) {
                     toast(R.string.msg_select_date)
                 }else {
+                    activityReportsBinding.ivCircle.visibility = View.VISIBLE
                     adminReportsViewState.progressbarEvent = true
                     binding.ivCalender.isEnabled = false
                     adminViewModel.initVisitorList(selectedDate)
