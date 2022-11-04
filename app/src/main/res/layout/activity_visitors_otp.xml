@@ -7,11 +7,9 @@
         <variable
             name="viewModel"
             type="com.android.visitormanagementsystem.ui.visitorotp.VisitorOtpViewModel" />
-
         <variable
             name="viewState"
             type="com.android.visitormanagementsystem.ui.visitorotp.VisitorOtpViewState" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

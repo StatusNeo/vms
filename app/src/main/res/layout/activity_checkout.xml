@@ -62,7 +62,7 @@
             android:ellipsize="end"
             android:text="@string/string_checkout"
             android:textColor="@color/black"
-            android:textSize="@dimen/_14ssp"
+            android:textSize="@dimen/_18ssp"
             android:fontFamily="@font/montserrat_semibold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

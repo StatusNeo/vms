@@ -119,7 +119,6 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_18ssp"
                 android:fontFamily="@font/montserrat_semibold"
-                android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
             </TextView>
 

@@ -3,7 +3,6 @@ package com.android.visitormanagementsystem.ui.host.hostreports
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -18,7 +17,6 @@ import com.android.visitormanagementsystem.databinding.ActivityHostReportsBindin
 import com.android.visitormanagementsystem.ui.adapters.HostReportAdapter
 import com.android.visitormanagementsystem.ui.interfaces.OnHostReportClickInterface
 import com.android.visitormanagementsystem.ui.interfaces.OnReportDownloadInterface
-import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.showLogoutDialog
@@ -59,7 +57,6 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
             ivLogout.setOnClickListener{
                 showLogoutDialog(this@HostReportsActivity)
             }
-
         }.root)
     }
 
@@ -163,7 +160,6 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
         })
     }
 
-
     override fun openReportScreen(items: List<HostReportUiModel>) {
         hostReportsViewState.progressbarEvent = false
         binding.btnProceed.isEnabled = true
@@ -178,4 +174,5 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
         }
             ada.setUserList(items)
     }
+
 }

@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -37,19 +39,24 @@ import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class AddHostActivity : AppCompatActivity() {
     var addHostViewState = ProgressBarViewState()
-    var role: String = "Employee"
+    var role: String = ""
     // lateinit var imageUri:Uri
     private var imageUri: Uri? = null
     //var storageRef = storage.reference
     var imageUrl: String = ""
+    lateinit var binding : AddHostBinding
     var isPhotoUploaded: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(AddHostBinding.inflate(layoutInflater).apply {
             viewState = addHostViewState
+            binding = this
             //  etUserName.requestFocus()
+            binding.btnSubmit.isEnabled = false
+            binding.btnSubmit.alpha = 0.5f
             btnSubmit.setOnClickListener {
 
                if (!isPhotoUploaded){
@@ -133,9 +140,26 @@ class AddHostActivity : AppCompatActivity() {
                             role = "Employee"
                         }
                     }
+                    updateSignInButtonState()
                 }
             })
         }.root)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val tw: TextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun afterTextChanged(editable: Editable) {
+                updateSignInButtonState()
+            }
+        }
+        binding.etHostName.addTextChangedListener(tw)
+        binding.etHostMobile.addTextChangedListener(tw)
+        binding.etEmailId.addTextChangedListener(tw)
+        binding.etHostDesignation.addTextChangedListener(tw)
+
     }
 
     private fun saveTheImageLegacyStyle(inContext: Context, inImage: Bitmap): Uri? {
@@ -194,21 +218,17 @@ class AddHostActivity : AppCompatActivity() {
                     var ivPhoto = findViewById<CircleImageView>(R.id.ivPhotoVisitor)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
-
-
                 }else{
                     addHostViewState.progressbarEvent = false
-
                 }
             } catch(e: Exception) {
                 addHostViewState.progressbarEvent = false
             }
         }
 
-    var openLegacyResultLauncher =
+   var openLegacyResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             addHostViewState.progressbarEvent = true
-
             try {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var extras: Bundle? = result.data?.extras
@@ -219,7 +239,6 @@ class AddHostActivity : AppCompatActivity() {
                     uploadImage()
                 }else{
                     addHostViewState.progressbarEvent = false
-
                 }
             } catch(e: Exception) {
                 addHostViewState.progressbarEvent = false
@@ -236,6 +255,7 @@ class AddHostActivity : AppCompatActivity() {
                 storageReference.downloadUrl.addOnSuccessListener(OnSuccessListener<Uri> { uri ->
                     imageUrl = uri.toString()
                     isPhotoUploaded = true
+                    updateSignInButtonState()
                     addHostViewState.progressbarEvent = false
                     var tvPhoto = findViewById<TextView>(R.id.tv_photo)
                     tvPhoto.text= "Change Photo";
@@ -301,4 +321,19 @@ class AddHostActivity : AppCompatActivity() {
             toast(R.string.msg_something_went)
         }
     }
+
+   private fun updateSignInButtonState() {
+        binding.btnSubmit.setEnabled(
+            binding.etHostName.text.toString().isNotEmpty() && binding.etHostMobile.text.toString().isNotEmpty()
+                    && binding.etEmailId.text.toString().isNotEmpty()
+                    && binding.etHostDesignation.text.toString().isNotEmpty()
+                    && binding.etEmailId.text.toString().isNotEmpty()
+                    && isPhotoUploaded
+                    && binding.radioGroup.checkedRadioButtonId != -1
+        )
+
+        if(binding.btnSubmit.isEnabled){
+            binding.btnSubmit.alpha = 1.0f
+        }
+   }
 }
