@@ -307,23 +307,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_twenty_five"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/margin_twenty_five"
                 app:layout_constraintTop_toBottomOf="@+id/tILEmailId">
-
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/et_purpose"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_visit_purpose"
-                    android:inputType="textCapSentences"
-                    android:maxLines="1"
-                    android:textSize="@dimen/_12ssp"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:paddingBottom="@dimen/et_padding"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/text_color_grey" />
+                    android:text="Select purpose"
+                    android:inputType="none">
+
+                </AutoCompleteTextView>
+
+<!--                <Spinner-->
+<!--                    android:id="@+id/statusFilter"-->
+<!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="75dp"-->
+<!--                    android:layout_gravity="center"/>-->
+
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/et_purpose"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:hint="@string/hint_visit_purpose"-->
+<!--                    android:inputType="textCapSentences"-->
+<!--                    android:maxLines="1"-->
+<!--                    android:textSize="@dimen/_12ssp"-->
+<!--                    android:fontFamily="@font/montserrat_regular"-->
+<!--                    android:paddingBottom="@dimen/et_padding"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textColorHint="@color/text_color_grey" />-->
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

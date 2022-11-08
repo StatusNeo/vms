@@ -68,7 +68,9 @@ class RegisterVisitorActivity : AppCompatActivity() {
     lateinit var alertDialog: AlertDialog.Builder
     lateinit var dialog: AlertDialog
     var hostMobileNo: String = ""
+    var purpose: String = ""
 
+    lateinit var adapterPurpose: ArrayAdapter<String> ;
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,14 +92,39 @@ class RegisterVisitorActivity : AppCompatActivity() {
         var et_host_name = findViewById<EditText>(R.id.et_host_name)
          et_host_mobile = findViewById<EditText>(R.id.et_host_mobile)
         var et_email = findViewById<EditText>(R.id.etEmailId)
-        var et_purpose = findViewById<EditText>(R.id.et_purpose)
+       var et_purpose = findViewById<AutoCompleteTextView>(R.id.et_purpose)
         var et_address = findViewById<EditText>(R.id.et_address)
         var scrollView = findViewById<NestedScrollView>(R.id.scrollView)
+      //  var statusFilter=findViewById<Spinner>(R.id.statusFilter)
         // var btnBack = findViewById<ImageView>(R.id.backBtn)
          radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
         et_mobile_number.setText(intent.getStringExtra("mobile").toString())
         imageUrl =  intent.getStringExtra("imageUrl").toString()
         isPhotoUploaded = true
+        var purposeList = arrayOf("Interview", "Client Meeting", "Inspection", "Industrial Visit")
+
+//         adapterPurpose = ArrayAdapter(this,android.R.layout.simple_spinner_item,purposeList)
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+//        statusFilter.adapter = adapter
+
+//        val adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,purposeList)
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+//        statusFilter.adapter = adapter
+
+
+        val adapter = ArrayAdapter(this,R.layout.purpose_item,purposeList)
+
+       et_purpose.setAdapter(adapter)
+        et_purpose.onItemClickListener=
+            OnItemClickListener { parent, view, position, id ->
+                purpose=purposeList[position]
+
+              //  et_purpose.isFocusableInTouchMode = false;
+                //et_purpose.isEnabled=false
+
+
+            }
+
         Picasso.get().load(imageUrl).placeholder(R.drawable.profile_icon).into(ivPhoto)
 
         checkVisitorData(et_visitor_name, et_email, et_address, ivPhoto, radioGroup)
@@ -153,10 +180,15 @@ class RegisterVisitorActivity : AppCompatActivity() {
                 showToast(R.string.error_photo_upload)
             } else if(et_email.text.isNotEmpty() && !et_email.text.matches(Constants.EMAIL_REGEX.toRegex())) {
                 et_email.error = "Please enter valid Email";
-            } else if(et_purpose.text.isBlank()) {
-                et_purpose.requestFocus()
-                et_purpose.error = "Please enter purpose of visit"
-            }  else if(et_address.text.isBlank()) {
+            }
+            else if(purpose.isNullOrBlank()) {
+//                et_purpose.requestFocus()
+//                et_purpose.error = "Please select purpose of visit"
+                showToast(R.string.error_select_purpose)
+
+
+            }
+            else if(et_address.text.isBlank()) {
                 et_address.requestFocus()
                 et_address.error = "Please enter your address"
             } else if(radioGroup.checkedRadioButtonId == -1) {
@@ -219,7 +251,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
                     "batchNo" to etBatchNo.text.toString(),
                     "hostName" to et_host_name.text.toString(),
                     "hostMobileNo" to et_host_mobile.text.toString(),
-                    "purpose" to et_purpose.text.toString(),
+                    "purpose" to purpose,
                     "gender" to gender,
                     Constants.TIMESTAMP to FieldValue.serverTimestamp(),
                     "outTime" to "NA"
