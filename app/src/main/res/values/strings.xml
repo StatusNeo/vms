@@ -68,6 +68,7 @@
     <string name="msg_valid_creds">Please enter valid credentials</string>
     <string name="error_photo_upload">Please upload your photo</string>
     <string name="error_photo_upload_host">Please upload host photo</string>
+    <string name="error_select_purpose">Please select purpose of visit</string>
     <string name="msg_blacklisted">This number is Blacklisted</string>
     <string name="text_prev_visit">Previous Visit(s)</string>
     <string name="text_plan_visit">Planned Visit(s)</string>
