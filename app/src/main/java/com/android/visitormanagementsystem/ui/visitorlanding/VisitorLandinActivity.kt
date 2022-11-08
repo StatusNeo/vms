@@ -18,11 +18,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.VisitorLandingBinding
 import com.android.visitormanagementsystem.ui.adminpanel.AdminPanelActivity
-import com.android.visitormanagementsystem.ui.adminreports.AdminReportsActivity
 import com.android.visitormanagementsystem.ui.host.hostlogin.HostLoginViewModel
 import com.android.visitormanagementsystem.ui.host.hostreports.HostReportsActivity
 import com.android.visitormanagementsystem.ui.interfaces.OnVerifyVisitorInterface
-import com.android.visitormanagementsystem.ui.registervisitor.RegisterVisitorActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListUiModel
 import com.android.visitormanagementsystem.ui.visitorphoto.VisitiorPhotoActivity
@@ -117,7 +115,7 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
 
                         // Callback function, fired on regular interval
                         override fun onTick(millisUntilFinished: Long) {
-                            tvOtpTimer.text = "Resend OTP after: " + millisUntilFinished / 1000
+                            tvOtpTimer.text = "Resend OTP in: " + millisUntilFinished / 1000
                         }
 
                         // Callback function, fired
@@ -276,13 +274,15 @@ class VisitorLandingActivity : AppCompatActivity(), OnVerifyVisitorInterface {
                 "Admin" -> {
                     prefs.LoggedInFrom = Constants.VALUE_ADMIN_LOGIN
                     startActivity(Intent(this@VisitorLandingActivity, AdminPanelActivity::class.java))
+                    this@VisitorLandingActivity.finish()
                 }
                 "Security" -> {
                     prefs.LoggedInFrom = Constants.VALUE_SECURITY_LOGIN
                     startActivity(Intent(this@VisitorLandingActivity, VisitorListActivity::class.java))
+                    this@VisitorLandingActivity.finish()
                 }
             }
-            this@VisitorLandingActivity.finish()
+
         } else {
             val intent = Intent(this@VisitorLandingActivity, VisitiorPhotoActivity::class.java)
             intent.putExtra("mobile", useMobileNo)

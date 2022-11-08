@@ -27,7 +27,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/visitorList_Toolbar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,6 @@
                 android:id="@+id/tvToolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_5sdp"
                 android:ellipsize="end"
                 android:text="@string/string_vms"
                 android:textSize="@dimen/_12ssp"
@@ -46,21 +45,20 @@
                 android:drawableLeft="@drawable/logo"
                 android:fontFamily="@font/montserrat_regular"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/ivLogout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
                 android:src="@drawable/logout"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvToolbarTitle" />
-
-
+                android:layout_marginEnd="@dimen/_15sdp"
+                app:layout_constraintRight_toRightOf="parent"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -74,7 +72,6 @@
             android:textColor="@color/black"
             android:textSize="@dimen/_18ssp"
             android:fontFamily="@font/montserrat_semibold"
-            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar" />

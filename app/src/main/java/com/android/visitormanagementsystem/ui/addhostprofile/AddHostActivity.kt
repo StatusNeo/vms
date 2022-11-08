@@ -11,19 +11,15 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.android.visitormanagementsystem.AddHostBinding
 import com.android.visitormanagementsystem.BuildConfig
 import com.android.visitormanagementsystem.R
@@ -31,8 +27,11 @@ import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.toast
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.material.imageview.ShapeableImageView
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -40,19 +39,24 @@ import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class AddHostActivity : AppCompatActivity() {
     var addHostViewState = ProgressBarViewState()
-    var role: String = "Employee"
+    var role: String = ""
     // lateinit var imageUri:Uri
     private var imageUri: Uri? = null
     //var storageRef = storage.reference
     var imageUrl: String = ""
+    lateinit var binding : AddHostBinding
     var isPhotoUploaded: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(AddHostBinding.inflate(layoutInflater).apply {
             viewState = addHostViewState
+            binding = this
             //  etUserName.requestFocus()
+            binding.btnSubmit.isEnabled = false
+            binding.btnSubmit.alpha = 0.5f
             btnSubmit.setOnClickListener {
 
                if (!isPhotoUploaded){
@@ -60,35 +64,42 @@ class AddHostActivity : AppCompatActivity() {
                }else
                 if(etHostName.text.isNullOrBlank()) {
                     etHostName.requestFocus()
-                    etHostName.error = "Please enter Host Full name"
-                } else if(etHostMobile.text.isNullOrBlank()) {
+                    etHostName.error = "Please enter Full name"
+                }
+                else if(etHostMobile.text.isNullOrBlank()) {
                     etHostMobile.requestFocus()
-                    etHostMobile.error = "Please enter Host mobile no."
+                    etHostMobile.error = "Please enter mobile no."
                 } else if(etHostMobile.text.toString()
-                        .isNotEmpty() && etHostMobile.text?.length != 10
-                ) {
+                        .isNotEmpty() && etHostMobile.text?.length != 10) {
                     etHostMobile.requestFocus()
                     etHostMobile.error = "Mobile number should be 10 digit's"
-                } else if(!etHostMobile.text.toString()
-                        .matches(Constants.MOBILE_NUMBER_REGEX.toRegex())
-                ) {
+                } else if(!etHostMobile.text.toString().matches(Constants.MOBILE_NUMBER_REGEX.toRegex())) {
                     etHostMobile.requestFocus()
                     etHostMobile.error = "Invalid Mobile Number"
-                } else if(etEmailId.text.toString().isNotEmpty() && !etEmailId.text.toString()
-                        .matches(Constants.EMAIL_REGEX.toRegex())
-                ) {
-                    etEmailId.error = "Please enter valid Email"
-                } else if(radioGroup.checkedRadioButtonId == -1) {
-                    toast(R.string.text_role)
-                } else {
-                    addNewHost(
-                        etHostName.text.toString(),
-                        etHostMobile.text.toString(),
-                        etEmailId.text.toString() ?: "",
-                        etHostDesignation.text.toString() ?: "",
-                        role
-                    )
                 }
+                else if(etEmailId.text.toString().isNullOrBlank() ){
+                    etEmailId.requestFocus()
+                    etEmailId.error = "Please enter Email Id"
+                    }else if(etEmailId.text.toString().isNotEmpty() &&
+                        !etEmailId.text.toString().matches(Constants.EMAIL_REGEX.toRegex())) {
+                        etEmailId.requestFocus()
+                        etEmailId.error = "Please enter valid Email Id"
+                    }
+                else if(etHostDesignation.text.toString().isNullOrBlank() ){
+                         etHostDesignation.requestFocus()
+                         etHostDesignation.error = "Please enter Designation"
+                    } else if(radioGroup.checkedRadioButtonId == -1) {
+                        toast(R.string.text_role)
+                    }
+                else {
+                        addNewHost(
+                            etHostName.text.toString(),
+                            etHostMobile.text.toString(),
+                            etEmailId.text.toString() ?: "",
+                            etHostDesignation.text.toString() ?: "",
+                            role
+                        )
+                    }
             }
             layoutPhoto.setOnClickListener {
                 if (!addHostViewState.progressbarEvent ) {
@@ -115,7 +126,6 @@ class AddHostActivity : AppCompatActivity() {
                 }
             }
 
-
             radioGroup.setOnCheckedChangeListener(object : RadioGroup.OnCheckedChangeListener {
                 override fun onCheckedChanged(p0: RadioGroup?, checkedId: Int) {
 
@@ -130,10 +140,28 @@ class AddHostActivity : AppCompatActivity() {
                             role = "Employee"
                         }
                     }
+                    updateSignInButtonState()
                 }
             })
         }.root)
     }
+
+    override fun onResume() {
+        super.onResume()
+        val tw: TextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun afterTextChanged(editable: Editable) {
+                updateSignInButtonState()
+            }
+        }
+        binding.etHostName.addTextChangedListener(tw)
+        binding.etHostMobile.addTextChangedListener(tw)
+        binding.etEmailId.addTextChangedListener(tw)
+        binding.etHostDesignation.addTextChangedListener(tw)
+
+    }
+
     private fun saveTheImageLegacyStyle(inContext: Context, inImage: Bitmap): Uri? {
         var imagesFolder: File = File(inContext.cacheDir, "images")
         var uri: Uri? = null
@@ -150,9 +178,8 @@ class AddHostActivity : AppCompatActivity() {
         } catch(e: FileNotFoundException) {
         }
         return uri
-
-
     }
+
     private fun saveImageInQ(bitmap: Bitmap): Uri? {
         val filename = "IMG_${System.currentTimeMillis()}.jpg"
         var fos: OutputStream? = null
@@ -180,6 +207,7 @@ class AddHostActivity : AppCompatActivity() {
 
         return imageUri
     }
+
    private var openCVResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             addHostViewState.progressbarEvent = true
@@ -187,39 +215,36 @@ class AddHostActivity : AppCompatActivity() {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
                     imageUri = saveImageInQ(bmp)
-                    var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhotoVisitor)
+                    var ivPhoto = findViewById<CircleImageView>(R.id.ivPhotoVisitor)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
-
-
                 }else{
                     addHostViewState.progressbarEvent = false
-
                 }
             } catch(e: Exception) {
                 addHostViewState.progressbarEvent = false
             }
         }
-    var openLegacyResultLauncher =
+
+   var openLegacyResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             addHostViewState.progressbarEvent = true
-
             try {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var extras: Bundle? = result.data?.extras
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
                     imageUri = saveTheImageLegacyStyle(this, bmp)
-                    var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhotoVisitor)
+                    var ivPhoto = findViewById<CircleImageView>(R.id.ivPhotoVisitor)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
                 }else{
                     addHostViewState.progressbarEvent = false
-
                 }
             } catch(e: Exception) {
                 addHostViewState.progressbarEvent = false
             }
         }
+
     private fun uploadImage() {
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
         val now = Date()
@@ -230,6 +255,7 @@ class AddHostActivity : AppCompatActivity() {
                 storageReference.downloadUrl.addOnSuccessListener(OnSuccessListener<Uri> { uri ->
                     imageUrl = uri.toString()
                     isPhotoUploaded = true
+                    updateSignInButtonState()
                     addHostViewState.progressbarEvent = false
                     var tvPhoto = findViewById<TextView>(R.id.tv_photo)
                     tvPhoto.text= "Change Photo";
@@ -295,4 +321,19 @@ class AddHostActivity : AppCompatActivity() {
             toast(R.string.msg_something_went)
         }
     }
+
+   private fun updateSignInButtonState() {
+        binding.btnSubmit.setEnabled(
+            binding.etHostName.text.toString().isNotEmpty() && binding.etHostMobile.text.toString().isNotEmpty()
+                    && binding.etEmailId.text.toString().isNotEmpty()
+                    && binding.etHostDesignation.text.toString().isNotEmpty()
+                    && binding.etEmailId.text.toString().isNotEmpty()
+                    && isPhotoUploaded
+                    && binding.radioGroup.checkedRadioButtonId != -1
+        )
+
+        if(binding.btnSubmit.isEnabled){
+            binding.btnSubmit.alpha = 1.0f
+        }
+   }
 }

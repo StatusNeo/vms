@@ -3,7 +3,6 @@ package com.android.visitormanagementsystem.ui.host.hostreports
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -16,16 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.databinding.ActivityHostReportsBinding
 import com.android.visitormanagementsystem.ui.adapters.HostReportAdapter
-import com.android.visitormanagementsystem.ui.adminreports.AdminReportsUiModel
 import com.android.visitormanagementsystem.ui.interfaces.OnHostReportClickInterface
 import com.android.visitormanagementsystem.ui.interfaces.OnReportDownloadInterface
-import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.showLogoutDialog
 import com.android.visitormanagementsystem.utils.toast
-import com.google.android.material.imageview.ShapeableImageView
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -58,13 +55,8 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
             setDatePickerDialog(this)
             searchByName()
             ivLogout.setOnClickListener{
-               /* val intent = Intent(this@HostReportsActivity, VisitorLandingActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                this@HostReportsActivity.finish()*/
                 showLogoutDialog(this@HostReportsActivity)
             }
-
         }.root)
     }
 
@@ -74,7 +66,7 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.report_dialog)
 
-        val imageView = dialog.findViewById(R.id.checkout_image) as ShapeableImageView
+        val imageView = dialog.findViewById(R.id.checkout_image) as CircleImageView
 
         Picasso.get().load(model.visitorImage).placeholder(R.drawable.profile_icon).into(imageView)
 
@@ -96,14 +88,19 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
         val checkoutBatchNoTextView = dialog.findViewById(R.id.checkoutBatchNoTextView) as TextView
         checkoutBatchNoTextView.text = model.batchNo
 
+        val checkoutOutTimeTv = dialog.findViewById(R.id.checkoutOutTimeTv) as TextView
+        val checkoutOutTimeTextView = dialog.findViewById(R.id.checkoutOutTextView) as TextView
+        checkoutOutTimeTextView.text = model.outTime
+        if(model.outTime != "NA"){
+            checkoutOutTimeTv.visibility = View.VISIBLE
+            checkoutOutTimeTextView.visibility = View.VISIBLE
+        }else{
+            checkoutOutTimeTv.visibility = View.GONE
+            checkoutOutTimeTextView.visibility = View.GONE
+        }
+
         dialog.setCancelable(true)
         dialog.show()
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this@HostReportsActivity, VisitorLandingActivity::class.java)
-        startActivity(intent)
-        this@HostReportsActivity.finish()
     }
 
     private fun setDatePickerDialog(reportsBinding: ActivityHostReportsBinding) {
@@ -119,6 +116,7 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
                 if(selectedDate.isEmpty()) {
                     toast(R.string.msg_select_date)
                 }else {
+                    binding.ivCircle.visibility = View.VISIBLE
                     binding.btnProceed.isEnabled = false
                     hostReportsViewState.progressbarEvent = true
                     hostReportViewModel.initHostReport(
@@ -148,9 +146,10 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
                 if((event?.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     var enteredName = binding.etSearchName.text.toString()
                     if(enteredName.isNotBlank()) {
+
+                        binding.ivCircle.visibility = View.GONE
                             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                             imm?.hideSoftInputFromWindow(p0?.windowToken, 0)
-
                         hostReportsViewState.progressbarEvent = true
                         hostReportViewModel.searchByName(enteredName, hostMobileNo)
                     }
@@ -160,7 +159,6 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
             }
         })
     }
-
 
     override fun openReportScreen(items: List<HostReportUiModel>) {
         hostReportsViewState.progressbarEvent = false
@@ -176,4 +174,5 @@ class HostReportsActivity : AppCompatActivity(), OnReportDownloadInterface {
         }
             ada.setUserList(items)
     }
+
 }

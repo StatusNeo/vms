@@ -61,7 +61,7 @@ class VisitorListViewModel(application: Application) : AndroidViewModel(applicat
                             visitorImage,
                             document.data["visitDate"].toString(),
                             document.data["inTime"].toString(),
-                            document.data["batchNo"].toString(),
+                            document.data["BadgeNumber"].toString(),
                             document.data["hostName"].toString(),
                             document.data["hostMobileNo"].toString(),
                             document.data["purpose"].toString(),

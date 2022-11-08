@@ -12,4 +12,5 @@ data class HostReportUiModel(
     var hostName: String? = null,
     var batchNo: String? = null,
     var visitorImage: String? = null,
+    var outTime: String? = null
 )

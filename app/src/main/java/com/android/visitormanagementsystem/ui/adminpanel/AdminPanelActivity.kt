@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.visitormanagementsystem.databinding.ActivityAdminPanelBinding
 import com.android.visitormanagementsystem.ui.addhostprofile.AddHostActivity
 import com.android.visitormanagementsystem.ui.adminreports.AdminReportsActivity
+import com.android.visitormanagementsystem.ui.registervisitor.RegisterVisitorActivity
 import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.showLogoutDialog
 
@@ -25,13 +26,10 @@ class AdminPanelActivity:AppCompatActivity() {
             ivLogout.setOnClickListener{
                 showLogoutDialog(this@AdminPanelActivity)
             }
-
-            homeBtn.setOnClickListener{
-                val intent = Intent(this@AdminPanelActivity, VisitorLandingActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                this@AdminPanelActivity.finish()
-            }
         }.root)
+    }
+
+    override fun onBackPressed() {
+        this@AdminPanelActivity.finish()
     }
 }

@@ -8,13 +8,13 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso.Picasso
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.binding.SnackbarEvent
 import com.android.visitormanagementsystem.binding.consume
 import com.android.visitormanagementsystem.binding.resolve
+import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 @BindingAdapter("viewVisibility")
 fun View.setViewVisibility(viewVisibility: Boolean) {
@@ -26,7 +26,7 @@ fun View.setViewVisibility(viewVisibility: Boolean) {
 }
 
 @BindingAdapter("loadImage")
-fun ShapeableImageView.loadImage(url: String) {
+fun CircleImageView.loadImage(url: String) {
     Picasso.get().load(url).placeholder(R.drawable.profile_icon).into(this)
 }
 

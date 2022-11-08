@@ -10,7 +10,6 @@ import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.ui.adminpanel.AdminPanelActivity
 import com.android.visitormanagementsystem.ui.host.hostreports.HostReportsActivity
 import com.android.visitormanagementsystem.ui.interfaces.SplashNavigator
-import com.android.visitormanagementsystem.ui.registervisitor.RegisterVisitorActivity
 import com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity
 import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.Constants
@@ -43,7 +42,7 @@ class SplashActivity : AppCompatActivity(), SplashNavigator {
     override fun openLoginActivity() {
         val intent = Intent(this@SplashActivity, VisitorLandingActivity::class.java)
         startActivity(intent)
-
+        this@SplashActivity.finish()
     }
 
     override fun openHostActivity() {
@@ -55,11 +54,11 @@ class SplashActivity : AppCompatActivity(), SplashNavigator {
 
     override fun openAdminActivity() {
         startActivity(Intent(this@SplashActivity, AdminPanelActivity::class.java))
+        this@SplashActivity.finish()
     }
 
     override fun openSecurityActivity() {
         startActivity(Intent(this@SplashActivity, VisitorListActivity::class.java))
+        this@SplashActivity.finish()
     }
-
-
 }

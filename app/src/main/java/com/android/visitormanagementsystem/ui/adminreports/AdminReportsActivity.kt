@@ -27,8 +27,8 @@ import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.showLogoutDialog
 import com.android.visitormanagementsystem.utils.toast
-import com.google.android.material.imageview.ShapeableImageView
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -122,6 +122,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
                     if((event?.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                         var enteredName = binding.etSearchName.text.toString()
                         if(enteredName.isNotBlank()) {
+                            binding.ivCircle.visibility = View.GONE
                             adminViewModel.searchByName(enteredName)
                         }
                         return true
@@ -137,7 +138,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.report_dialog)
 
-        val imageView = dialog.findViewById(R.id.checkout_image) as ShapeableImageView
+        val imageView = dialog.findViewById(R.id.checkout_image) as CircleImageView
 
         Picasso.get().load(model.visitorImage).placeholder(R.drawable.profile_icon).into(imageView)
 
@@ -158,6 +159,17 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
 
         val checkoutBatchNoTextView = dialog.findViewById(R.id.checkoutBatchNoTextView) as TextView
         checkoutBatchNoTextView.text = model.batchNo
+
+        val checkoutOutTimeTv = dialog.findViewById(R.id.checkoutOutTimeTv) as TextView
+        val checkoutOutTimeTextView = dialog.findViewById(R.id.checkoutOutTextView) as TextView
+        checkoutOutTimeTextView.text = model.outTime
+        if(model.outTime != "NA"){
+            checkoutOutTimeTv.visibility = View.VISIBLE
+            checkoutOutTimeTextView.visibility = View.VISIBLE
+        }else{
+            checkoutOutTimeTv.visibility = View.GONE
+            checkoutOutTimeTextView.visibility = View.GONE
+        }
 
         dialog.setCancelable(true)
         dialog.show()
@@ -263,6 +275,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
                 if(selectedDate.isEmpty()) {
                     toast(R.string.msg_select_date)
                 }else {
+                    activityReportsBinding.ivCircle.visibility = View.VISIBLE
                     adminReportsViewState.progressbarEvent = true
                     binding.ivCalender.isEnabled = false
                     adminViewModel.initVisitorList(selectedDate)

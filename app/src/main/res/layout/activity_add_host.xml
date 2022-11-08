@@ -23,6 +23,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingBottom="@dimen/_20sdp"
                 android:background="@color/otp_box_bg">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbarLayout"
@@ -37,7 +38,6 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginStart="28dp"
-                android:padding="@dimen/_4sdp"
                 android:src="@drawable/logo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -73,9 +73,8 @@
             android:textColor="@color/black"
             android:textSize="@dimen/_18ssp"
             android:fontFamily="@font/montserrat_semibold"
-            android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/toolbarLayout"/>
-<!--        <com.google.android.material.imageview.ShapeableImageView-->
+<!--        <de.hdodenhof.circleimageview.CircleImageView-->
 <!--            android:id="@+id/ivPhoto"-->
 <!--            android:layout_width="@dimen/_140sdp"-->
 <!--            android:layout_height="@dimen/_115sdp"-->
@@ -94,10 +93,9 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintTop_toBottomOf="@+id/tv_host_details"
+        android:layout_height="180dp">
 
-       android:layout_height="200dp">
-
-        <com.google.android.material.imageview.ShapeableImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivPhotoVisitor"
             android:layout_width="@dimen/_120sdp"
             android:layout_height="@dimen/_120sdp"
@@ -106,8 +104,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-            app:strokeColor="@color/black"
-            app:strokeWidth="1dp" />
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/black"
+          />
 
         <TextView
             android:id="@+id/tv_photo"
@@ -168,7 +167,7 @@
                 android:layout_height="wrap_content"
                 android:maxLength="10"
                 android:inputType="number"
-                android:hint="@string/enter_host_mobileNo"
+                android:hint="@string/mobile_number_host"
                 android:paddingBottom="@dimen/et_padding"
                 android:fontFamily="@font/montserrat_regular"
                 app:backgroundTint="@null"
@@ -216,7 +215,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/et_padding"
-                android:hint="@string/enter_host_email"
+                android:hint="@string/email_id_host"
                 android:inputType="textEmailAddress"
                 android:fontFamily="@font/montserrat_regular"
                 app:backgroundTint="@null"
@@ -242,7 +241,7 @@
                 android:id="@+id/et_host_designation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_host_designation"
+                android:hint="@string/designation_host"
                 android:paddingBottom="@dimen/et_padding"
                 android:fontFamily="@font/montserrat_regular"
                 app:backgroundTint="@null"
@@ -309,13 +308,14 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
             android:layout_margin="@dimen/_25sdp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:background="@drawable/rounded_corner"
             android:fontFamily="@font/montserrat_regular"
             android:text="@string/btn_text_submit"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="@dimen/font_size_sixteen"
+
             app:backgroundTint="@null"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup"
