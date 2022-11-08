@@ -82,6 +82,7 @@ class AdminReportsActivity : AppCompatActivity(), OnAdminReportInterface {
             btnAddVisitor.setOnClickListener{
                 if(calledFrom.equals("Admin")){
                     val intent = Intent(this@AdminReportsActivity, AddHostActivity::class.java)
+                    intent.putExtra("Called_From","New_User")
                     startActivity(intent)
                 }else {
                     val intent =

@@ -3,13 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewStateProgress"
+            type="com.android.visitormanagementsystem.utils.ProgressBarViewState" />
+
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/otp_box_bg"
-        android:clipToPadding="false"
-        android:clipChildren="false"
         tools:context=".ui.visitorList.VisitorListActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,35 +52,18 @@
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- <Button
-             android:id="@+id/btn_view_reports"
-             android:layout_width="@dimen/_200sdp"
-             android:layout_height="@dimen/_50sdp"
-             android:layout_margin="@dimen/margin_twenty_five"
-             app:backgroundTint="@null"
-             android:background="@drawable/rounded_corner"
-             android:text="@string/text_visitor_reports"
-             android:textAllCaps="false"
-             android:textSize="@dimen/font_size_sixteen"
-             app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar"
-             app:layout_constraintLeft_toLeftOf="parent"
-             app:layout_constraintRight_toRightOf="parent" />
- -->
         <TextView
             android:id="@+id/tv1_Landing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:ellipsize="end"
             android:text="Host's List"
-            android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="@dimen/_18ssp"
             android:fontFamily="@font/montserrat_semibold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/visitorList_Toolbar" />
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/hostRecyclerView"
@@ -85,13 +72,9 @@
             android:layout_margin="@dimen/_10sdp"
             android:divider="@null"
             android:dividerHeight="@dimen/zero_dp"
-            android:fadingEdge="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/cardview_bottom_menu"
-            android:fadingEdgeLength="@dimen/_4sdp"
-            android:requiresFadingEdge="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv1_Landing" />
+            app:layout_constraintTop_toBottomOf="@+id/tv1_Landing"
+            app:layout_constraintBottom_toTopOf="@+id/cardview_bottom_menu" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardview_bottom_menu"
@@ -102,7 +85,6 @@
             app:cardPreventCornerOverlap="true"
             android:visibility="visible"
             android:divider="@android:color/darker_gray"
-            android:layout_marginTop="@dimen/_5sdp"
             android:elevation="@dimen/_5sdp"
             app:cardUseCompatPadding="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -157,20 +139,6 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:indeterminateTint="@color/purple_700"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/coming_soon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Coming soon"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_18ssp"
-            android:fontFamily="@font/montserrat_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

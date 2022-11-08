@@ -1,20 +1,14 @@
 package com.android.visitormanagementsystem.ui.adminreports
 
 import android.app.Application
-import android.view.KeyEvent
-import android.view.View
 import androidx.lifecycle.AndroidViewModel
-import com.android.visitormanagementsystem.ui.gethost.HostProfileUiModel
 import com.android.visitormanagementsystem.ui.interfaces.OnAdminReportInterface
 import com.android.visitormanagementsystem.utils.Constants
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import timber.log.Timber
 
 class AdminReportsViewModel(application: Application) : AndroidViewModel(application) {
-
-    var viewState = AdminReportsViewState()
     var initVisitorList: ArrayList<AdminReportsUiModel> = ArrayList()
     private lateinit var onReportInterface: OnAdminReportInterface
 

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">VMS</string>
-  <!--  <string name="app_name">VisitorManagementSystem</string>-->
+    <!--  <string name="app_name">VisitorManagementSystem</string>-->
     <string name="title_activity_splash">Visitor Management</string>
     <string name="title_employee_login">Security Login</string>
     <string name="title_visitor_entry">Visitor Management</string>
@@ -115,6 +115,8 @@
     <string name="please_enter_purpose">Please enter purpose of visit</string>
     <string name="toast_plan_visit">Visit Planned successfully</string>
     <string name="toast_host_saved">Host Profile saved successfully</string>
+    <string name="toast_host_updated">Host Profile updated successfully</string>
+
     <string name="msg_select_from_time">Please select From Time</string>
     <string name="msg_select_to_time">To Time</string>
     <string name="otp">OTP:</string>
