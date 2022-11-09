@@ -8,7 +8,10 @@
     <uses-permission android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera" android:required="true"></uses-feature>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -17,25 +20,25 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        tools:ignore="LockedOrientationActivity"
         android:theme="@style/AppTheme"
+        tools:ignore="LockedOrientationActivity"
         tools:targetApi="31">
-        <provider
-            android:authorities="${applicationId}.provider"
-            android:name="androidx.core.content.FileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true"
-            >
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths">
-            </meta-data>
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"></meta-data>
         </provider>
+
         <activity
             android:name="com.android.visitormanagementsystem.ui.addhostprofile.AddHostActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.android.visitormanagementsystem.ui.plannedvisit.PlannedVisitActivity"
             android:exported="false"
@@ -43,11 +46,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.android.visitormanagementsystem.ui.host.hostreports.HostReportsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.android.visitormanagementsystem.ui.visitorphoto.VisitiorPhotoActivity"
             android:exported="false"
@@ -101,14 +104,14 @@
         <activity
             android:name="com.android.visitormanagementsystem.ui.visitorList.VisitorListActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name="com.android.visitormanagementsystem.ui.splash.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -116,7 +119,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.android.visitormanagementsystem.ui.blacklistvisitor.BlackListVisitorActivity"
             android:exported="false"
@@ -149,11 +151,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.android.visitormanagementsystem.ui.adminreports.AdminReportsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.android.visitormanagementsystem.ui.loginoption.LoginOptionActivity"
             android:exported="false"

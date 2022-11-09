@@ -23,14 +23,20 @@ import androidx.core.content.FileProvider
 import com.android.visitormanagementsystem.AddHostBinding
 import com.android.visitormanagementsystem.BuildConfig
 import com.android.visitormanagementsystem.R
+import com.android.visitormanagementsystem.ui.adminpanel.GetAllHostUiModel
 import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.android.visitormanagementsystem.utils.toast
+import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.io.FileNotFoundException
@@ -48,15 +54,52 @@ class AddHostActivity : AppCompatActivity() {
     //var storageRef = storage.reference
     var imageUrl: String = ""
     lateinit var binding : AddHostBinding
+    var calledFrom : String = ""
     var isPhotoUploaded: Boolean = false
+    var isNewUser = true
+    var docId = "0"
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        calledFrom = intent.getStringExtra("Called_From").toString()
         setContentView(AddHostBinding.inflate(layoutInflater).apply {
             viewState = addHostViewState
             binding = this
-            //  etUserName.requestFocus()
-            binding.btnSubmit.isEnabled = false
-            binding.btnSubmit.alpha = 0.5f
+
+            if(calledFrom.equals("Update_User")){
+                isNewUser = false
+                binding.btnSubmit.isEnabled = true
+                binding.btnSubmit.alpha = 1.0f
+
+                val uiModel = intent.extras?.get("HostUiModel") as GetAllHostUiModel
+                docId = uiModel.id.toString()
+                etHostName.setText(uiModel.hostName.toString())
+                etHostMobile.setText(uiModel.hostMobileNo.toString())
+                etEmailId.setText(uiModel.hostEmail.toString())
+                etHostDesignation.setText(uiModel.designation.toString())
+                val ivPhoto = findViewById<CircleImageView>(R.id.ivPhotoVisitor)
+                val hostImage = uiModel.hostImage.toString()
+                println("Image url $hostImage")
+
+                if(hostImage.isNotBlank() && !hostImage.equals("null")) {
+                    imageUrl = hostImage
+                    isPhotoUploaded = true
+                    tvPhoto.text= "Change Photo"
+                    Picasso.get().load(imageUrl).placeholder(R.drawable.profile_icon).into(binding.ivPhotoVisitor)
+                }
+
+                role = uiModel.role.toString()
+                if(role.equals("Employee")) {
+                    binding.radioHost.isChecked = true
+                } else {
+                    binding.radioSecurity.isChecked = true
+                }
+            }else{
+                binding.btnSubmit.isEnabled = false
+                binding.btnSubmit.alpha = 0.5f
+            }
+
             btnSubmit.setOnClickListener {
 
                if (!isPhotoUploaded){
@@ -92,6 +135,7 @@ class AddHostActivity : AppCompatActivity() {
                         toast(R.string.text_role)
                     }
                 else {
+                    if(isNewUser) {
                         addNewHost(
                             etHostName.text.toString(),
                             etHostMobile.text.toString(),
@@ -99,8 +143,16 @@ class AddHostActivity : AppCompatActivity() {
                             etHostDesignation.text.toString() ?: "",
                             role
                         )
+                    }else{
+                        updateHost(etHostName.text.toString(),
+                            etHostMobile.text.toString(),
+                            etEmailId.text.toString() ?: "",
+                            etHostDesignation.text.toString() ?: "",
+                            role)
                     }
+                }
             }
+
             layoutPhoto.setOnClickListener {
                 if (!addHostViewState.progressbarEvent ) {
                     if (ActivityCompat.checkSelfPermission(
@@ -143,6 +195,7 @@ class AddHostActivity : AppCompatActivity() {
                     updateSignInButtonState()
                 }
             })
+
         }.root)
     }
 
@@ -306,6 +359,25 @@ class AddHostActivity : AppCompatActivity() {
             toast(R.string.msg_something_went)
         }
     }
+
+
+   private fun updateHost(
+        fullName: String, mobile: String, email: String, designation: String, role: String) {
+        addHostViewState.progressbarEvent = true
+        val host = mapOf(
+            Constants.HOST_NAME to fullName,
+            Constants.HOST_MOBILE to mobile,
+            Constants.EMAIL to email,
+            Constants.DESIGNATION to designation,
+            Constants.TIMESTAMP to FieldValue.serverTimestamp(),
+            Constants.EMP_ROLE to role,
+            Constants.HOST_PHOTO to imageUrl)
+        val db = Firebase.firestore
+        db.collection(Constants.EMPLOYEE_LIST).document(docId).set(host, SetOptions.merge())
+        toast(R.string.toast_host_updated)
+        addHostViewState.progressbarEvent = false
+        this@AddHostActivity.finish()
+   }
 
     private fun saveNewHost(
         host: Map<String, Any>,

@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_6sdp"
                 android:src="@drawable/black_circle"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
