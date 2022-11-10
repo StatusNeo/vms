@@ -59,6 +59,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     var imageUrl: String = ""
     lateinit var et_host_mobile : EditText
+    lateinit var et_host_name : EditText
     lateinit var registerVisitorBinding : RegisterVisitorBinding
     lateinit var radioGroup : RadioGroup
     private val rootDatabase = FirebaseDatabase.getInstance().getReference("images")
@@ -92,7 +93,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
         var etBatchNo = findViewById<EditText>(R.id.et_batch_no)
         var et_mobile_number = findViewById<EditText>(R.id.et_mobile_number)
         var et_visitor_name = findViewById<EditText>(R.id.et_visitor_name)
-        var et_host_name = findViewById<EditText>(R.id.et_host_name)
+        et_host_name = findViewById<EditText>(R.id.et_host_name)
          et_host_mobile = findViewById<EditText>(R.id.et_host_mobile)
         var et_email = findViewById<EditText>(R.id.etEmailId)
        var et_purpose = findViewById<AutoCompleteTextView>(R.id.et_purpose)
@@ -511,10 +512,6 @@ class RegisterVisitorActivity : AppCompatActivity() {
             result.query
             for(document in result) {
                 isMobileExisting = !result.isEmpty
-              /*  val resultMobile = document.data[Constants.VISITOR_MOBILE].toString()
-                if(!isMobileExisting) {
-                    isMobileExisting = resultMobile == mobile
-                }*/
             }
             if(!isMobileExisting) {
                 val visitor = mapOf(
@@ -561,6 +558,7 @@ class RegisterVisitorActivity : AppCompatActivity() {
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             Log.d("selected Item", initHostNameList.get(position))
             hostMobileNo = initHostList.get(position).hostMobileNo.toString()
+            et_host_name.setText( initHostList.get(position).hostName.toString())
             et_host_mobile.setText( hostMobileNo)
             dialog.dismiss()
         }
@@ -571,5 +569,4 @@ class RegisterVisitorActivity : AppCompatActivity() {
         startActivity(intent)
         this@RegisterVisitorActivity.finish()
     }
-
 }
