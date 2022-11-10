@@ -25,9 +25,7 @@
     <string name="mobile_length_prompt">Mobile number should be 10 digit\'s</string>
     <string name="mobile_invalid_prompt">Invalid mobile number.</string>
     <string name="btn_text_check">Check In</string>
-    <string name="text_upload_photo">
-         <u>Upload Photo</u>
-    </string>
+    <string name="text_upload_photo"><u>Upload Photo</u></string>
     <string name="btn_text_send_otp">Send OTP</string>
     <string name="btn_text_verify_otp">Verify OTP</string>
     <string name="msg_not_verified">Mobile Number is Not Verified</string>

@@ -95,6 +95,9 @@ class AddHostActivity : AppCompatActivity() {
                 } else {
                     binding.radioSecurity.isChecked = true
                 }
+
+                updateSignInButtonState()
+
             }else{
                 binding.btnSubmit.isEnabled = false
                 binding.btnSubmit.alpha = 0.5f
@@ -395,6 +398,8 @@ class AddHostActivity : AppCompatActivity() {
     }
 
    private fun updateSignInButtonState() {
+       println("isPhotoUploaded url $isPhotoUploaded")
+
         binding.btnSubmit.setEnabled(
             binding.etHostName.text.toString().isNotEmpty() && binding.etHostMobile.text.toString().isNotEmpty()
                     && binding.etEmailId.text.toString().isNotEmpty()
@@ -406,6 +411,8 @@ class AddHostActivity : AppCompatActivity() {
 
         if(binding.btnSubmit.isEnabled){
             binding.btnSubmit.alpha = 1.0f
+        }else{
+            binding.btnSubmit.alpha = 0.5f
         }
    }
 }
