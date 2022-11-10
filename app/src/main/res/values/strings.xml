@@ -122,7 +122,7 @@
     <string name="msg_select_to_time">To Time</string>
     <string name="otp">OTP:</string>
     <string name="hint_email">Email</string>
-    <string name="hint_email_visitor">Visitor Email</string>
+    <string name="hint_email_visitor">Visitor Email*</string>
     <string name="text_gender">Please select Gender</string>
     <string name="text_role">Please select role</string>
     <string name="text_to_time_error">To Time shoulde be greater than From Time</string>

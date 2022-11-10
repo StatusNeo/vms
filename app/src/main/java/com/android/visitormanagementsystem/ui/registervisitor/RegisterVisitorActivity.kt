@@ -182,7 +182,12 @@ class RegisterVisitorActivity : AppCompatActivity() {
                 et_visitor_name.error = "Please enter visitor name"
             } else if(!isPhotoUploaded) {
                 showToast(R.string.error_photo_upload)
-            } else if(et_email.text.isNotEmpty() && !et_email.text.matches(Constants.EMAIL_REGEX.toRegex())) {
+            }else if(et_email.text.isBlank()){
+                et_email.requestFocus()
+                et_email.error = "Please enter valid Email";
+
+            }
+            else if(et_email.text.isNotEmpty() && !et_email.text.matches(Constants.EMAIL_REGEX.toRegex())) {
                 et_email.error = "Please enter valid Email";
             }
             else if(purpose.isNullOrBlank()) {
