@@ -16,6 +16,10 @@ import com.android.visitormanagementsystem.utils.Constants
 import com.android.visitormanagementsystem.utils.Prefs
 import com.android.visitormanagementsystem.utils.Prefs.LoggedInFrom
 import com.android.visitormanagementsystem.utils.Prefs.userMobileNo
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity(), SplashNavigator {
@@ -28,6 +32,20 @@ class SplashActivity : AppCompatActivity(), SplashNavigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
+        // Enable it for production mode
+//        FirebaseApp.initializeApp(/*context=*/this)
+//        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+//        firebaseAppCheck.installAppCheckProviderFactory(
+//            PlayIntegrityAppCheckProviderFactory.getInstance()
+//        )
+
+        //For debug mode
+        FirebaseApp.initializeApp(/*context=*/this)
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            DebugAppCheckProviderFactory.getInstance()
+        )
         listener = this
         initViewModel()
     }
