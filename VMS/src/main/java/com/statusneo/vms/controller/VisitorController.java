@@ -1,8 +1,11 @@
 package com.statusneo.vms.controller;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.statusneo.vms.model.VisitingInfo;
+import com.statusneo.vms.model.Visitor;
+import com.statusneo.vms.repository.VisitingInfoRepository;
+import com.statusneo.vms.repository.VisitorRepository;
+import com.statusneo.vms.service.NotificationService;
+import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.VisitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,18 +19,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.statusneo.vms.model.Visitor;
-import com.statusneo.vms.repository.VisitorRepository;
-import com.statusneo.vms.service.NotificationService;
-import com.statusneo.vms.service.OtpService;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/visitor")
+@RequestMapping("/api/visitors")
 public class VisitorController {
 
     private static final Logger log = LoggerFactory.getLogger(VisitorController.class);
     @Autowired
     private VisitorRepository visitorRepository;
+    @Autowired
+    private VisitingInfoRepository visitingInfoRepository;
 
     @Autowired
     private OtpService otpService;
@@ -39,19 +42,20 @@ public class VisitorController {
     private VisitService visitService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerVisitor(@RequestBody Visitor visitor) {
-        visitService.registerVisit(visitor);
+    public ResponseEntity<?> registerVisitor(@RequestBody VisitingInfo visitingInfo) {
+        visitService.registerVisit(visitingInfo);
         return ResponseEntity.ok("OTP sent to email");
     }
 
     @PostMapping("/verifyOtp")
     public ResponseEntity<?> verifyOtp(@RequestParam Long visitorId, @RequestParam String otp) {
         Visitor visitor = visitorRepository.findById(visitorId).orElseThrow(() -> new RuntimeException("Visitor not found"));
+        VisitingInfo visitingInfo = visitingInfoRepository.findById(visitorId).orElseThrow(() -> new RuntimeException(("No Visitor")));
 
-        if (otpService.verifyOtp(otp, visitor.getOtp())) {
-            visitor.setIsApproved(true);
+        if (otpService.verifyOtp(otp, visitingInfo.getOtp())) {
+            visitingInfo.setIsApproved(true);
             visitorRepository.save(visitor);
-            notificationService.sendMeetingNotification(visitor.getHost(), visitor.getName());
+            notificationService.sendMeetingNotification(visitingInfo.getHost(), visitor.getName());
             return ResponseEntity.ok("OTP verified and visitor approved");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP");
@@ -59,14 +63,50 @@ public class VisitorController {
 
     @GetMapping("/report")
     public ResponseEntity<?> getReport(@RequestParam String period) {
-        List<Visitor> visitors;
+        List<VisitingInfo> visitingInfo;
         if (period.equals("daily")) {
-            visitors = visitorRepository.findAllByVisitDateBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), LocalDateTime.now());
+            visitingInfo = visitingInfoRepository.findAllByVisitDateBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), LocalDateTime.now());
         } else if (period.equals("monthly")) {
-            visitors = visitorRepository.findAllByVisitDateBetween(LocalDateTime.now().minusMonths(1), LocalDateTime.now());
+            visitingInfo = visitingInfoRepository.findAllByVisitDateBetween(LocalDateTime.now().minusMonths(1), LocalDateTime.now());
         } else {
             return ResponseEntity.badRequest().body("Invalid period");
         }
-        return ResponseEntity.ok(visitors);
+        return ResponseEntity.ok(visitingInfo);
+    }
+
+    @RequestMapping("/error")
+    public String handleError() {
+        return "Custom error page!";
+    }
+
+
+    @GetMapping("/")
+    public String home() {
+        return "index";  // Looks for src/main/resources/templates/index.html
+    }
+
+//    @PostMapping
+//    public ResponseEntity<String> saveVisitor(@RequestParam String name, @RequestParam String phoneNumber,
+//                                              @RequestParam String email, @RequestParam String address) {
+//        Visitor visitor = new Visitor();
+//        visitor.setName(name);
+//        visitor.setPhoneNumber(phoneNumber);
+//        visitor.setEmail(email);
+//        visitor.setAddress(address);
+//
+//        visitService.save(visitor);
+//
+//        return ResponseEntity.ok("<p class='text-green-600'>Visitor registered successfully!</p>");
+//    }
+
+    @PostMapping("/saveVisitor")
+    public ResponseEntity<String> saveVisitor(@RequestBody Visitor visitor) {
+        visitService.saveVisitor(visitor);
+        return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully!</p>");
+    }
+
+    @GetMapping("/all")
+    public List<Visitor> getAllVisitors() {
+        return visitService.getAllVisitors();
     }
 }

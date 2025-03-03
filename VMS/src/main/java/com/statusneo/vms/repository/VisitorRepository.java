@@ -11,6 +11,6 @@ import com.statusneo.vms.model.Visitor;
 
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
-	List<Visitor> findAllByVisitDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+//	List<Visitor> findAllByVisitDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 	Optional<Visitor> findByPhoneNumber(String phoneNumber);
 }
