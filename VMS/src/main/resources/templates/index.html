@@ -91,6 +91,7 @@
           >
             <span class="relative">
               Register
+              <!-- Spinner -->
               <span
                 class="absolute inset-0 flex items-center justify-center hidden"
                 id="loading"
@@ -118,19 +119,6 @@
               </span>
             </span>
           </button>
-
-          <script>
-            const form = document.querySelector("form");
-            const loading = document.getElementById("loading");
-
-            form.addEventListener("submit", (e) => {
-              e.preventDefault();
-              loading.classList.remove("hidden");
-              setTimeout(() => {
-                form.submit();
-              }, 1000);
-            });
-          </script>
         </div>
       </form>
 
