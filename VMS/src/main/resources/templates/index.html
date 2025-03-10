@@ -156,19 +156,12 @@
       let alreadyDelayed = false;
 
       submitButton.addEventListener("click", (e) => {
-        // Prevent submission if the form is not valid.
         if (!registrationForm.checkValidity()) {
           return;
         }
-        if (!alreadyDelayed) {
-          e.preventDefault();
-          loading.classList.remove("hidden");
-          alreadyDelayed = true;
-          setTimeout(() => {
-            // Trigger a second click to allow HTMX to process the submission.
-            submitButton.click();
-          }, 1000);
-        }
+        e.preventDefault();
+        loading.classList.remove("hidden");
+        htmx.submit(registrationForm);
       });
 
       // Listen for HTMX response after registration.
@@ -177,15 +170,11 @@
         if (event.detail.target.id === "responseMessage") {
           loading.classList.add("hidden");
           alreadyDelayed = false;
-          // Check if the registration was successful.
           if (
             event.detail.xhr &&
-            event.detail.xhr.responseText &&
-            event.detail.xhr.responseText
-              .toLowerCase()
-              .includes("registration successful")
+            event.detail.xhr.status === 200 &&
+            event.detail.successful
           ) {
-            // Hide the registration form and reveal the OTP form.
             registrationForm.classList.add("hidden");
             document.getElementById("otpContainer").classList.remove("hidden");
           }
