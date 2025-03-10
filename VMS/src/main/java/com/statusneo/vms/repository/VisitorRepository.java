@@ -1,13 +1,10 @@
 package com.statusneo.vms.repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
+import com.statusneo.vms.model.Visitor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.statusneo.vms.model.Visitor;
+import java.util.Optional;
 
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {

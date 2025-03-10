@@ -30,7 +30,7 @@ public class VisitService {
     private VisitingInfoRepository visitingInfoRepository;
 
     public VisitingInfo registerVisit(VisitingInfo visitingInfo) {
-        visitingInfo.setOtp(otpService.generateOtp());
+        visitingInfo.setOtp(otpService.generatedOtp());
         visitingInfo.setVisitDate(LocalDateTime.now());
 
         // Save visitor details
@@ -45,6 +45,7 @@ public class VisitService {
     public Visitor saveVisitor(Visitor visitor) {
         Visitor savedVisitor = visitorRepository.save(visitor);
         emailService.sendVisitorEmail(savedVisitor);
+        otpService.sendOtp(savedVisitor.getEmail());
         return savedVisitor;
     }
 
