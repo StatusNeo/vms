@@ -159,9 +159,14 @@
         if (!registrationForm.checkValidity()) {
           return;
         }
-        e.preventDefault();
-        loading.classList.remove("hidden");
-        htmx.submit(registrationForm);
+        if (!alreadyDelayed) {
+          e.preventDefault();
+          loading.classList.remove("hidden");
+          alreadyDelayed = true;
+          setTimeout(() => {
+            submitButton.click();
+          }, 200);
+        }
       });
 
       // Listen for HTMX response after registration.
