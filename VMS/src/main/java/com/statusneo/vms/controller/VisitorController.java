@@ -47,19 +47,19 @@ public class VisitorController {
         return ResponseEntity.ok("OTP sent to email");
     }
 
-    @PostMapping("/verifyOtp")
-    public ResponseEntity<?> verifyOtp(@RequestParam Long visitorId, @RequestParam String otp) {
-        Visitor visitor = visitorRepository.findById(visitorId).orElseThrow(() -> new RuntimeException("Visitor not found"));
-        VisitingInfo visitingInfo = visitingInfoRepository.findById(visitorId).orElseThrow(() -> new RuntimeException(("No Visitor")));
-
-        if (otpService.verifyOtp(otp, visitingInfo.getOtp())) {
-            visitingInfo.setIsApproved(true);
-            visitorRepository.save(visitor);
-            notificationService.sendMeetingNotification(visitingInfo.getHost(), visitor.getName());
-            return ResponseEntity.ok("OTP verified and visitor approved");
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP");
-    }
+//    @PostMapping("/verifyOtp")
+//    public ResponseEntity<?> verifyOtp(@RequestParam Long visitorId, @RequestParam String otp) {
+//        Visitor visitor = visitorRepository.findById(visitorId).orElseThrow(() -> new RuntimeException("Visitor not found"));
+//        VisitingInfo visitingInfo = visitingInfoRepository.findById(visitorId).orElseThrow(() -> new RuntimeException(("No Visitor")));
+//
+//        if (otpService.verifyOtp(otp, visitingInfo.getOtp())) {
+//            visitingInfo.setIsApproved(true);
+//            visitorRepository.save(visitor);
+//            notificationService.sendMeetingNotification(visitingInfo.getHost(), visitor.getName());
+//            return ResponseEntity.ok("OTP verified and visitor approved");
+//        }
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP");
+//    }
 
     @GetMapping("/report")
     public ResponseEntity<?> getReport(@RequestParam String period) {
@@ -102,11 +102,18 @@ public class VisitorController {
     @PostMapping("/saveVisitor")
     public ResponseEntity<String> saveVisitor(@RequestBody Visitor visitor) {
         visitService.saveVisitor(visitor);
-        return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully!</p>");
+        return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully! And OTP Sent</p>");
     }
 
     @GetMapping("/all")
     public List<Visitor> getAllVisitors() {
         return visitService.getAllVisitors();
+    }
+
+    @PostMapping("/validate-otp")
+    public ResponseEntity<String> validateOtp(@RequestParam String email, @RequestParam String otp) {
+        boolean isValid = otpService.validateOtp(email, otp);
+        return isValid ? ResponseEntity.ok("OTP verified successfully!") :
+                ResponseEntity.badRequest().body("Invalid or expired OTP!");
     }
 }

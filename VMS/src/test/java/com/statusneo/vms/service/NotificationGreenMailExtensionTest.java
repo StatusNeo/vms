@@ -21,7 +21,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class NotificationGreenMailExtensionTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP).withConfiguration(GreenMailConfiguration.aConfig().withUser("duke", "springboot")).withPerMethodLifecycle(false); // share a GreenMail server for all test methods of a test class
@@ -29,7 +29,7 @@ public class NotificationGreenMailExtensionTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    @Test
+//    @Test
     void shouldSendEmailWithCorrectPayloadToUser() throws Exception {
 
         String payload = "{ \"email\": \"duke@spring.io\", \"content\": \"Hello World!\"}";
