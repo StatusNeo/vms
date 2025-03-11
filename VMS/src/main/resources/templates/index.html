@@ -140,7 +140,7 @@
           />
           <button
             type="submit"
-            class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600"
+            class="w-full bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600"
           >
             Verify OTP
           </button>
@@ -184,6 +184,16 @@
             document.getElementById("otpContainer").classList.remove("hidden");
           }
         }
+      });
+
+      const otpForm = document.getElementById("otpForm");
+      otpForm.addEventListener("submit", (event) => {
+        const email = document.getElementById("email").value;
+        const otp = document.getElementById("otp").value;
+        otpForm.setAttribute(
+          "hx-post",
+          `http://localhost:8080/api/visitors/validate-otp?email=${email}&otp=${otp}`
+        );
       });
     </script>
   </body>
