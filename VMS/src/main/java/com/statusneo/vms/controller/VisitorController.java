@@ -4,9 +4,11 @@ import com.statusneo.vms.model.VisitingInfo;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitingInfoRepository;
 import com.statusneo.vms.repository.VisitorRepository;
+import com.statusneo.vms.service.EmailService;
 import com.statusneo.vms.service.NotificationService;
 import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.VisitService;
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,6 +43,9 @@ public class VisitorController {
 
     @Autowired
     private VisitService visitService;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerVisitor(@RequestBody VisitingInfo visitingInfo) {
@@ -79,7 +85,6 @@ public class VisitorController {
         return "Custom error page!";
     }
 
-
     @GetMapping("/")
     public String home() {
         return "index";  // Looks for src/main/resources/templates/index.html
@@ -116,4 +121,20 @@ public class VisitorController {
         return isValid ? ResponseEntity.ok("OTP verified successfully!") :
                 ResponseEntity.badRequest().body("Invalid or expired OTP!");
     }
+
+    @PostMapping("/send-report")
+    public String sendReport(@RequestParam String email) {
+        try {
+            emailService.sendVisitorData(email);  // ✅ Method is called here
+            return "Visitor report sent successfully to " + email;
+        } catch (MessagingException | IOException e) {
+            return "Error sending email: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/excelSend")
+    public Visitor registerVisitor(@RequestBody Visitor visitor) {
+        return visitService.registerVisitor(visitor);
+    }
+
 }
