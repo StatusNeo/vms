@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Visitor Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
+    <div class="flex justify-center items-center">
+        <h1 class="text-4xl font-bold text-gray-800 mr-4">Welcome to</h1>
+        <img
+                src="/images/StatusNeo-Logo-Dark.png"
+                alt="StatusNeo Logo"
+                class="h-12 w-auto"
+        />
+    </div>
+
+    <!-- Form with HTMX -->
+    <form
+            hx-post="http://localhost:8080/api/visitors/saveVisitor"
+            hx-target="#responseMessage"
+            hx-swap="innerHTML"
+            hx-ext="json-enc"
+            class="grid grid-cols-1 gap-6"
+    >
+
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700"
+            >Name</label
+            >
+            <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter visitor name"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+        </div>
+
+        <div>
+            <label
+                    for="phoneNumber"
+                    class="block text-sm font-medium text-gray-700"
+            >Phone Number</label
+            >
+            <input
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    placeholder="Enter phone number"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+        </div>
+
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700"
+            >Email</label
+            >
+            <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter email address"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+        </div>
+
+        <div>
+            <label for="address" class="block text-sm font-medium text-gray-700"
+            >Address</label
+            >
+            <textarea
+                    id="address"
+                    name="address"
+                    placeholder="Enter visitor address"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            ></textarea>
+        </div>
+
+        <div class="mt-6">
+            <button
+                    type="submit"
+                    class="w-full bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600"
+            >
+            <span class="relative">
+              Register
+                <!-- Spinner -->
+              <span
+                      class="absolute inset-0 flex items-center justify-center hidden"
+                      id="loading"
+              >
+                <svg
+                        class="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                >
+                  <circle
+                          class="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="4"
+                  ></circle>
+                  <path
+                          class="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </span>
+            </span>
+            </button>
+        </div>
+    </form>
+
+    <!-- Response Message -->
+    <div id="responseMessage" class="mt-4 text-center"></div>
+</div>
+</body>
+</html>
