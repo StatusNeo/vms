@@ -30,7 +30,7 @@ public class OtpService {
     @Autowired
     private EmailService emailService;
 
-    private static final int OTP_EXPIRATION_MINUTES = 5;
+    private static final int OTP_EXPIRATION_MINUTES = 10;
 
     public String generatedOtp() {
         return String.valueOf(new Random().nextInt(900000) + 100000); // 6-digit OTP
