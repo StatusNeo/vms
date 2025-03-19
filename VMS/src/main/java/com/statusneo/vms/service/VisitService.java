@@ -4,10 +4,12 @@ import com.statusneo.vms.model.VisitingInfo;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitingInfoRepository;
 import com.statusneo.vms.repository.VisitorRepository;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -46,6 +48,21 @@ public class VisitService {
         Visitor savedVisitor = visitorRepository.save(visitor);
         emailService.sendVisitorEmail(savedVisitor);
         otpService.sendOtp(savedVisitor.getEmail());
+        return savedVisitor;
+    }
+
+
+    public Visitor registerVisitor(Visitor visitor) {
+        // Save visitor
+        Visitor savedVisitor = visitorRepository.save(visitor);
+
+        try {
+            // Send Excel report to admin automatically
+            emailService.sendVisitorData("statusneo9@gmail.com");  // Change to the recipient email
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace(); // Log the error
+        }
+
         return savedVisitor;
     }
 

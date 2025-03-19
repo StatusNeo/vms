@@ -2,6 +2,8 @@ package com.statusneo.vms.model;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "visitor")
 public class Visitor {
@@ -23,6 +25,18 @@ public class Visitor {
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.address = address;
+	}
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false, updatable = false)
+	private Date createdAt;
+
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = new Date();
+	}
+
+	public Date getCreatedAt(){
+		return createdAt;
 	}
 
 	public Long getId() {
