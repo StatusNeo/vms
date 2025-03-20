@@ -30,11 +30,13 @@ public class EmailService {
     public void sendVisitorEmail(Visitor visitor) {
         String toEmail = "statusneo9@gmail.com";  // Change this to the recipient email
         String subject = "New Visitor Registered: " + visitor.getName();
-        String body = "Visitor Details:\n\n" +
-                "Name: " + visitor.getName() + "\n" +
-                "Phone: " + visitor.getPhoneNumber() + "\n" +
-                "Email: " + visitor.getEmail() + "\n" +
-                "Address: " + visitor.getAddress();
+        String body = """
+                Visitor Details:
+                
+                Name: %s
+                Phone: %s
+                Email: %s
+                Address: %s""".formatted(visitor.getName(), visitor.getPhoneNumber(), visitor.getEmail(), visitor.getAddress());
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
