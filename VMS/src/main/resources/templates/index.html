@@ -6,9 +6,10 @@
     <title>StatusNeo Visitor Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.6.1"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
-<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
+<div id="form-container" class="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
     <div class="flex justify-center">
         <img src="../static/images/StatusNeo-Logo-Light.png" alt="StatusNeo Logo" class="mx-auto filter invert">
     </div>
@@ -17,7 +18,7 @@
     <div class="mb-6">
         <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">Visitor Registration</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form hx-post="/register" hx-target="#form-container" hx-swap="innerHTML" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-4">
                 <div>
                     <label for="visitorName" class="block text-sm font-medium text-gray-700 mb-1">Visitor name</label>
@@ -57,7 +58,7 @@
                     </button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
