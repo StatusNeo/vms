@@ -104,6 +104,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.icegreen</groupId>
@@ -121,6 +127,7 @@
             <artifactId>jakarta.mail-api</artifactId>
             <version>2.1.2</version>
         </dependency>
+
 
     </dependencies>
 
