@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "visiting_info")
-public class VisitingInfo {
+public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,10 +21,10 @@ public class VisitingInfo {
     @Column(name = "visit_date")
     private LocalDateTime visitDate;
 
-    public VisitingInfo() {
+    public Visit() {
     }
 
-    public VisitingInfo(Long id, Visitor visitor, String host, String otp, Boolean isApproved, LocalDateTime visitDate) {
+    public Visit(Long id, Visitor visitor, String host, String otp, Boolean isApproved, LocalDateTime visitDate) {
         this.id = id;
         this.visitor = visitor;
         this.host = host;

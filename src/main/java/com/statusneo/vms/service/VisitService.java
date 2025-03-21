@@ -1,13 +1,12 @@
 package com.statusneo.vms.service;
 
-import com.statusneo.vms.model.VisitingInfo;
+import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
-import com.statusneo.vms.repository.VisitingInfoRepository;
+import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,14 +29,15 @@ public class VisitService {
     private EmailService emailService;
 
     @Autowired
-    private VisitingInfoRepository visitingInfoRepository;
+    private VisitRepository visitRepository;
 
-    public VisitingInfo registerVisit(VisitingInfo visitingInfo) {
-        visitingInfo.setOtp(otpService.generatedOtp());
-        visitingInfo.setVisitDate(LocalDateTime.now());
+    // Register visit with OTP
+    public Visit registerVisit(Visit visit) {
+        visit.setOtp(otpService.generatedOtp());
+        visit.setVisitDate(LocalDateTime.now());
 
         // Save visitor details
-        VisitingInfo id = visitingInfoRepository.save(visitingInfo);
+        Visit id = visitRepository.save(visit);
         return id;
 
         // Send OTP

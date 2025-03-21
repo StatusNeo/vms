@@ -1,8 +1,8 @@
 package com.statusneo.vms.controller;
 
-import com.statusneo.vms.model.VisitingInfo;
+import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
-import com.statusneo.vms.repository.VisitingInfoRepository;
+import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
 import com.statusneo.vms.service.EmailService;
 import com.statusneo.vms.service.NotificationService;
@@ -12,7 +12,6 @@ import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +32,7 @@ public class VisitorController {
     @Autowired
     private VisitorRepository visitorRepository;
     @Autowired
-    private VisitingInfoRepository visitingInfoRepository;
+    private VisitRepository visitRepository;
 
     @Autowired
     private OtpService otpService;
@@ -48,8 +47,8 @@ public class VisitorController {
     private EmailService emailService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerVisitor(@RequestBody VisitingInfo visitingInfo) {
-        visitService.registerVisit(visitingInfo);
+    public ResponseEntity<?> registerVisitor(@RequestBody Visit visit) {
+        visitService.registerVisit(visit);
         return ResponseEntity.ok("OTP sent to email");
     }
 
@@ -69,15 +68,15 @@ public class VisitorController {
 
     @GetMapping("/report")
     public ResponseEntity<?> getReport(@RequestParam String period) {
-        List<VisitingInfo> visitingInfo;
+        List<Visit> visit;
         if (period.equals("daily")) {
-            visitingInfo = visitingInfoRepository.findAllByVisitDateBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), LocalDateTime.now());
+            visit = visitRepository.findAllByVisitDateBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), LocalDateTime.now());
         } else if (period.equals("monthly")) {
-            visitingInfo = visitingInfoRepository.findAllByVisitDateBetween(LocalDateTime.now().minusMonths(1), LocalDateTime.now());
+            visit = visitRepository.findAllByVisitDateBetween(LocalDateTime.now().minusMonths(1), LocalDateTime.now());
         } else {
             return ResponseEntity.badRequest().body("Invalid period");
         }
-        return ResponseEntity.ok(visitingInfo);
+        return ResponseEntity.ok(visit);
     }
 
     @RequestMapping("/error")
@@ -107,7 +106,7 @@ public class VisitorController {
     @PostMapping("/saveVisitor")
     public ResponseEntity<String> saveVisitor(@RequestBody Visitor visitor) {
         visitService.saveVisitor(visitor);
-        return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully! And OTP Sent</p>");
+        return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully!</p>");
     }
 
     @GetMapping("/all")
@@ -138,11 +137,11 @@ public class VisitorController {
     }
 
 
-
-    @GetMapping("/send-report")
-    public ResponseEntity<String> sendExcelReport(@RequestParam String email) {
+    @PostMapping("/send")
+    public ResponseEntity<String> sendReport() {
+        String email = "arshu.rashid.khan@gmail.com"; // Fixed email address
         emailService.sendVisitorReport(email);
-        return ResponseEntity.ok("Report Sent!");
+        return ResponseEntity.ok("Visitor report sent to " + email);
     }
 
 }
