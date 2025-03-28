@@ -9,6 +9,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -25,6 +27,13 @@ public class Visitor {
 	private String email;
 	private String address;
 
+	@Column(name = "picture_path")
+	private String picturePath;
+
+//
+//	@Column(name = "registered_at")
+//	private LocalDateTime registeredAt = LocalDateTime.now();
+
 	public Visitor() {
 	}
 
@@ -34,6 +43,8 @@ public class Visitor {
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.address = address;
+
+
 	}
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false, updatable = false)
@@ -88,9 +99,25 @@ public class Visitor {
 		this.address = address;
 	}
 
+//	public LocalDateTime getRegisteredAt() { return registeredAt; }
+//	public void setRegisteredAt(LocalDateTime registeredAt) { this.registeredAt = registeredAt; }
+
+	public String getPicturePath() {
+		return picturePath;
+	}
+	public void setPicturePath(String picturePath) {
+		this.picturePath = picturePath;
+	}
+
 	@Override
 	public String toString() {
-		return "Visitor [id=" + id + ", name=" + name + ", phoneNumber=" + phoneNumber +
-				", email=" + email + ", address=" + address + "]";
+		return "Visitor{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", phoneNumber='" + phoneNumber + '\'' +
+				", email='" + email + '\'' +
+				", address='" + address + '\'' +
+				", picturePath='" + picturePath + '\'' +
+				'}';
 	}
 }
