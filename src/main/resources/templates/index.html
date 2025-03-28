@@ -1,86 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StatusNeo Visitor Management System</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/htmx.org@1.9.6"></script>
-  <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visitor Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
-  <!-- Title & Logo -->
-  <div class="flex justify-center items-center">
-    <h1 class="text-4xl font-bold text-gray-800 mr-4">Welcome to</h1>
-    <img src="/images/StatusNeo-Logo-Dark.png" alt="StatusNeo Logo" class="h-12 w-auto" />
-  </div>
-
-  <!-- Registration Form -->
-  <form
-          hx-post="/api/visitors/saveVisitor"
-          hx-target="#responseMessage"
-          hx-swap="innerHTML"
-          hx-ext="json-enc"
-          hx-indicator="#loading"
-          class="grid grid-cols-1 gap-6 mt-6"
-  >
-    <div>
-      <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-      <input type="text" id="name" name="name"
-             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <div class="flex justify-center items-center">
+        <h1 class="text-4xl font-bold text-gray-800 mr-4">Welcome to</h1>
+        <img
+                src="/images/StatusNeo-Logo-Dark.png"
+                alt="StatusNeo Logo"
+                class="h-12 w-auto"
+        />
     </div>
 
-    <div>
-      <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
-      <input type="tel" maxlength="10" pattern="[0-9]{10}" id="phoneNumber" name="phoneNumber"
+    <!-- Registration Form -->
+    <form
+            hx-post="/api/visitors/saveVisitor"
+            hx-target="#responseMessage"
+            hx-swap="innerHTML"
+            hx-ext="json-enc"
+            hx-indicator=".loading-indicator"
+            class="grid grid-cols-1 gap-6 mt-6"
+    >
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" id="name" name="name"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
 
-             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div>
+            <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
+            <input type="tel" maxlength="10" pattern="[0-9]{10}" id="phoneNumber" name="phoneNumber"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" name="email"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+            <textarea id="address" name="address"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <!-- Employee Search Field with Autocomplete -->
+        <div class="relative">
+            <label for="employee" class="block text-sm font-medium text-gray-700">Employee to Meet</label>
+            <input type="text" id="employee" name="employee"
+                   hx-get="/api/visitors/search"
+                   hx-trigger="keyup changed delay:200ms"
+                   hx-target="#employeeSuggestions"
+                   hx-swap="innerHTML"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+            <!-- Autocomplete Dropdown -->
+            <ul id="employeeSuggestions" class="absolute bg-white w-full border border-gray-300 rounded-md mt-1 shadow-lg z-10 hidden"></ul>
+        </div>
+
+        <!-- Register Button with Loader -->
+        <div class="mt-6 relative">
+            <button type="submit" class="w-full bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600 flex items-center justify-center">
+                <span id="button-text">Register</span>
+                <span class="loading-indicator hidden ml-2">
+          <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </span>
+            </button>
+        </div>
+    </form>
+    <!-- Registration Response Message -->
+    <div
+            id="responseMessage"
+            class="mt-4 text-center"
+            hx-on::after-settle="this.innerHTML.includes('success') ? document.getElementById('otpContainer').classList.remove('hidden') : ''"
+    ></div>
+
+    <!-- OTP Form (Initially Hidden) -->
+    <div id="otpContainer" class="mt-4 text-center hidden">
+        <h2 class="text-2xl font-bold mb-4">Enter OTP</h2>
+        <form
+                id="otpForm"
+                hx-post="/api/visitors/validate-otp"
+                hx-target="#otpResponse"
+                hx-swap="innerHTML"
+                hx-trigger="submit"
+                hx-vals="js:{ email: document.getElementById('email').value }"
+                class="grid grid-cols-1 gap-4"
+        >
+            <input
+                    type="text"
+                    id="otp"
+                    name="otp"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+                    type="submit"
+                    class="w-full bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600"
+            >
+                Verify OTP
+            </button>
+        </form>
+        <div id="otpResponse" class="mt-4"></div>
     </div>
-
-    <div>
-      <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-      <input type="email" id="email" name="email"
-             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-    </div>
-
-    <div>
-      <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-      <textarea id="address" name="address"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-    </div>
-
-    <!-- Register Button with Loader -->
-    <div class="mt-6 relative">
-      <button type="submit" class="w-full bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600 flex items-center justify-center">
-        <span id="button-text">Register</span>
-
-        <!-- Loader (Initially Hidden) -->
-        <span id="loading" class="hidden ml-2">
-                        <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </span>
-      </button>
-    </div>
-  </form>
-
-  <!-- Response Message -->
-  <div id="responseMessage" class="mt-4 text-center"></div>
 </div>
-
-<!-- Ensure Loader Works Properly -->
 <script>
-  document.addEventListener("htmx:beforeRequest", function() {
-      document.getElementById("button-text").classList.add("hidden"); // Hide text
-      document.getElementById("loading").classList.remove("hidden");  // Show loader
-  });
+    // Autocomplete dropdown visibility
+    document.addEventListener("htmx:afterSwap", function() {
+      let suggestions = document.getElementById("employeeSuggestions");
+      if (suggestions.innerHTML.trim() !== "") {
+        suggestions.classList.remove("hidden");
+      } else {
+        suggestions.classList.add("hidden");
+      }
+    });
 
-  document.addEventListener("htmx:afterRequest", function() {
-      document.getElementById("button-text").classList.remove("hidden"); // Show text again
-      document.getElementById("loading").classList.add("hidden");       // Hide loader
-  });
+    // Hide dropdown when clicking outside
+    document.addEventListener("click", function(event) {
+      if (!event.target.closest("#employee")) {
+        document.getElementById("employeeSuggestions").classList.add("hidden");
+      }
+    });
+
+    // Select an employee from the dropdown
+    function selectEmployee(name) {
+      document.getElementById("employee").value = name;
+      document.getElementById("employeeSuggestions").classList.add("hidden");
+    }
+
+    // Show/hide loader during form submission
+    document.addEventListener("htmx:beforeRequest", function() {
+      document.getElementById("button-text").classList.add("hidden");
+      document.querySelector(".loading-indicator").classList.remove("hidden");
+    });
+
+    document.addEventListener("htmx:afterRequest", function() {
+      document.getElementById("button-text").classList.remove("hidden");
+      document.querySelector(".loading-indicator").classList.add("hidden");
+    });
 </script>
 </body>
 </html>
