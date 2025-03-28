@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 //	List<Visitor> findAllByVisitDateBetween(LocalDateTime startDate, LocalDateTime endDate);
-	Optional<Visitor> findByPhoneNumber(String phoneNumber);
+//	Optional<Visitor> findByPhoneNumber(String phoneNumber);
 }
