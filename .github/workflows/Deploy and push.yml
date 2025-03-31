@@ -27,4 +27,4 @@ jobs:
     - name: Publish to GitHub Packages
       run: mvn deploy
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
+        GITHUB_TOKEN: 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
