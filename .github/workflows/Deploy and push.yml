@@ -3,7 +3,7 @@ name: Maven Build & Publish
 on:
   workflow_dispatch:  # Manual trigger
     branches:
-      - actions-test  # Runs only on this branch
+      - action-test  # Runs only on this branch
 
 jobs:
   build-and-publish:
