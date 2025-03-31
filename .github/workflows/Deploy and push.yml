@@ -3,7 +3,7 @@ name: Maven Build & Publish
 on:
   push:
     branches:
-      - actions-test  # Runs only on this branch
+      - action-test  # Runs only on this branch
 
 jobs:
   build-and-publish:
