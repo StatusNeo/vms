@@ -1,0 +1,30 @@
+name: Maven Build & Publish
+
+on:
+  push:
+    branches:
+      - action-test  # Runs only on this branch
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        server-id: github
+        settings-path: ${{ github.workspace }}
+
+    - name: Build with Maven
+      run: mvn clean install  # Builds locally
+
+    - name: Publish to GitHub Packages
+      run: mvn deploy
+      env:
+        GITHUB_TOKEN: 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
