@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService {
-
-    @Autowired
+	
+	@Autowired
     private JavaMailSender mailSender;
 
     public void sendOtp(String email, String otp) {

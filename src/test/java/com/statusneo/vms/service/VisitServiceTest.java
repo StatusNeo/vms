@@ -1,5 +1,8 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.model.Visit;
+import com.statusneo.vms.model.Visitor;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -7,6 +10,11 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Testcontainers
@@ -27,19 +35,20 @@ public class VisitServiceTest {
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
     }
 
-//    @Test
-//    public void testRegisterVisitor() {
-//        Visitor visitor = new Visitor();
-//        visitor.setName("John Doe");
-//        visitor.setPhoneNumber("1234567890");
-//        visitor.setEmail("john.doe@example.com");
-////        visitor.setHost("Host Name");
-//        visitor.setAddress("123 Street, City, Country");
-////        visitor.setVisitDate(LocalDateTime.parse("2022-01-01T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-//
-//        Visitor registeredVisitor = visitorService.registerVisit(visitor);
-//
-//        assertNotNull(registeredVisitor);
-//    }
+    @Test
+    public void testRegisterVisitor() {
+        Visitor visitor = new Visitor();
+        Visit visit = new Visit();
+        visitor.setName("John Doe");
+        visitor.setPhoneNumber("1234567890");
+        visitor.setEmail("john.doe@example.com");
+        visit.setHost("Host Name");
+        visitor.setAddress("123 Street, City, Country");
+        visit.setVisitDate(LocalDateTime.parse("2022-01-01T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        Visit registeredVisitor = visitorService.registerVisit(visit);
+
+        assertNotNull(registeredVisitor);
+    }
 }
 

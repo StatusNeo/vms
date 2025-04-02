@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class ExcelGeneratorService {
 
-    public byte[] generateExcel(List<Visitor> visitors) throws IOException {
+    public static byte[] generateExcel(List<Visitor> visitors) throws IOException {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Visitors");
 
