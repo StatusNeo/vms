@@ -19,7 +19,7 @@ public class EmployeeService {
 
     public List<Employee> searchEmployeesByName(String prefix) {
         logger.info("Searching employees with name starting with: {}", prefix);
-        List<Employee> employees = employeeRepository.findByNameStartingWith(prefix);
+        List<Employee> employees = employeeRepository.findByNameStartingWithIgnoreCase(prefix);
         logger.info("Found {} employees matching prefix '{}'", employees.size(), prefix);
         return employees;
     }
