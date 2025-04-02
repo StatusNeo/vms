@@ -6,13 +6,9 @@ import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,33 +16,27 @@ import java.util.List;
 @Service
 public class VisitService {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(VisitService.class);
-
     @Autowired
     private OtpService otpService;
 
-    @Autowired
-    private NotificationService notificationService;
+//    @Autowired
+//    private NotificationService notificationService;
 
     @Autowired
     private VisitorRepository visitorRepository;
 
     @Autowired
     private EmailService emailService;
-    @Autowired
-    private ExcelService excelService;
 
     @Autowired
     private VisitRepository visitRepository;
 
-    // Register visit with OTP
-    public Visit registerVisit(Visit visit) {
-        visit.setOtp(otpService.generatedOtp());
-        visit.setVisitDate(LocalDateTime.now());
+    public Visit registerVisit(Visit visitingInfo) {
+        visitingInfo.setOtp(otpService.generatedOtp());
+        visitingInfo.setVisitDate(LocalDateTime.now());
 
         // Save visitor details
-        Visit id = visitRepository.save(visit);
+        Visit id = visitRepository.save(visitingInfo);
         return id;
 
         // Send OTP
@@ -62,17 +52,21 @@ public class VisitService {
     }
 
 
+    public Visitor registerVisitor(Visitor visitor) {
+        // Save visitor
+        Visitor savedVisitor = visitorRepository.save(visitor);
+
+        try {
+            // Send Excel report to admin automatically
+            emailService.sendVisitorData("arshu.rashid.khan@gmail.com");  // Change to the recipient email
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace(); // Log the error
+        }
+
+        return savedVisitor;
+    }
 
     public List<Visitor> getAllVisitors() {
-        logger.info("Fetching all visitors from the database");
-        List<Visitor> visitors = visitorRepository.findAll();
-        logger.info("Fetched {} visitors", visitors.size());
-        return visitors;
+        return visitorRepository.findAll();
     }
-
-    public Visitor saveVisitorWithPicture(Visitor visitor, String picturePath) {
-        visitor.setPicturePath(picturePath);
-        return visitorRepository.save(visitor);
-    }
-
 }
