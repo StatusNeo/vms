@@ -13,6 +13,7 @@ import com.statusneo.vms.service.FileStorageService;
 import com.statusneo.vms.service.NotificationService;
 import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.VisitService;
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -164,47 +166,47 @@ public class VisitorController {
                 ResponseEntity.badRequest().body("Invalid or expired OTP!");
     }
 
-//    @PostMapping("/send-report")
-//    public String sendReport(@RequestParam String email) {
-//        try {
-//            emailService.sendVisitorData(email);  // ✅ Method is called here
-//            return "Visitor report sent successfully to " + email;
-//        } catch (MessagingException | IOException e) {
-//            return "Error sending email: " + e.getMessage();
-//        }
-//    }
+    @PostMapping("/send-report")
+    public String sendReport(@RequestParam String email) {
+        try {
+            emailService.sendVisitorData(email);  // ✅ Method is called here
+            return "Visitor report sent successfully to " + email;
+        } catch (MessagingException | IOException e) {
+            return "Error sending email: " + e.getMessage();
+        }
+    }
 
 //    @PostMapping("/excelSend")
 //    public Visitor registerVisitor(@RequestBody Visitor visitor) {
 //        return visitService.registerVisitor(visitor);
 //    }
 
-    @GetMapping("/send-visitor-report")
-    public String sendVisitorReport() {
-        logger.info("Received request to send visitor report manually");
-        try {
-            List<Visitor> visitors = visitService.getAllVisitors();
-            logger.info("Fetched {} visitors from the database", visitors.size());
-            if (visitors.isEmpty()) {
-                logger.warn("No visitors found to generate report");
-                return "No visitors found to generate report";
-            }
-
-            byte[] excelFile = excelService.generateVisitorExcel(visitors);
-            emailService.sendEmailWithAttachment(
-                    "arshu.rashid.khan@gmail.com",
-                    "Manual Visitor Report - " + java.time.LocalDateTime.now(),
-                    "Attached is the manually requested visitor report.",
-                    excelFile
-            );
-            logger.info("Manual visitor report sent successfully");
-            return "Visitor report sent successfully!";
-        } catch (Exception e) {
-            logger.error("Failed to send manual visitor report", e);
-            return "Failed to send visitor report: " + e.getMessage();
-        }
-    }
-
+//    @GetMapping("/send-visitor-report")
+//    public String sendVisitorReport() {
+//        logger.info("Received request to send visitor report manually");
+//        try {
+//            List<Visitor> visitors = visitService.getAllVisitors();
+//            logger.info("Fetched {} visitors from the database", visitors.size());
+//            if (visitors.isEmpty()) {
+//                logger.warn("No visitors found to generate report");
+//                return "No visitors found to generate report";
+//            }
+//
+//            byte[] excelFile = excelService.generateVisitorExcel(visitors);
+//            emailService.sendVisitorReport(
+//                    "arshu.rashid.khan@gmail.com",
+//                    "Manual Visitor Report - " + java.time.LocalDateTime.now(),
+//                    "Attached is the manually requested visitor report.",
+//                    excelFile
+//            );
+//            logger.info("Manual visitor report sent successfully");
+//            return "Visitor report sent successfully!";
+//        } catch (Exception e) {
+//            logger.error("Failed to send manual visitor report", e);
+//            return "Failed to send visitor report: " + e.getMessage();
+//        }
+//    }
+//
 
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query) {
@@ -221,45 +223,45 @@ public class VisitorController {
         return html.toString();
     }
 
-    @PostMapping("/uploadPicture")
-    public Map<String, Object> uploadPicture(@RequestParam String email, @RequestParam("picture") MultipartFile picture) {
-        logger.info("Received request to upload picture for email: {}", email);
-        Map<String, Object> response = new HashMap<>();
-        try {
-            Visitor visitor = pendingVisitors.get(email);
-            if (visitor == null) {
-                logger.warn("No pending visitor found for email: {}", email);
-                response.put("status", "error");
-                response.put("message", "Error: Visitor data not found. Please try again.");
-                return response;
-            }
-
-            // Save the picture to the filesystem
-            String picturePath = fileStorageService.storeFile(picture);
-            logger.info("Picture saved at: {}", picturePath);
-
-            // Save the visitor with the picture path
-            Visitor savedVisitor = visitService.saveVisitorWithPicture(visitor, picturePath);
-            logger.info("Visitor saved successfully with picture: {}", savedVisitor);
-
-            // Remove the visitor from pendingVisitors
-            pendingVisitors.remove(email);
-
-            // Return the visitor details and picture path
-            response.put("status", "success");
-            response.put("message", "Visitor registered successfully!");
-            response.put("visitor", savedVisitor);
-            response.put("pictureUrl", "/" + picturePath); // URL to access the image
-            return response;
-        } catch (Exception e) {
-            logger.error("Failed to upload picture for email: {}", email, e);
-            response.put("status", "error");
-            response.put("message", "Failed to upload picture: " + e.getMessage());
-            return response;
-        }
-    }
-
-
+//    @PostMapping("/uploadPicture")
+//    public Map<String, Object> uploadPicture(@RequestParam String email, @RequestParam("picture") MultipartFile picture) {
+//        logger.info("Received request to upload picture for email: {}", email);
+//        Map<String, Object> response = new HashMap<>();
+//        try {
+//            Visitor visitor = pendingVisitors.get(email);
+//            if (visitor == null) {
+//                logger.warn("No pending visitor found for email: {}", email);
+//                response.put("status", "error");
+//                response.put("message", "Error: Visitor data not found. Please try again.");
+//                return response;
+//            }
+//
+//            // Save the picture to the filesystem
+//            String picturePath = fileStorageService.storeFile(picture);
+//            logger.info("Picture saved at: {}", picturePath);
+//
+//            // Save the visitor with the picture path
+//            Visitor savedVisitor = visitService.saveVisitorWithPicture(visitor, picturePath);
+//            logger.info("Visitor saved successfully with picture: {}", savedVisitor);
+//
+//            // Remove the visitor from pendingVisitors
+//            pendingVisitors.remove(email);
+//
+//            // Return the visitor details and picture path
+//            response.put("status", "success");
+//            response.put("message", "Visitor registered successfully!");
+//            response.put("visitor", savedVisitor);
+//            response.put("pictureUrl", "/" + picturePath); // URL to access the image
+//            return response;
+//        } catch (Exception e) {
+//            logger.error("Failed to upload picture for email: {}", email, e);
+//            response.put("status", "error");
+//            response.put("message", "Failed to upload picture: " + e.getMessage());
+//            return response;
+//        }
+//    }
+//
+//
 
 
 }
