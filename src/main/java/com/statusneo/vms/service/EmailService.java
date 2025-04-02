@@ -28,6 +28,9 @@ public class EmailService {
     @Autowired
     private ExcelGeneratorService excelGeneratorService;
 
+    private String recipientEmail = "arshu.rashid.khan@gmail.com"; // Default recipient
+
+
     public EmailService(JavaMailSender mailSender, VisitorRepository visitorRepository) {
         this.mailSender = mailSender;
         this.visitorRepository = visitorRepository;
@@ -80,25 +83,29 @@ public class EmailService {
     public void sendVisitorReport(String email) {
         try {
             List<Visitor> visitors = visitorRepository.findAll();
-            byte[] excelFile = ExcelGenerator.generateExcel(visitors); // This is the correct variable
+            byte[] excelFile = ExcelGeneratorService.generateExcel(visitors);
 
-            // Prepare Email
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(email);
             helper.setSubject("Visitor Data Report");
             helper.setText("Please find attached the visitor report.");
 
-            // Attach Excel file
-            InputStreamSource attachment = new ByteArrayResource(excelFile); // Using the correct variable
+            InputStreamSource attachment = new ByteArrayResource(excelFile);
             helper.addAttachment("Visitor_Report.xlsx", attachment);
 
-            // Send email
             mailSender.send(message);
-        } catch (MessagingException e) {
+        } catch (MessagingException | IOException e) {
             throw new RuntimeException("Failed to send email", e);
         }
     }
 
+    public void setRecipientEmail(String email) {
+        this.recipientEmail = email;
+    }
+
+    public String getRecipientEmail() {
+        return recipientEmail;
+    }
 
 }

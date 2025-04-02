@@ -19,8 +19,8 @@ public class VisitService {
     @Autowired
     private OtpService otpService;
 
-//    @Autowired
-//    private NotificationService notificationService;
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private VisitorRepository visitorRepository;
@@ -31,12 +31,13 @@ public class VisitService {
     @Autowired
     private VisitRepository visitRepository;
 
-    public Visit registerVisit(Visit visitingInfo) {
-        visitingInfo.setOtp(otpService.generatedOtp());
-        visitingInfo.setVisitDate(LocalDateTime.now());
+    // Register visit with OTP
+    public Visit registerVisit(Visit visit) {
+        visit.setOtp(otpService.generatedOtp());
+        visit.setVisitDate(LocalDateTime.now());
 
         // Save visitor details
-        Visit id = visitRepository.save(visitingInfo);
+        Visit id = visitRepository.save(visit);
         return id;
 
         // Send OTP
