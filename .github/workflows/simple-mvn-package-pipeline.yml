@@ -45,3 +45,5 @@ jobs:
         run: mvn deploy -DskipTests --file VMS/pom.xml
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
+
+# this is for testing
