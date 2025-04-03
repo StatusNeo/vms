@@ -1,4 +1,4 @@
-name: Build and Publish Maven Package
+name: let's do it 
 
 on:
   push:
