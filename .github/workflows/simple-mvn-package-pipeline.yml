@@ -1,4 +1,4 @@
-name: let's do it 
+name: simple maven package distributer
 
 on:
   push:
