@@ -8,9 +8,9 @@
         <version>3.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.statusneo</groupId>
+    <groupId>StatusNeo.com</groupId>
     <artifactId>vms</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>VMS</name>
     <description>StatusNeo Visitor Management</description>
     <url/>
