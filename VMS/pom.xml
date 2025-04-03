@@ -8,7 +8,7 @@
         <version>3.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>StatusNeo.com</groupId>
+    <groupId>StatusNeoV1.com</groupId>
     <artifactId>vms</artifactId>
     <version>0.0.3-SNAPSHOT</version>
     <name>VMS</name>
