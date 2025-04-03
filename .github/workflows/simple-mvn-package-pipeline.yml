@@ -3,7 +3,7 @@ name: let's do it
 on:
   push:
     branches:
-      - action-m
+      - action_m
 
 jobs:
   build:
