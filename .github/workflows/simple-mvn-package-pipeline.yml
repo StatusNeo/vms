@@ -32,7 +32,7 @@ jobs:
                   <server>
                       <id>github</id>
                       <username>${{ secrets.org_name }}</username>
-                      <password>${{ secrets.GITHUB_TOKEN }}</password>
+                      <password>${{ secrets.GitHub_TOKEN }}</password>
                   </server>
               </servers>
           </settings>
@@ -44,4 +44,4 @@ jobs:
       - name: Publish to GitHub Packages
         run: mvn deploy -DskipTests --file VMS/pom.xml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GitHub_TOKEN }}
