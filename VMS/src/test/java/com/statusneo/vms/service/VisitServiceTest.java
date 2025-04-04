@@ -1,5 +1,6 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.model.VisitingInfo;
 import com.statusneo.vms.model.Visitor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +38,15 @@ public class VisitServiceTest {
     @Test
     public void testRegisterVisitor() {
         Visitor visitor = new Visitor();
+        VisitingInfo visitingInfo = new VisitingInfo();
         visitor.setName("John Doe");
         visitor.setPhoneNumber("1234567890");
         visitor.setEmail("john.doe@example.com");
-        visitor.setHost("Host Name");
+        visitingInfo.setHost("Host Name");
         visitor.setAddress("123 Street, City, Country");
-        visitor.setVisitDate(LocalDateTime.parse("2022-01-01T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        visitingInfo.setVisitDate(LocalDateTime.parse("2022-01-01T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
-        Visitor registeredVisitor = visitorService.registerVisit(visitor);
+        VisitingInfo registeredVisitor = visitorService.registerVisit(visitingInfo);
 
         assertNotNull(registeredVisitor);
     }
