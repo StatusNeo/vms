@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to StatusNeo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl" x-data="{ search: '', suggestions: ['Tony', 'Tommy', 'Toyman'] }">
+    <h1 class="text-3xl font-bold mb-6">Welcome to StatusNeo</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Visitor Registration</h2>
+            <form>
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-700">Visitor name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Visitor email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Visitor phone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="guests" class="block text-sm font-medium text-gray-700">No. of guests</label>
+                    <input type="number" id="guests" name="guests" placeholder="Enter number of guests" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+            </form>
+        </div>
+
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Whom would you like to meet?</h2>
+            <div class="relative">
+                <input type="text" x-model="search" placeholder="Search..." class="w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <ul class="mt-2 border border-gray-200 rounded-md bg-white shadow-sm">
+                <template x-for="suggestion in suggestions.filter(s => s.toLowerCase().includes(search.toLowerCase()))" :key="suggestion">
+                    <li x-text="suggestion" class="px-4 py-2 hover:bg-gray-100 cursor-pointer"></li>
+                </template>
+            </ul>
+
+            <button class="mt-6 w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Register
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
