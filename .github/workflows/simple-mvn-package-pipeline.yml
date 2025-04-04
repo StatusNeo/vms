@@ -3,7 +3,7 @@ name: simple maven package distributer
 on:
   push:
     branches:
-      - manee_action
+      - web-backend
 
 jobs:
   build:
