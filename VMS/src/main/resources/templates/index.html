@@ -1,68 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StatusNeo Visitor Management</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visitor Registration</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
-    <div class="flex justify-center">
-        <img src="../static/images/StatusNeo-Logo-Light.png" alt="StatusNeo Logo" class="mx-auto filter invert">
-    </div>
-    <h1 class="text-2xl font-bold mb-6 text-gray-800">Welcome to StatusNeo</h1>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
+      <div class="flex justify-center items-center">
+        <h1 class="text-4xl font-bold text-gray-800 mr-4">Welcome to</h1>
+        <img
+          src="/images/StatusNeo-Logo-Dark.png"
+          alt="StatusNeo Logo"
+          class="h-12 w-auto"
+        />
+      </div>
 
-    <div class="mb-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">Visitor Registration</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-                <div>
-                    <label for="visitorName" class="block text-sm font-medium text-gray-700 mb-1">Visitor name</label>
-                    <input type="text" id="visitorName" name="visitorName" placeholder="Enter visitor name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <div>
-                    <label for="visitorEmail" class="block text-sm font-medium text-gray-700 mb-1">Visitor email</label>
-                    <input type="email" id="visitorEmail" name="visitorEmail" placeholder="Enter visitor email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <div>
-                    <label for="visitorPhone" class="block text-sm font-medium text-gray-700 mb-1">Visitor phone</label>
-                    <input type="tel" id="visitorPhone" name="visitorPhone" placeholder="Enter visitor phone" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <div>
-                    <label for="guestCount" class="block text-sm font-medium text-gray-700 mb-1">No. of guests</label>
-                    <input type="number" id="guestCount" name="guestCount" placeholder="Enter number of guests" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label for="employeeSearch" class="block text-sm font-medium text-gray-700 mb-1">Employee to meet</label>
-                    <div class="relative">
-                        <input type="text" id="employeeSearch" name="employeeSearch" placeholder="Search" class="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6">
-                    <button type="submit" class="w-full bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
-                        Register
-                    </button>
-                </div>
-            </div>
+      <!-- Registration Form -->
+      <form
+        id="registrationForm"
+        hx-post="http://localhost:8080/api/visitors/saveVisitor"
+        hx-target="#responseMessage"
+        hx-swap="innerHTML"
+        hx-ext="json-enc"
+        class="grid grid-cols-1 gap-6"
+      >
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700"
+            >Name</label
+          >
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
-    </div>
-</div>
+        <div>
+          <label
+            for="phoneNumber"
+            class="block text-sm font-medium text-gray-700"
+            >Phone Number</label
+          >
+          <input
+            type="tel"
+            id="phoneNumber"
+            name="phoneNumber"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Email</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="address" class="block text-sm font-medium text-gray-700"
+            >Address</label
+          >
+          <textarea
+            id="address"
+            name="address"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ></textarea>
+        </div>
+        <div class="mt-6">
+          <button
+            type="submit"
+            class="w-full bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600"
+          >
+            Register
+          </button>
+        </div>
+      </form>
 
-<script>
-    // You can add any necessary JavaScript here
-</script>
-</body>
+      <!-- Registration Response Message -->
+      <div
+        id="responseMessage"
+        class="mt-4 text-center"
+        hx-on::after-settle="this.innerHTML.includes('success') ? document.getElementById('otpContainer').classList.remove('hidden') : ''"
+      ></div>
+
+      <!-- OTP Form (Initially Hidden) -->
+      <div id="otpContainer" class="mt-4 text-center hidden">
+        <h2 class="text-2xl font-bold mb-4">Enter OTP</h2>
+        <form
+          id="otpForm"
+          hx-post="http://localhost:8080/api/visitors/validate-otp"
+          hx-target="#otpResponse"
+          hx-swap="innerHTML"
+          hx-trigger="submit"
+          hx-vals="js:{ email: document.getElementById('email').value }"
+          class="grid grid-cols-1 gap-4"
+        >
+          <input
+            type="text"
+            id="otp"
+            name="otp"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            class="w-full bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600"
+          >
+            Verify OTP
+          </button>
+        </form>
+        <div id="otpResponse" class="mt-4"></div>
+      </div>
+    </div>
+  </body>
 </html>
