@@ -1,8 +1,8 @@
 package com.statusneo.vms.service;
 
-import com.statusneo.vms.model.VisitingInfo;
+import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
-import com.statusneo.vms.repository.VisitingInfoRepository;
+import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -29,14 +29,15 @@ public class VisitService {
     private EmailService emailService;
 
     @Autowired
-    private VisitingInfoRepository visitingInfoRepository;
+    private VisitRepository visitRepository;
 
-    public VisitingInfo registerVisit(VisitingInfo visitingInfo) {
-        visitingInfo.setOtp(otpService.generatedOtp());
-        visitingInfo.setVisitDate(LocalDateTime.now());
+    // Register visit with OTP
+    public Visit registerVisit(Visit visit) {
+        visit.setOtp(otpService.generatedOtp());
+        visit.setVisitDate(LocalDateTime.now());
 
         // Save visitor details
-        VisitingInfo id = visitingInfoRepository.save(visitingInfo);
+        Visit id = visitRepository.save(visit);
         return id;
 
         // Send OTP
@@ -58,7 +59,7 @@ public class VisitService {
 
         try {
             // Send Excel report to admin automatically
-            emailService.sendVisitorData("statusneo9@gmail.com");  // Change to the recipient email
+            emailService.sendVisitorData("arshu.rashid.khan@gmail.com");  // Change to the recipient email
         } catch (MessagingException | IOException e) {
             e.printStackTrace(); // Log the error
         }
