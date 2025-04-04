@@ -6,6 +6,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -27,9 +28,23 @@ public class EmailService {
     @Autowired
     private ExcelGeneratorService excelGeneratorService;
 
+    private String recipientEmail = "arshu.rashid.khan@gmail.com"; // Default recipient
+
+
+    public EmailService(JavaMailSender mailSender, VisitorRepository visitorRepository) {
+        this.mailSender = mailSender;
+        this.visitorRepository = visitorRepository;
+    }
+
     public void sendVisitorEmail(Visitor visitor) {
+        String toEmail = "arshu.rashid.khan@gmail.com";  // Change this to the recipient email
         String toEmail = "statusneo9@gmail.com";  // Change this to the recipient email
         String subject = "New Visitor Registered: " + visitor.getName();
+        String body = "Visitor Details:\n\n" +
+                "Name: " + visitor.getName() + "\n" +
+                "Phone: " + visitor.getPhoneNumber() + "\n" +
+                "Email: " + visitor.getEmail() + "\n" +
+                "Address: " + visitor.getAddress();
         String body = """
                 Visitor Details:
                 
@@ -73,5 +88,32 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendVisitorReport(String email) {
+        try {
+            List<Visitor> visitors = visitorRepository.findAll();
+            byte[] excelFile = ExcelGeneratorService.generateExcel(visitors);
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(email);
+            helper.setSubject("Visitor Data Report");
+            helper.setText("Please find attached the visitor report.");
+
+            InputStreamSource attachment = new ByteArrayResource(excelFile);
+            helper.addAttachment("Visitor_Report.xlsx", attachment);
+
+            mailSender.send(message);
+        } catch (MessagingException | IOException e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
+
+    public void setRecipientEmail(String email) {
+        this.recipientEmail = email;
+    }
+
+    public String getRecipientEmail() {
+        return recipientEmail;
+    }
 
 }
