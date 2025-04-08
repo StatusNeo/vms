@@ -1,3 +1,4 @@
+
 package com.statusneo.vms.model;
 
 import jakarta.persistence.Column;
@@ -10,11 +11,11 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "visitor")
+
 public class Visitor {
 
 
@@ -29,10 +30,6 @@ public class Visitor {
 
 	@Column(name = "picture_path")
 	private String picturePath;
-
-//
-//	@Column(name = "registered_at")
-//	private LocalDateTime registeredAt = LocalDateTime.now();
 
 	public Visitor() {
 	}
@@ -99,8 +96,6 @@ public class Visitor {
 		this.address = address;
 	}
 
-//	public LocalDateTime getRegisteredAt() { return registeredAt; }
-//	public void setRegisteredAt(LocalDateTime registeredAt) { this.registeredAt = registeredAt; }
 
 	public String getPicturePath() {
 		return picturePath;
