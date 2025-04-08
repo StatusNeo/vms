@@ -1,0 +1,6 @@
+com\statusneo\vms\service\NotificationGreenMailExtensionTest.class
+com\statusneo\vms\service\NotificationTestcontainersGreenMailTest.class
+com\statusneo\vms\TestVisitorApplication.class
+com\statusneo\vms\service\GreenMailSpringTest.class
+com\statusneo\vms\TestcontainersConfiguration.class
+com\statusneo\vms\service\VisitServiceTest.class

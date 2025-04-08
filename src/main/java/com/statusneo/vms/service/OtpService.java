@@ -7,20 +7,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-//
-//@Service
-//public class OtpService {
-//
-//	public String generateOtp() {
-//        return String.valueOf(new Random().nextInt(900000) + 100000); // 6-digit OTP
-//    }
-//
-//    public boolean verifyOtp(String enteredOtp, String generatedOtp) {
-//        return enteredOtp.equals(generatedOtp);
-//    }
-//}
+import java.util.concurrent.ConcurrentHashMap;
+
 @Service
 public class OtpService {
 
@@ -31,6 +22,9 @@ public class OtpService {
     private EmailService emailService;
 
     private static final int OTP_EXPIRATION_MINUTES = 10;
+    private final Map<String, Boolean> verifiedEmails = new ConcurrentHashMap<>();
+    private final Map<String, LocalDateTime> verificationTimestamps = new ConcurrentHashMap<>();
+
 
     public String generatedOtp() {
         return String.valueOf(new Random().nextInt(900000) + 100000); // 6-digit OTP
@@ -68,5 +62,28 @@ public class OtpService {
     public Optional<Otp> getLatestOtpByEmail(String email) {
         List<Otp> otps = otpRepository.findByEmailOrdered(email);
         return otps.isEmpty() ? Optional.empty() : Optional.of(otps.get(0)); // Return the latest OTP
+    }
+
+    // Mark email as verified
+    public void markEmailAsVerified(String email) {
+        verifiedEmails.put(email, true);
+        verificationTimestamps.put(email, LocalDateTime.now());
+    }
+
+    // Check if email is verified
+    public boolean isEmailVerified(String email) {
+        // Auto-clear if verification is older than 15 minutes
+        LocalDateTime timestamp = verificationTimestamps.get(email);
+        if (timestamp != null && timestamp.plusMinutes(15).isBefore(LocalDateTime.now())) {
+            clearVerifiedEmail(email);
+            return false;
+        }
+        return verifiedEmails.getOrDefault(email, false);
+    }
+
+    // Clear verification status
+    public void clearVerifiedEmail(String email) {
+        verifiedEmails.remove(email);
+        verificationTimestamps.remove(email);
     }
 }
