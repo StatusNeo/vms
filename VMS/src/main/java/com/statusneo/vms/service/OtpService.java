@@ -52,13 +52,13 @@ public class OtpService {
         emailService.sendEmail(email, "Your OTP Code", "Your OTP is: " + otp);
     }
 
-    public boolean validateOtp(String email, String otp) {
-        Optional<Otp> latestOtp = getLatestOtpByEmail(email);
-        if (latestOtp.isEmpty()) {
-            throw new IllegalArgumentException("No OTP found for the given email.");
-        }
-        return latestOtp.get().getOtp().equals(otp);
-    }
+//    public boolean validateOtp(String email, String otp) {
+//        Optional<Otp> latestOtp = getLatestOtpByEmail(email);
+//        if (latestOtp.isEmpty()) {
+//            throw new IllegalArgumentException("No OTP found for the given email.");
+//        }
+//        return latestOtp.get().getOtp().equals(otp);
+//    }
 
     public Optional<Otp> getLatestOtpByEmail(String email) {
         List<Otp> otps = otpRepository.findByEmailOrdered(email);
@@ -86,5 +86,20 @@ public class OtpService {
     public void clearVerifiedEmail(String email) {
         verifiedEmails.remove(email);
         verificationTimestamps.remove(email);
+    }
+
+
+    public boolean validateOtp(String email, String otp) {
+        Optional<Otp> latestOtp = getLatestOtpByEmail(email);
+        if (latestOtp.isEmpty()) {
+            return false;
+        }
+
+        // Check if OTP is expired
+        if (latestOtp.get().getExpirationTime().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        return latestOtp.get().getOtp().equals(otp);
     }
 }
