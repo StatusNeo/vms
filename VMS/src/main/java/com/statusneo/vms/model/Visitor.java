@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -114,5 +116,17 @@ public class Visitor {
 				", address='" + address + '\'' +
 				", picturePath='" + picturePath + '\'' +
 				'}';
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "employee_id")
+	private Employee employeeToMeet;
+
+	public Employee getEmployeeToMeet() {
+		return employeeToMeet;
+	}
+
+	public void setEmployeeToMeet(Employee employeeToMeet) {
+		this.employeeToMeet = employeeToMeet;
 	}
 }
