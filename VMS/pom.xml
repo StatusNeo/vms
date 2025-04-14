@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.statusneo</groupId>
     <artifactId>vms</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>VMS</name>
     <description>StatusNeo Visitor Management</description>
     <url/>
