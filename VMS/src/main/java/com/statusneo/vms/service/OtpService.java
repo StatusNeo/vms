@@ -1,9 +1,9 @@
-
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Otp;
 import com.statusneo.vms.repository.OtpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,10 +22,12 @@ public class OtpService {
     @Autowired
     private EmailService emailService;
 
+    @Value("${visitor.system.otp.subject}")
+    private String otpSubject;
+
     private static final int OTP_EXPIRATION_MINUTES = 10;
     private final Map<String, Boolean> verifiedEmails = new ConcurrentHashMap<>();
     private final Map<String, LocalDateTime> verificationTimestamps = new ConcurrentHashMap<>();
-
 
     public String generatedOtp() {
         return String.valueOf(new Random().nextInt(900000) + 100000); // 6-digit OTP
@@ -47,33 +49,29 @@ public class OtpService {
         otpEntity.setExpirationTime(expirationTime);
 
         otpRepository.save(otpEntity);
-
-        // Send OTP via email
-        emailService.sendEmail(email, "Your OTP Code", "Your OTP is: " + otp);
+        emailService.sendEmail(email, otpSubject, "Your OTP is: " + otp);
     }
-
-//    public boolean validateOtp(String email, String otp) {
-//        Optional<Otp> latestOtp = getLatestOtpByEmail(email);
-//        if (latestOtp.isEmpty()) {
-//            throw new IllegalArgumentException("No OTP found for the given email.");
-//        }
-//        return latestOtp.get().getOtp().equals(otp);
-//    }
 
     public Optional<Otp> getLatestOtpByEmail(String email) {
         List<Otp> otps = otpRepository.findByEmailOrdered(email);
-        return otps.isEmpty() ? Optional.empty() : Optional.of(otps.get(0)); // Return the latest OTP
+        return otps.isEmpty() ? Optional.empty() : Optional.of(otps.get(0));
     }
 
-    // Mark email as verified
+    public boolean validateOtp(String email, String otp) {
+        Optional<Otp> latestOtp = getLatestOtpByEmail(email);
+        if (latestOtp.isEmpty()) {
+            return false;
+        }
+        return !latestOtp.get().getExpirationTime().isBefore(LocalDateTime.now()) &&
+                latestOtp.get().getOtp().equals(otp);
+    }
+
     public void markEmailAsVerified(String email) {
         verifiedEmails.put(email, true);
         verificationTimestamps.put(email, LocalDateTime.now());
     }
 
-    // Check if email is verified
     public boolean isEmailVerified(String email) {
-        // Auto-clear if verification is older than 15 minutes
         LocalDateTime timestamp = verificationTimestamps.get(email);
         if (timestamp != null && timestamp.plusMinutes(15).isBefore(LocalDateTime.now())) {
             clearVerifiedEmail(email);
@@ -82,24 +80,8 @@ public class OtpService {
         return verifiedEmails.getOrDefault(email, false);
     }
 
-    // Clear verification status
     public void clearVerifiedEmail(String email) {
         verifiedEmails.remove(email);
         verificationTimestamps.remove(email);
-    }
-
-
-    public boolean validateOtp(String email, String otp) {
-        Optional<Otp> latestOtp = getLatestOtpByEmail(email);
-        if (latestOtp.isEmpty()) {
-            return false;
-        }
-
-        // Check if OTP is expired
-        if (latestOtp.get().getExpirationTime().isBefore(LocalDateTime.now())) {
-            return false;
-        }
-
-        return latestOtp.get().getOtp().equals(otp);
     }
 }

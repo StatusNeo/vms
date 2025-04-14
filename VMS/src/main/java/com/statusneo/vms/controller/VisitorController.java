@@ -143,16 +143,16 @@ public class VisitorController {
                     """);
         }
     }
-
-    @PostMapping("/send-report")
-    public String sendReport(@RequestParam String email) {
-        try {
-            emailService.sendVisitorData(email);  // ✅ Method is called here
-            return "Visitor report sent successfully to " + email;
-        } catch (MessagingException | IOException e) {
-            return "Error sending email: " + e.getMessage();
-        }
-    }
+//
+//    @PostMapping("/send-report")
+//    public String sendReport(@RequestParam String email) {
+//        try {
+//            emailService.sendVisitorData(email);  // ✅ Method is called here
+//            return "Visitor report sent successfully to " + email;
+//        } catch (MessagingException | IOException e) {
+//            return "Error sending email: " + e.getMessage();
+//        }
+//    }
 
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query) {
@@ -191,17 +191,17 @@ public class VisitorController {
 //        return ResponseEntity.ok("OTP sent successfully");
 //    }
 
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerVisitor(@RequestBody Visitor visitor) {
-        if (!otpService.isEmailVerified(visitor.getEmail())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Email not verified");
-        }
-        Visitor savedVisitor = visitorRepository.save(visitor);
-        otpService.clearVerifiedEmail(visitor.getEmail());
-        return ResponseEntity.ok("Registration successful");
-    }
+//
+//    @PostMapping("/register")
+//    public ResponseEntity<String> registerVisitor(@RequestBody Visitor visitor) {
+//        if (!otpService.isEmailVerified(visitor.getEmail())) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+//                    .body("Email not verified");
+//        }
+//        Visitor savedVisitor = visitorRepository.save(visitor);
+//        otpService.clearVerifiedEmail(visitor.getEmail());
+//        return ResponseEntity.ok("Registration successful");
+//    }
 
 
     @PostMapping("/submit-details")
@@ -334,4 +334,30 @@ public class VisitorController {
                             """);
         }
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerVisitor(@RequestBody Visitor visitor) {
+        try {
+            // Validate required fields
+            if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
+                return ResponseEntity.badRequest().body("Email is required");
+            }
+
+            // Save visitor to database
+            Visitor savedVisitor = visitorRepository.save(visitor);
+
+            // Send notification email
+            emailService.sendVisitorEmail(savedVisitor);
+
+            // Send OTP to visitor
+            otpService.sendOtp(visitor.getEmail());
+
+            return ResponseEntity.ok("Visitor registered successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error registering visitor: " + e.getMessage());
+        }
+    }
+
+
 }

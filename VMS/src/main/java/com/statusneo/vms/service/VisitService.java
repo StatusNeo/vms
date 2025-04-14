@@ -68,19 +68,19 @@ public class VisitService {
 //    }
 
 
-    public Visitor registerVisitor(Visitor visitor) {
-        // Save visitor
-        Visitor savedVisitor = visitorRepository.save(visitor);
-
-        try {
-            // Send Excel report to admin automatically
-            emailService.sendVisitorData("arshu.rashid.khan@gmail.com");  // Change to the recipient email
-        } catch (MessagingException | IOException e) {
-            e.printStackTrace(); // Log the error
-        }
-
-        return savedVisitor;
-    }
+//    public Visitor registerVisitor(Visitor visitor) {
+//        // Save visitor
+//        Visitor savedVisitor = visitorRepository.save(visitor);
+//
+//        try {
+//            // Send Excel report to admin automatically
+//            emailService.sendVisitorData("arshu.rashid.khan@gmail.com");  // Change to the recipient email
+//        } catch (MessagingException | IOException e) {
+//            e.printStackTrace(); // Log the error
+//        }
+//
+//        return savedVisitor;
+//    }
 
 
     public CompletableFuture<Visitor> saveVisitorAsync(Visitor visitor) {
