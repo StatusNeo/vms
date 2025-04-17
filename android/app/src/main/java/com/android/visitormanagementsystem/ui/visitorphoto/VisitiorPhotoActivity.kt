@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -20,16 +21,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import com.android.visitormanagementsystem.BuildConfig
+import com.android.visitormanagementsystem.CheckoutBinding
 import com.android.visitormanagementsystem.R
 import com.android.visitormanagementsystem.VisitorPhotoBinding
 import com.android.visitormanagementsystem.ui.registervisitor.RegisterVisitorActivity
-import com.android.visitormanagementsystem.ui.visitorlanding.VisitorLandingActivity
 import com.android.visitormanagementsystem.utils.ProgressBarViewState
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -42,11 +43,9 @@ class VisitiorPhotoActivity:AppCompatActivity() {
     private val db = Firebase.firestore
 
     var isPhotoUploaded: Boolean = false
-    lateinit var binding: VisitorPhotoBinding
 
     // lateinit var imageUri:Uri
     private var imageUri: Uri? = null
-    var useMobileNo: String = ""
 
     //var storageRef = storage.reference
     var imageUrl: String = ""
@@ -54,41 +53,33 @@ class VisitiorPhotoActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(VisitorPhotoBinding.inflate(layoutInflater).apply{
             viewStateProgress = progressViewState
-            binding = this
-            useMobileNo = intent.getStringExtra("mobile").toString()
-            println("Mobile 22  $useMobileNo")
 
             btnUploadPhoto.setOnClickListener {
-                if (!progressViewState.progressbarEvent) {
-                    if (!isPhotoUploaded) {
-                        if (ActivityCompat.checkSelfPermission(
-                                this@VisitiorPhotoActivity, android.Manifest.permission.CAMERA
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            ActivityCompat.requestPermissions(
-                                this@VisitiorPhotoActivity,
-                                arrayOf(android.Manifest.permission.CAMERA),
-                                123
-                            )
-                        } else {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                intent.putExtra("selectContent", 4)
-                                openCVResultLauncher.launch(intent)
-                            } else {
-                                var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                openLegacyResultLauncher.launch(intent)
-                            }
-
-                        }
+                if (!isPhotoUploaded) {
+                    if (ActivityCompat.checkSelfPermission(
+                            this@VisitiorPhotoActivity, android.Manifest.permission.CAMERA
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        ActivityCompat.requestPermissions(
+                            this@VisitiorPhotoActivity,
+                            arrayOf(android.Manifest.permission.CAMERA),
+                            123
+                        )
                     } else {
-                        val intent =
-                            Intent(this@VisitiorPhotoActivity, RegisterVisitorActivity::class.java)
-                        intent.putExtra("mobile", useMobileNo)
-                        intent.putExtra("imageUrl", imageUrl)
-                        startActivity(intent)
-                        finish()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            intent.putExtra("selectContent", 4)
+                            openCVResultLauncher.launch(intent)
+                        } else {
+                            var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            openLegacyResultLauncher.launch(intent)
+                        }
+
                     }
+                }else{
+                    val intent = Intent(this@VisitiorPhotoActivity, RegisterVisitorActivity::class.java)
+                    intent.putExtra("mobile", intent.getStringExtra("mobile"))
+                    startActivity(intent)
                 }
                 }
 
@@ -104,6 +95,11 @@ class VisitiorPhotoActivity:AppCompatActivity() {
             }
 
         }.root)
+
+
+
+
+
     }
     private fun saveTheImageLegacyStyle(inContext: Context, inImage: Bitmap): Uri? {
         var imagesFolder: File = File(inContext.cacheDir, "images")
@@ -121,6 +117,8 @@ class VisitiorPhotoActivity:AppCompatActivity() {
         } catch(e: FileNotFoundException) {
         }
         return uri
+
+
     }
     private fun saveImageInQ(bitmap: Bitmap): Uri? {
         val filename = "IMG_${System.currentTimeMillis()}.jpg"
@@ -153,46 +151,38 @@ class VisitiorPhotoActivity:AppCompatActivity() {
     private var openCVResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             progressViewState.progressbarEvent = true
-            binding.btnUploadPhoto.alpha = 0.5f
             try {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
                     imageUri = saveImageInQ(bmp)
-                    var ivPhoto = findViewById<CircleImageView>(R.id.ivPhotoVisitor)
+                    var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhotoVisitor)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
-                }else{
-                    progressViewState.progressbarEvent = false
-                    binding.btnUploadPhoto.alpha = 1.0f
+
+
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false
-                binding.btnUploadPhoto.alpha = 1.0f
             }
         }
 
     var openLegacyResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             progressViewState.progressbarEvent = true
-            binding.btnUploadPhoto.alpha = 0.5f
+
             try {
                 if(result.resultCode == Activity.RESULT_OK) {
                     var extras: Bundle? = result.data?.extras
                     var bmp: Bitmap = result.data?.extras?.get("data") as Bitmap
                     imageUri = saveTheImageLegacyStyle(this, bmp)
-                    var ivPhoto = findViewById<CircleImageView>(R.id.ivPhoto)
+                    var ivPhoto = findViewById<ShapeableImageView>(R.id.ivPhoto)
                     ivPhoto.setImageBitmap(bmp)
                     uploadImage()
-                }else{
-                    progressViewState.progressbarEvent = false
-                    binding.btnUploadPhoto.alpha = 1.0f
                 }
             } catch(e: Exception) {
                 progressViewState.progressbarEvent = false
-                binding.btnUploadPhoto.alpha = 1.0f
             }
         }
-
     private fun uploadImage() {
         val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
         val now = Date()
@@ -204,23 +194,17 @@ class VisitiorPhotoActivity:AppCompatActivity() {
                     imageUrl = uri.toString()
                     isPhotoUploaded = true
                     progressViewState.progressbarEvent = false
-                    binding.btnUploadPhoto.alpha = 1.0f
                     var tvPhoto = findViewById<TextView>(R.id.tv_change_photo)
                     tvPhoto.visibility=View.VISIBLE;
                     var btn_upload_photo = findViewById<Button>(R.id.btn_upload_photo)
                     btn_upload_photo.text = "Next"
+
+
                     Log.d("uri>>>", uri.toString())
                 })
             }.addOnFailureListener {
                 progressViewState.progressbarEvent = false
-                binding.btnUploadPhoto.alpha = 1.0f
             }
         }
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this@VisitiorPhotoActivity, VisitorLandingActivity::class.java)
-        startActivity(intent)
-        this@VisitiorPhotoActivity.finish()
     }
 }
