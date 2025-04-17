@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.android.visitormanagementsystem.ui.loginoption.LoginOptionActivity">
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:background="@color/action_bar_bg_color">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/logoLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            >
+            <ImageView
+                android:id="@+id/ivLogoText"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginStart="28dp"
+                android:padding="@dimen/_4sdp"
+
+                android:src="@drawable/logo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginStart="15dp"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/statusneo"
+                app:layout_constraintTop_toBottomOf="@+id/ivLogoText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:id="@+id/tvToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/action_bar_login_title" />
+
+
+        <TextView
+            android:id="@+id/tv_vms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:text="@string/text_vms"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+    <Button
+        android:id="@+id/btn_security"
+        android:text="@string/btn_text_security_login"
+        android:textAllCaps="false"
+        android:layout_width="match_parent"
+        app:backgroundTint="@null"
+        android:textColor="@color/black"
+        android:layout_marginBottom="@dimen/margin_twenty_five"
+        android:layout_marginLeft="@dimen/margin_twenty_five"
+        android:layout_marginRight="@dimen/margin_twenty_five"
+        android:textSize="@dimen/font_size_sixteen"
+        android:background="@drawable/rounded_corner"
+        android:layout_height="@dimen/_50sdp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_admin_login"
+        />
+
+
+
+    <Button
+        android:id="@+id/btn_admin_login"
+        android:text="@string/btn_text_admin_login"
+        android:textAllCaps="false"
+        android:layout_width="match_parent"
+        app:backgroundTint="@null"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/btn_security"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="@dimen/margin_twenty_five"
+        android:layout_marginRight="@dimen/margin_twenty_five"
+        android:textSize="@dimen/font_size_sixteen"
+        android:background="@drawable/rounded_corner"
+        android:layout_height="@dimen/_50sdp" />
+    <Button
+        android:id="@+id/btn_host"
+        android:text="@string/btn_text_host"
+        android:textAllCaps="false"
+        android:layout_width="match_parent"
+        app:backgroundTint="@null"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/margin_twenty_five"
+        android:layout_marginLeft="@dimen/margin_twenty_five"
+        android:layout_marginRight="@dimen/margin_twenty_five"
+        android:textSize="@dimen/font_size_sixteen"
+        android:background="@drawable/rounded_corner"
+        android:layout_height="@dimen/_50sdp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_admin_login"
+        />
+
+    <TextView
+        android:id="@+id/tv_about_vms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="About VMS"
+        android:textColor="@color/black"
+        android:layout_margin="@dimen/_20sdp"
+       app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

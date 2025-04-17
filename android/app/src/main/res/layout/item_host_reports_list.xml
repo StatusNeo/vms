@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data class=".HostReportsItemBinding">
+            <variable
+            name="data"
+            type="com.android.visitormanagementsystem.ui.host.hostreports.HostReportUiModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/visitorItemCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_10sdp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/itemImage"
+                android:layout_width="@dimen/_70sdp"
+                android:layout_height="@dimen/_70sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:padding="@dimen/_2sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:loadImage="@{String.valueOf(data.visitorImage)}"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/NameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@{data.visitorName}"
+                app:layout_constrainedWidth="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textSize="@dimen/_12ssp"
+                android:fontFamily="@font/montserrat_medium"
+                android:textColor="@color/black"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineVertical2"
+                app:layout_constraintStart_toEndOf="@+id/itemImage"
+                android:layout_marginStart="@dimen/_10sdp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/DateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:setDate="@{data.visitDate}"
+                app:layout_constrainedWidth="true"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="@color/black"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineVertical2"
+                app:layout_constraintStart_toEndOf="@+id/itemImage"
+                app:layout_constraintTop_toBottomOf="@+id/NameTextView" />
+
+            <TextView
+                android:id="@+id/timeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:setTime="@{String.valueOf(data.visittime)}"
+                app:layout_constrainedWidth="true"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/montserrat_regular"
+                android:textColor="@color/black"
+                android:layout_marginStart="@dimen/_10sdp"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineVertical2"
+                app:layout_constraintStart_toEndOf="@+id/itemImage"
+                app:layout_constraintTop_toBottomOf="@+id/DateTextView" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineVertical2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/_20sdp" />
+
+            <ImageView
+                android:id="@+id/next_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_arrow_right_yellow"
+                app:layout_constraintStart_toEndOf="@+id/guidelineVertical2"
+                app:layout_constraintTop_toTopOf="parent"
+                android:padding="@dimen/_5sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
