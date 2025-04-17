@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visitor Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Hide number input arrows */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
+    <div class="flex justify-center items-center">
+        <h1 class="text-4xl font-bold text-gray-800 mr-4">Welcome to</h1>
+        <img
+                src="/images/StatusNeo-Logo-Dark.png"
+                alt="StatusNeo Logo"
+                class="h-12 w-auto"
+        />
+    </div>
+
+    <!-- Combined Registration Form -->
+    <form
+            id="visitorForm"
+            hx-post="/api/visitors/saveVisitor"
+            hx-target="#responseMessage"
+            hx-swap="innerHTML"
+            hx-ext="json-enc"
+            class="grid grid-cols-1 gap-6 mt-6"
+    >
+        <!-- Visitor Details -->
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name *</label>
+            <input type="text" id="name" name="name" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number *</label>
+            <input type="number" id="phoneNumber" name="phoneNumber" required
+                   oninput="this.value=this.value.slice(0,10)"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email *</label>
+            <input type="email" id="email" name="email" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+            <textarea id="address" name="address"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <!-- Employee Search Field -->
+        <div class="relative">
+            <label for="employee" class="block text-sm font-medium text-gray-700">Employee to Meet</label>
+            <input type="text" id="employee" name="employee"
+                   hx-get="/api/visitors/search"
+                   hx-trigger="keyup changed delay:200ms"
+                   hx-target="#employeeSuggestions"
+                   hx-swap="innerHTML"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <ul id="employeeSuggestions" class="absolute bg-white w-full border border-gray-300 rounded-md mt-1 shadow-lg z-10 hidden"></ul>
+        </div>
+
+        <!-- OTP Verification Section -->
+        <div id="otpSection" class="hidden">
+            <label for="otp" class="block text-sm font-medium text-gray-700">OTP *</label>
+            <div class="flex gap-2">
+                <input type="number" id="otp" name="otp" required
+                       oninput="this.value=this.value.slice(0,6)"
+                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="button" onclick="verifyOTP()"
+                        class="bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600">
+                    Verify OTP
+                </button>
+            </div>
+            <div id="otpMessage" class="mt-2 text-sm"></div>
+        </div>
+
+        <!-- Form Submission -->
+        <div class="flex gap-2">
+            <button type="button" onclick="sendOTP()" id="sendOtpBtn"
+                    class="flex-1 bg-yellow-500 text-black font-bold py-2 px-4 rounded-md hover:bg-yellow-600">
+                Send OTP
+            </button>
+            <button type="submit" id="submitBtn" disabled
+                    class="flex-1 bg-gray-300 text-gray-500 font-bold py-2 px-4 rounded-md cursor-not-allowed">
+                Complete Registration
+            </button>
+        </div>
+
+        <!-- Response Messages -->
+        <div id="responseMessage" class="text-center"></div>
+    </form>
+</div>
+
+<script>
+    // Autocomplete dropdown
+    document.addEventListener("htmx:afterSwap", function() {
+        let suggestions = document.getElementById("employeeSuggestions");
+        suggestions.classList.toggle("hidden", suggestions.innerHTML.trim() === "");
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!event.target.closest("#employee")) {
+            document.getElementById("employeeSuggestions").classList.add("hidden");
+        }
+    });
+
+    function selectEmployee(name) {
+        document.getElementById("employee").value = name;
+        document.getElementById("employeeSuggestions").classList.add("hidden");
+    }
+
+    // OTP Flow
+    function sendOTP() {
+        const email = document.getElementById("email").value;
+        if (!email) {
+            alert("Please enter your email first");
+            return;
+        }
+
+        const btn = document.getElementById("sendOtpBtn");
+        btn.disabled = true;
+        btn.innerHTML = `
+            <span class="flex items-center justify-center">
+                <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Sending...
+            </span>
+        `;
+
+        htmx.ajax("POST", "/api/visitors/verify-email", {
+            values: { email: email },
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            target: "#responseMessage",
+            swap: "innerHTML"
+        }).then(() => {
+            btn.disabled = false;
+            btn.textContent = "Resend OTP";
+            document.getElementById("otpSection").classList.remove("hidden");
+        });
+    }
+
+    function verifyOTP() {
+        const email = document.getElementById("email").value;
+        const otp = document.getElementById("otp").value;
+
+        if (!otp) {
+            document.getElementById("otpMessage").innerHTML =
+                '<div class="text-red-600">Please enter OTP</div>';
+            return;
+        }
+
+        const verifyBtn = document.querySelector('button[onclick="verifyOTP()"]');
+        verifyBtn.disabled = true;
+        verifyBtn.innerHTML = `
+            <span class="flex items-center justify-center">
+                <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Verifying...
+            </span>
+        `;
+
+        htmx.ajax("POST", "/api/visitors/validate-otp", {
+            values: { email: email, otp: otp },
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            target: "#otpMessage",
+            swap: "innerHTML"
+        }).then(() => {
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = "Verify OTP";
+
+            if (document.getElementById("otpMessage").textContent.includes("Successfully")) {
+                document.getElementById("submitBtn").disabled = false;
+                document.getElementById("submitBtn").classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed");
+                document.getElementById("submitBtn").classList.add("bg-yellow-500", "text-black", "hover:bg-yellow-600");
+            }
+        });
+    }
+
+    // Form submission handling
+    document.addEventListener("htmx:beforeRequest", function(evt) {
+        if (evt.detail.elt.id === "visitorForm") {
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <span class="flex items-center justify-center">
+                    <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                </span>
+            `;
+        }
+    });
+
+    document.addEventListener("htmx:afterRequest", function(evt) {
+        if (evt.detail.elt.id === "visitorForm") {
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Complete Registration";
+
+            if (evt.detail.successful) {
+                submitBtn.disabled = true;
+                submitBtn.classList.remove("bg-yellow-500", "hover:bg-yellow-600");
+                submitBtn.classList.add("bg-gray-300", "text-gray-500", "cursor-not-allowed");
+            }
+        }
+    });
+</script>
+</body>
+</html>
