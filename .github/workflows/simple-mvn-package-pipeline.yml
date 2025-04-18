@@ -3,7 +3,7 @@ name: simple maven package distributer
 on:
   push:
     branches:
-      - develop
+      - GH-Actions-fix
 
 jobs:
   build:
