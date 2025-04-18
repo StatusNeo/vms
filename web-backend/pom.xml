@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.statusneo</groupId>
+    <groupId>com.statusneo.fixed</groupId>
     <artifactId>vms</artifactId>
     <version>0.1.1-SNAPSHOT</version>
     <name>VMS</name>
