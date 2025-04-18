@@ -39,10 +39,10 @@ jobs:
           EOF
 
       - name: Build with Maven
-        run: mvn clean package -DskipTests --file VMS/pom.xml
+        run: mvn clean package -DskipTests --file web-backend/pom.xml
 
       - name: Publish to GitHub Packages
-        run: mvn deploy -DskipTests --file VMS/pom.xml
+        run: mvn deploy -DskipTests --file web-backend/pom.xml
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
 
