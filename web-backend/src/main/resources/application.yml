@@ -1,0 +1,96 @@
+spring:
+  application:
+    # Application Configuration
+    name: VMS
+  datasource:
+    # Database Configuration (PostgreSQL)
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: "5"
+      # Connection Pool Settings (commented examples)
+      #maximum-pool-size: 10
+      #connection-timeout: 30000
+  jpa:
+    # JPA/Hibernate Configuration
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: "true"
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: "20"
+        order_inserts: "true"
+        order_updates: "true"
+  servlet:
+    multipart:
+      # File Upload Settings (commented examples)
+      #max-file-size: 10MB
+      #max-request-size: 10MB
+  mail:
+    # Email Configuration
+    host: smtp.gmail.com
+    port: "587"
+    username: (your Outlook 365 email address)
+    password: (your Outlook 365 app password)
+    properties:
+      mail:
+        smtp:
+          auth: "true"
+          starttls:
+            enable: "true"
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        profile:
+          tenant-id: ${TENANT_ID}
+#        authorization-clients:
+#          graph:
+#            scopes: <https://graph.microsoft.com/.default>
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope: https://graph.microsoft.com/.default
+        provider:
+          azure:
+            token-uri: https://login.microsoftonline.com/${spring.cloud.azure.active-directory.profile.tenant-id}/oauth2/v2.0/token
+
+server:
+  # Server Configuration
+  port: "443"
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: password
+    key-store-type: PKCS12
+    key-alias: myalias
+    # SSL/TLS Configuration (commented examples)
+    #enabled-protocols: TLSv1.2
+    #ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+visitor:
+  system:
+    notification:
+      # Email Configuration
+      email: (your Outlook 365 email address)
+      subject: New Visitor Registration
+    otp:
+      subject: OTP Verification Code
+    employee:
+      notification:
+        # Add this new property
+        subject: YOUR VISITOR IS HERE
+app:
+  user-email: vms@statusneo.com
+logging:
+  level:
+    org:
+      # Logging Configuration
+      springframework: INFO
