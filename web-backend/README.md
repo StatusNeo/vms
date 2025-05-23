@@ -7,7 +7,8 @@
 ### Prerequisites
 - Java 21
 - Maven
-- Docker and Docker Compose (for running tests with TestContainers)
+- Docker and Docker Compose (for running tests with TestContainers) — check https://java.testcontainers.org/supported_docker_environment/#overview 
+  for appropriate Testcontainers settings in case using alternate Docker runtime. Follow exactly to avoid DB issues.
 - PostgreSQL (for local development)
 
 ### Build Instructions
@@ -154,6 +155,8 @@ src/
 ### Common Issues
 1. **Database Connection**:
    - Verify PostgreSQL is running
+   - Verify Testcontainers is configured properly https://java.testcontainers.org/supported_docker_environment/#overview
+     in case using alternate Docker runtime. Follow exactly to avoid DB issues.
    - Check connection properties
    - Ensure proper network access
 
