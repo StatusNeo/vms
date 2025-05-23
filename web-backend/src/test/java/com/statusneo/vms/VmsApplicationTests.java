@@ -1,13 +1,15 @@
-//package com.statusneo.vms;
-//
-//import org.junit.jupiter.api.Test;
-//import org.springframework.boot.test.context.SpringBootTest;
-//
-//@SpringBootTest
-//class VmsApplicationTests {
-//
-//	@Test
-//	void contextLoads() {
-//	}
-//
-//}
+package com.statusneo.vms;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+
+@Import(TestcontainersConfiguration.class)
+@SpringBootTest
+class VmsApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
