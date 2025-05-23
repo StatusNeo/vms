@@ -38,3 +38,6 @@ gg:
   jte:
     developmentMode: true
 
+# Application specific properties
+app:
+  user-email: ${VMS_EMAIL}

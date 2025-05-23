@@ -6,19 +6,32 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+/**
+ * Service responsible for handling all email communications in the Visitor Management System.
+ * Manages visitor notifications, OTP delivery, and employee communications.
+ */
 @Service
 public class EmailService {
-    private final JavaMailSender mailSender;
     private final VisitorRepository visitorRepository;
-    private final ExcelGeneratorService excelGeneratorService;
+    private final ExcelService excelService;
+
+    private final OAuth2AuthorizedClientManager authorizedClientManager;
+    private final RestTemplate restTemplate;
 
     @Value("${visitor.system.notification.email}")
     private String recipientEmail;
@@ -29,18 +42,96 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
+    @Value("${app.user-email}")
+    private String userEmail;
+
     @Value("${visitor.system.employee.notification.subject}")
     private String employeeNotificationSubject;
 
+    /**
+     * Constructs a new EmailService with required dependencies.
+     *
+     * @param visitorRepository Repository for visitor data access
+     * @param excelService      Service for generating Excel reports
+     */
     @Autowired
-    public EmailService(JavaMailSender mailSender,
-                        VisitorRepository visitorRepository,
-                        ExcelGeneratorService excelGeneratorService) {
-        this.mailSender = mailSender;
+    public EmailService(VisitorRepository visitorRepository,
+                        ExcelService excelService,
+                        OAuth2AuthorizedClientManager authorizedClientManager,
+                        RestTemplate restTemplate) {
         this.visitorRepository = visitorRepository;
-        this.excelGeneratorService = excelGeneratorService;
+        this.excelService = excelService;
+        this.authorizedClientManager = authorizedClientManager;
+        this.restTemplate = restTemplate;
     }
 
+    /**
+     * Gets an access token for Microsoft Graph API.
+     *
+     * @return The access token
+     * @throws RuntimeException if token retrieval fails
+     */
+    public String getAccessToken() {
+        OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest
+                .withClientRegistrationId("azure")
+                .principal("principal")  // using a string principal for client_credentials flow
+                .build();
+
+        OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+
+        if (authorizedClient != null) {
+            return authorizedClient.getAccessToken().getTokenValue();
+        }
+
+        throw new RuntimeException("Failed to obtain access token");
+    }
+
+    /**
+     * Sends a simple email with the default sender.
+     *
+     * @param toEmail Recipient email address
+     * @param subject Email subject
+     * @param body    Email body content
+     * @return true if the email was sent successfully, false otherwise
+     */
+    public boolean sendEmail(String toEmail, String subject, String body) {
+        String accessToken = getAccessToken();
+        String endpoint = String.format("https://graph.microsoft.com/v1.0/users/%s/sendMail", userEmail);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+
+        Map<String, Object> emailData = new HashMap<>();
+        Map<String, Object> message = new HashMap<>();
+        Map<String, Object> emailBody = new HashMap<>();
+
+        emailBody.put("contentType", "Text");
+        emailBody.put("content", body);
+
+        message.put("subject", subject);
+        message.put("body", emailBody);
+        message.put("toRecipients", Collections.singletonList(
+                Collections.singletonMap("emailAddress",
+                        Collections.singletonMap("address", toEmail))));
+
+        emailData.put("message", message);
+        emailData.put("saveToSentItems", "true");
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(emailData, headers);
+        ResponseEntity<Void> response = restTemplate.exchange(endpoint, HttpMethod.POST, request, Void.class);
+
+        return response.getStatusCode().equals(HttpStatus.ACCEPTED);
+    }
+
+
+    /**
+     * Sends a notification email about a new visitor to the system administrator.
+     *
+     * @param visitor The visitor whose details should be included in the notification
+     * @throws RuntimeException if email sending fails
+     */
     public void sendVisitorEmail(Visitor visitor) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -48,12 +139,17 @@ public class EmailService {
             message.setTo(recipientEmail);
             message.setSubject(notificationSubject + ": " + visitor.getName());
             message.setText(createVisitorDetailsMessage(visitor));
-            mailSender.send(message);
         } catch (Exception e) {
             throw new RuntimeException("Failed to send visitor email", e);
         }
     }
 
+    /**
+     * Creates a formatted message containing visitor details.
+     *
+     * @param visitor The visitor whose details to format
+     * @return A formatted string containing visitor information
+     */
     private String createVisitorDetailsMessage(Visitor visitor) {
         return String.format("""
             Visitor Details:
@@ -68,35 +164,32 @@ public class EmailService {
                 visitor.getAddress());
     }
 
-    public void sendEmail(String to, String subject, String text) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(senderEmail);
-            message.setTo(to);
-            message.setSubject(subject);
-            message.setText(text);
-            mailSender.send(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to send email", e);
-        }
-    }
 
     public void sendVisitorReport() {
         try {
             List<Visitor> visitors = visitorRepository.findAll();
-            byte[] excelFile = excelGeneratorService.generateExcel(visitors);
+            byte[] excelFile = excelService.generateVisitorExcel(visitors);
 
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(senderEmail);
-            helper.setTo(recipientEmail);
-            helper.setSubject(notificationSubject + " Report");
-            helper.setText("Please find attached the visitor report.");
-            helper.addAttachment("Visitor_Report.xlsx", new ByteArrayResource(excelFile));
+//            MimeMessage message = mailSender.createMimeMessage();
+//            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+//            helper.setFrom(senderEmail);
+//            helper.setTo(recipientEmail);
+//            helper.setSubject(notificationSubject + " Report");
+//            helper.setText("Please find attached the visitor report.");
+//            helper.addAttachment("Visitor_Report.xlsx", new ByteArrayResource(excelFile));
 
-            mailSender.send(message);
         } catch (Exception e) {
             throw new RuntimeException("Failed to send visitor report", e);
         }
     }
+
+    // Add methods from NotificationService
+    public void sendOtp(String email, String otp) {
+        sendEmail(email, "Your OTP", "Your OTP is: " + otp);
+    }
+
+    public void sendMeetingNotification(String email, String whomToMeet) {
+        sendEmail(email, "Meeting Notification", "You have a visitor to meet: " + whomToMeet);
+    }
+
 }
