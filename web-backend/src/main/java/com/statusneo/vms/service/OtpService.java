@@ -1,4 +1,3 @@
-// src/main/java/com/statusneo/vms/service/OtpService.java
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Otp;
@@ -55,7 +54,7 @@ public class OtpService {
     }
 
     public Optional<Otp> getLatestOtpByEmail(String email) {
-        List<Otp> otps = otpRepository.findByEmailOrderByExpirationTimeDesc(email); // Assuming you have or can create this method in OtpRepository
+        List<Otp> otps = otpRepository.findByEmailOrderByExpirationTimeDesc(email);
         return otps.isEmpty() ? Optional.empty() : Optional.of(otps.get(0));
     }
 
