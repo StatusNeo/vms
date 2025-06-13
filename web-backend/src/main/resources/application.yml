@@ -10,13 +10,12 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true # Optional: Makes SQL logs more readable
-  datasource: # Add this section for database configuration
-    url: jdbc:postgresql://db:5432/vms_db # 'db' is the service name in docker-compose.yml
+        format_sql: true
+  datasource: 
+    url: jdbc:postgresql://db:5432/vms_db
     username: vms_user
     password: vms_password
     driver-class-name: org.postgresql.Driver
-  # The rest of your spring, gg, visitor, app sections from before...
 
 gg:
   jte:
@@ -26,5 +25,3 @@ visitor:
   system:
     otp:
       subject: OTP Verification Code
-
-# OAuth2 and specific notification emails will be in application-prod.yml and application-qa.yml

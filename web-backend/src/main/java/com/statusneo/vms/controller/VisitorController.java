@@ -1,4 +1,3 @@
-// src/main/java/com/statusneo/vms/controller/VisitorController.java
 package com.statusneo.vms.controller;
 
 import com.statusneo.vms.model.Employee;
@@ -26,11 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-// import java.io.IOException; // REMOVE THIS IMPORT if only used for MessagingException
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/visitors")
@@ -66,9 +62,6 @@ public class VisitorController {
 
     @Autowired
     private PendingRegistrationService pendingRegistrationService;
-
-    // This map seems to be a redundant way to store pending visitors if PendingRegistrationService is used
-    // private final Map<String, Visitor> pendingVisitors = new HashMap<>(); // Consider removing if not actively used
 
     @GetMapping("/report")
     public ResponseEntity<?> getReport(@RequestParam String period) {
@@ -117,18 +110,6 @@ public class VisitorController {
                     """);
         }
     }
-
-    // @PostMapping("/send-report") // REMOVED as per the previous update to EmailService, you would call emailService.sendVisitorReport()
-    // public String sendReport(@RequestParam String email) {
-    //     try {
-    //         // emailService.sendVisitorData(email); // Assuming this was refactored or removed
-    //         emailService.sendVisitorReport(); // Use the dedicated method on EmailService
-    //         return "Visitor report sent successfully.";
-    //     } catch (Exception e) { // Catch generic Exception, as MessagingException/IOException might not be thrown by Graph API calls
-    //         logger.error("Error sending report: {}", e.getMessage());
-    //         return "Error sending email: " + e.getMessage();
-    //     }
-    // }
 
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query) {

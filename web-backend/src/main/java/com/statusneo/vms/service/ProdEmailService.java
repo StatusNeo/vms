@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Base64; // Add this import for attachments
+import java.util.Base64; 
 
 /**
  * Service responsible for handling all email communications in the Visitor Management System
@@ -42,15 +42,11 @@ public class ProdEmailService implements EmailService { // Implement the interfa
     @Value("${visitor.system.notification.subject}")
     private String notificationSubject;
 
-    // We're using userEmail for sending, so senderEmail from Spring Mail config isn't directly used for Graph API calls
-    // @Value("${spring.mail.username}") // Remove or comment out if not used
-    // private String senderEmail;
-
     @Value("${app.user-email}")
-    private String userEmail; // The user (email address) from which Graph API sends emails
+    private String userEmail;
 
     @Value("${visitor.system.employee.notification.subject}")
-    private String employeeNotificationSubject; // Subject for employee meeting notifications
+    private String employeeNotificationSubject;
 
     @Autowired
     public ProdEmailService(VisitorRepository visitorRepository,
@@ -63,7 +59,6 @@ public class ProdEmailService implements EmailService { // Implement the interfa
         this.restTemplate = restTemplate;
     }
 
-    // Public method for token retrieval, although typically internal to this service
     public String getAccessToken() {
         OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest
                 .withClientRegistrationId("azure")
@@ -79,10 +74,10 @@ public class ProdEmailService implements EmailService { // Implement the interfa
         throw new RuntimeException("Failed to obtain access token for Graph API. Check Azure AD configuration.");
     }
 
-    @Override // Implementing the interface method
+    @Override
     public void sendEmail(String toEmail, String subject, String body) {
         try {
-            String accessToken = getAccessToken(); // This throws RuntimeException on failure, which is propagated
+            String accessToken = getAccessToken();
 
             // Graph API endpoint for sending mail from a specific user
             String endpoint = String.format("https://graph.microsoft.com/v1.0/users/%s/sendMail", userEmail);
@@ -91,9 +86,8 @@ public class ProdEmailService implements EmailService { // Implement the interfa
             headers.setBearerAuth(accessToken);
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // Constructing the message payload as required by Microsoft Graph API
             Map<String, Object> emailBody = new HashMap<>();
-            emailBody.put("contentType", "Text"); // Can be HTML as well
+            emailBody.put("contentType", "Text");
             emailBody.put("content", body);
 
             Map<String, Object> message = new HashMap<>();
@@ -105,7 +99,7 @@ public class ProdEmailService implements EmailService { // Implement the interfa
 
             Map<String, Object> emailData = new HashMap<>();
             emailData.put("message", message);
-            emailData.put("saveToSentItems", "true"); // Save a copy in the sender's Sent Items folder
+            emailData.put("saveToSentItems", "true");
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(emailData, headers);
 
@@ -122,7 +116,7 @@ public class ProdEmailService implements EmailService { // Implement the interfa
         }
     }
 
-    @Override // Implementing the interface method
+    @Override
     public void sendVisitorEmail(Visitor visitor) {
         String subject = notificationSubject + ": " + visitor.getName();
         String body = createVisitorDetailsMessage(visitor);
@@ -150,7 +144,7 @@ public class ProdEmailService implements EmailService { // Implement the interfa
             visitor.getAddress());
     }
 
-    @Override // Implementing the interface method
+    @Override
     public void sendVisitorReport() {
         try {
             List<Visitor> visitors = visitorRepository.findAll();
@@ -159,7 +153,6 @@ public class ProdEmailService implements EmailService { // Implement the interfa
             String subject = notificationSubject + " Report";
             String body = "Please find attached the visitor report.";
 
-            // Instead of MimeMessageHelper, we'll build the Graph API request for sending email with attachment
             String accessToken = getAccessToken();
             String endpoint = String.format("https://graph.microsoft.com/v1.0/users/%s/sendMail", userEmail);
 
@@ -167,7 +160,6 @@ public class ProdEmailService implements EmailService { // Implement the interfa
             headers.setBearerAuth(accessToken);
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // Create attachment payload
             Map<String, Object> fileAttachment = new HashMap<>();
             fileAttachment.put("@odata.type", "#microsoft.graph.fileAttachment");
             fileAttachment.put("name", fileName);
@@ -175,7 +167,6 @@ public class ProdEmailService implements EmailService { // Implement the interfa
             fileAttachment.put("contentBytes", Base64.getEncoder().encodeToString(excelFile)); // Base64 encode the file content
             fileAttachment.put("isInline", false); // Not an inline attachment (like an image in the body)
 
-            // Create message payload
             Map<String, Object> emailBody = new HashMap<>();
             emailBody.put("contentType", "Text");
             emailBody.put("content", body);
@@ -185,7 +176,7 @@ public class ProdEmailService implements EmailService { // Implement the interfa
             message.put("body", emailBody);
             message.put("toRecipients", Collections.singletonList(
                     Collections.singletonMap("emailAddress",
-                            Collections.singletonMap("address", recipientEmail)))); // Send report to admin
+                            Collections.singletonMap("address", recipientEmail))));
             message.put("attachments", Collections.singletonList(fileAttachment));
 
             Map<String, Object> emailData = new HashMap<>();
@@ -208,12 +199,12 @@ public class ProdEmailService implements EmailService { // Implement the interfa
         }
     }
 
-    @Override // Implementing the interface method
+    @Override
     public void sendOtp(String email, String otp) {
         sendEmail(email, "Your OTP", "Your OTP is: " + otp);
     }
 
-    @Override // Implementing the interface method
+    @Override 
     public void sendMeetingNotification(String email, String whomToMeet) {
         sendEmail(email, employeeNotificationSubject, "You have a visitor to meet: " + whomToMeet);
     }
@@ -222,7 +213,7 @@ public class ProdEmailService implements EmailService { // Implement the interfa
     public List<String> getSentEmails() {
         // This method is not applicable for the production service.
         // It's meant for the QA mock.
-        return Collections.emptyList(); // Or throw UnsupportedOperationException
+        return Collections.emptyList(); 
     }
 
     @Override
