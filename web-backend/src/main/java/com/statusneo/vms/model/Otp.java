@@ -163,6 +163,7 @@ public class Otp {
         return Objects.hash(id, email, otp, expirationTime, visit, resendCount, createdAt);
     }
 
+    @Override
     public String toString() {
         return "Otp(id=" + this.getId() + 
                ", email=" + this.getEmail() + 

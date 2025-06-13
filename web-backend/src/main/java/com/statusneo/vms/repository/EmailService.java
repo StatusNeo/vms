@@ -19,5 +19,6 @@ public interface EmailService {
     // Optional: for QA to inspect sent emails (only relevant for the mock)
     // Production implementation can return empty list or throw UnsupportedOperationException
     List<String> getSentEmails();
+    
     void clearSentEmails();
 }
