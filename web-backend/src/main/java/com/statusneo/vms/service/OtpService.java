@@ -1,3 +1,4 @@
+// src/main/java/com/statusneo/vms/service/OtpService.java
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Otp;
@@ -5,7 +6,7 @@ import com.statusneo.vms.repository.OtpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import com.statusneo.vms.repository.EmailService; 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class OtpService {
     private OtpRepository otpRepository;
 
     @Autowired
-    private EmailService emailService;
+    private EmailService emailService; // Change from concrete class to interface
 
     @Value("${visitor.system.otp.subject}")
     private String otpSubject;
@@ -49,11 +50,12 @@ public class OtpService {
         otpEntity.setExpirationTime(expirationTime);
 
         otpRepository.save(otpEntity);
-        emailService.sendEmail(email, otpSubject, "Your OTP is: " + otp);
+        // Call the sendOtp method from the EmailService interface, which will delegate to the active implementation
+        emailService.sendOtp(email, otp); // Using the dedicated sendOtp method on EmailService
     }
 
     public Optional<Otp> getLatestOtpByEmail(String email) {
-        List<Otp> otps = otpRepository.findByEmailOrdered(email);
+        List<Otp> otps = otpRepository.findByEmailOrderByExpirationTimeDesc(email); // Assuming you have or can create this method in OtpRepository
         return otps.isEmpty() ? Optional.empty() : Optional.of(otps.get(0));
     }
 

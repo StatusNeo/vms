@@ -5,39 +5,26 @@ spring:
     compose:
       lifecycle-management: start_only
   jpa:
-    # JPA/Hibernate Configuration
     hibernate:
       ddl-auto: update
     show-sql: true
-  security:
-    oauth2:
-      client:
-        registration:
-          azure:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
-            authorization-grant-type: client_credentials
-            scope: https://graph.microsoft.com/.default
-        provider:
-          azure:
-            token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+    properties:
+      hibernate:
+        format_sql: true # Optional: Makes SQL logs more readable
+  datasource: # Add this section for database configuration
+    url: jdbc:postgresql://db:5432/vms_db # 'db' is the service name in docker-compose.yml
+    username: vms_user
+    password: vms_password
+    driver-class-name: org.postgresql.Driver
+  # The rest of your spring, gg, visitor, app sections from before...
 
-visitor:
-  system:
-    notification:
-      # Email Configuration
-      email: address@email.com
-      subject: New Visitor Registration
-    otp:
-      subject: OTP Verification Code
-    employee:
-      notification:
-        # Add this new property
-        subject: YOUR VISITOR IS HERE
 gg:
   jte:
     developmentMode: true
 
-# Application specific properties
-app:
-  user-email: ${VMS_EMAIL}
+visitor:
+  system:
+    otp:
+      subject: OTP Verification Code
+
+# OAuth2 and specific notification emails will be in application-prod.yml and application-qa.yml

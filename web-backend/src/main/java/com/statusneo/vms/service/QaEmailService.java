@@ -1,0 +1,70 @@
+package com.statusneo.vms.service;
+
+import com.statusneo.vms.model.Visitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile; // Add this import
+import org.springframework.stereotype.Service;
+import com.statusneo.vms.repository.EmailService; 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Mock Email Service for QA environment.
+ * This service does not send actual emails and logs attempts instead.
+ */
+@Service
+@Profile("qa") // This service will ONLY be active when the "qa" profile is active
+public class QaEmailService implements EmailService { // Implement the interface
+
+    private static final Logger logger = LoggerFactory.getLogger(QaEmailService.class);
+
+    // Using a volatile list to store sent emails for observation in QA/tests
+    private final List<String> sentEmailsLog = Collections.synchronizedList(new ArrayList<>());
+
+    @Override // Implementing the interface method
+    public void sendEmail(String toEmail, String subject, String body) {
+        String logMessage = String.format(
+                "MOCK EMAIL SENT (QA Profile) - To: %s, Subject: %s, Body: %s",
+                toEmail, subject, body.replace("\n", " ").substring(0, Math.min(body.length(), 100)) + "...");
+        logger.info(logMessage);
+        sentEmailsLog.add(logMessage);
+    }
+
+    @Override // Implementing the interface method
+    public void sendVisitorEmail(Visitor visitor) {
+        String body = String.format("MOCK Visitor Notification - Name: %s, Email: %s", visitor.getName(), visitor.getEmail());
+        sendEmail("admin@example.com", "MOCK New Visitor Alert", body);
+    }
+
+    @Override // Implementing the interface method
+    public void sendVisitorReport() {
+        String logMessage = "MOCK Visitor Report Sent (Attachment simulated)";
+        logger.info(logMessage);
+        sentEmailsLog.add(logMessage);
+    }
+
+    @Override // Implementing the interface method
+    public void sendOtp(String email, String otp) {
+        String body = "MOCK Your OTP is: " + otp;
+        sendEmail(email, "MOCK OTP for VMS", body);
+    }
+
+    @Override // Implementing the interface method
+    public void sendMeetingNotification(String email, String whomToMeet) {
+        String body = "MOCK You have a visitor to meet: " + whomToMeet;
+        sendEmail(email, "MOCK Meeting Notification", body);
+    }
+
+    @Override // Implementing the interface method
+    public List<String> getSentEmails() {
+        return new ArrayList<>(sentEmailsLog); // Return a copy to prevent external modification
+    }
+
+    @Override // Implementing the interface method
+    public void clearSentEmails() {
+        sentEmailsLog.clear();
+        logger.info("Cleared mock email log.");
+    }
+}

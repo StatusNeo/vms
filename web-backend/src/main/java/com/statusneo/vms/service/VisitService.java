@@ -4,19 +4,18 @@ import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 
 @Service
 public class VisitService {
@@ -27,13 +26,10 @@ public class VisitService {
     private OtpService otpService;
 
     @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
     private VisitorRepository visitorRepository;
 
     @Autowired
-    private EmailService emailService;
+    private ProdEmailService emailService;
 
     @Autowired
     private VisitRepository visitRepository;
@@ -56,7 +52,7 @@ public class VisitService {
         return visitRepository.save(visit);
 
         // Send OTP
-//        notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
+//        emailService.sendOtp(visitor.getEmail(), visitor.getOtp());
     }
 //
 //    @Transactional

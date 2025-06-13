@@ -1,0 +1,28 @@
+spring:
+  config:
+    activate:
+      on-profile: prod # This file is active when 'prod' profile is set
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope: https://graph.microsoft.com/.default
+        provider:
+          azure:
+            token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+
+visitor:
+  system:
+    notification:
+      email: production_admin@yourcompany.com # Replace with actual production admin email
+      subject: New Visitor Registration
+    employee:
+      notification:
+        subject: YOUR VISITOR IS HERE
+
+app:
+  user-email: ${VMS_EMAIL} # This should be the email used for sending emails via Graph API in production

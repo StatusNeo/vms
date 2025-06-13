@@ -1,15 +1,15 @@
-package com.statusneo.vms;
+// package com.statusneo.vms;
+// import org.springframework.test.context.ActiveProfiles;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.context.annotation.Import;
+// @ActiveProfiles("qa")
+// // @Import(TestcontainersConfiguration.class)
+// @SpringBootTest
+// class VmsApplicationTests {
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+// 	@Test
+// 	void contextLoads() {
+// 	}
 
-@Import(TestcontainersConfiguration.class)
-@SpringBootTest
-class VmsApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+// }

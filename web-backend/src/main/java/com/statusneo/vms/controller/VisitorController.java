@@ -1,3 +1,4 @@
+// src/main/java/com/statusneo/vms/controller/VisitorController.java
 package com.statusneo.vms.controller;
 
 import com.statusneo.vms.model.Employee;
@@ -6,15 +7,13 @@ import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.EmployeeRepository;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
-import com.statusneo.vms.service.EmailService;
+import com.statusneo.vms.repository.EmailService; // Ensure this imports the INTERFACE
 import com.statusneo.vms.service.EmployeeService;
 import com.statusneo.vms.service.ExcelService;
 import com.statusneo.vms.service.FileStorageService;
-import com.statusneo.vms.service.NotificationService;
 import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.PendingRegistrationService;
 import com.statusneo.vms.service.VisitService;
-import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
+// import java.io.IOException; // REMOVE THIS IMPORT if only used for MessagingException
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -48,17 +47,13 @@ public class VisitorController {
     private OtpService otpService;
 
     @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
     private VisitService visitService;
 
     @Autowired
-    private EmailService emailService;
+    private EmailService emailService; // Ensure this is autowiring the INTERFACE
 
     @Autowired
     private EmployeeService employeeService;
-
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -72,14 +67,8 @@ public class VisitorController {
     @Autowired
     private PendingRegistrationService pendingRegistrationService;
 
-    private final Map<String, Visitor> pendingVisitors = new HashMap<>();
-
-//    @PostMapping("/register")
-//    public ResponseEntity<?> registerVisitor(@RequestBody Visit visit) {
-//        visitService.registerVisit(visit);
-//        return ResponseEntity.ok("OTP sent to email");
-//    }
-
+    // This map seems to be a redundant way to store pending visitors if PendingRegistrationService is used
+    // private final Map<String, Visitor> pendingVisitors = new HashMap<>(); // Consider removing if not actively used
 
     @GetMapping("/report")
     public ResponseEntity<?> getReport(@RequestParam String period) {
@@ -101,28 +90,13 @@ public class VisitorController {
 
     @GetMapping("/")
     public String home() {
-        return "index";  // Looks for src/main/resources/templates/index.html
+        return "index"; // Looks for src/main/resources/templates/index.html
     }
-
-//    @PostMapping("/saveVisitor")
-//    public ResponseEntity<String> saveVisitor(@RequestBody Visitor visitor) {
-//        visitService.saveVisitor(visitor);
-//        return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully!</p>");
-//    }
-
 
     @GetMapping("/all")
     public List<Visitor> getAllVisitors() {
         return visitService.getAllVisitors();
     }
-
-//    @PostMapping("/validate-otp")
-//    public ResponseEntity<String> validateOtp(@RequestParam String email, @RequestParam String otp) {
-//        boolean isValid = otpService.validateOtp(email, otp);
-//
-//        return isValid ? ResponseEntity.ok("<p class='text-green-600 font-bold'>OTP Verified Successfully!</p>") :
-//                ResponseEntity.badRequest().body("Invalid or expired OTP!");
-//    }
 
     @PostMapping("/validate-otp") // Changed to POST for better practice
     public ResponseEntity<String> validateOtp(
@@ -137,22 +111,24 @@ public class VisitorController {
                     """);
         } else {
             return ResponseEntity.ok("""
-                    <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                        Invalid OTP, please try again
-                    </div>
+                        <div id="otp-error-message" class="text-red-600 font-bold mb-4">
+                            Invalid OTP, please try again
+                        </div>
                     """);
         }
     }
-//
-//    @PostMapping("/send-report")
-//    public String sendReport(@RequestParam String email) {
-//        try {
-//            emailService.sendVisitorData(email);  // ✅ Method is called here
-//            return "Visitor report sent successfully to " + email;
-//        } catch (MessagingException | IOException e) {
-//            return "Error sending email: " + e.getMessage();
-//        }
-//    }
+
+    // @PostMapping("/send-report") // REMOVED as per the previous update to EmailService, you would call emailService.sendVisitorReport()
+    // public String sendReport(@RequestParam String email) {
+    //     try {
+    //         // emailService.sendVisitorData(email); // Assuming this was refactored or removed
+    //         emailService.sendVisitorReport(); // Use the dedicated method on EmailService
+    //         return "Visitor report sent successfully.";
+    //     } catch (Exception e) { // Catch generic Exception, as MessagingException/IOException might not be thrown by Graph API calls
+    //         logger.error("Error sending report: {}", e.getMessage());
+    //         return "Error sending email: " + e.getMessage();
+    //     }
+    // }
 
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query) {
@@ -182,28 +158,6 @@ public class VisitorController {
         }
     }
 
-//    @PostMapping("/verify-email")
-//    public ResponseEntity<String> verifyEmail(@RequestParam String email) {
-//        if (visitorRepository.existsByEmail(email)) {
-//            return ResponseEntity.badRequest().body("Email already registered");
-//        }
-//        otpService.sendOtp(email);
-//        return ResponseEntity.ok("OTP sent successfully");
-//    }
-
-//
-//    @PostMapping("/register")
-//    public ResponseEntity<String> registerVisitor(@RequestBody Visitor visitor) {
-//        if (!otpService.isEmailVerified(visitor.getEmail())) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//                    .body("Email not verified");
-//        }
-//        Visitor savedVisitor = visitorRepository.save(visitor);
-//        otpService.clearVerifiedEmail(visitor.getEmail());
-//        return ResponseEntity.ok("Registration successful");
-//    }
-
-
     @PostMapping("/submit-details")
     public ResponseEntity<String> submitDetails(@RequestBody Visitor visitor) {
         // Store details temporarily
@@ -214,32 +168,12 @@ public class VisitorController {
         return ResponseEntity.ok("OTP sent to email");
     }
 
-//    // Updated registration endpoint
-//    @PostMapping("/complete-registration")
-//    public ResponseEntity<String> completeRegistration(
-//            @RequestParam String email,
-//            @RequestParam String otp) {
-//
-//        // 1. Validate OTP
-//        if (!otpService.validateOtp(email, otp)) {
-//            return ResponseEntity.badRequest().body("Invalid OTP");
-//        }
-//
-//        // 2. Get saved details
-//        Visitor visitor = pendingRegistrationService.getAndRemove(email);
-//        if (visitor == null) {
-//            return ResponseEntity.badRequest().body("Session expired. Please restart registration.");
-//        }
-//
-//        // 3. Save to DB
-//        Visitor savedVisitor = visitorRepository.save(visitor);
-//        return ResponseEntity.ok("<p class='text-green-600 font-bold'>Registration successful!</p>");
-//    }
-
-    // New endpoint in your Controller
     @PostMapping("/send-otp")
     public ResponseEntity<String> sendOtpForRegistration(@RequestBody Visitor visitor) {
-        // 1. Validate inputs
+        // 1. Validate inputs (consider adding more robust validation here)
+        if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
+            return ResponseEntity.badRequest().body("Email is required for OTP.");
+        }
         // 2. Send OTP
         otpService.sendOtp(visitor.getEmail());
         return ResponseEntity.ok("OTP sent");
@@ -277,9 +211,9 @@ public class VisitorController {
         // Validate OTP
         if (!otpService.validateOtp(email, otp)) {
             return ResponseEntity.badRequest().body("""
-                    <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                        Invalid OTP, please try again
-                    </div>
+                        <div id="otp-error-message" class="text-red-600 font-bold mb-4">
+                            Invalid OTP, please try again
+                        </div>
                     """);
         }
 
@@ -297,11 +231,12 @@ public class VisitorController {
             emailService.sendVisitorEmail(savedVisitor);
 
             return ResponseEntity.ok("""
-                    <p class="text-green-600 font-bold">Registration successful!</p>
+                        <p class="text-green-600 font-bold">Registration successful!</p>
                     """);
         } catch (Exception e) {
+            logger.error("Error during complete registration for email {}: {}", email, e.getMessage());
             return ResponseEntity.badRequest().body("""
-                    <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
+                        <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
         }
     }
 
@@ -311,27 +246,28 @@ public class VisitorController {
             // 1. Validate email format only
             if (email == null || !email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
                 return ResponseEntity.badRequest().body("""
-                        <div class="text-red-600 mb-2">
-                            Please enter a valid email address
-                        </div>
-                        """);
+                            <div class="text-red-600 mb-2">
+                                Please enter a valid email address
+                            </div>
+                            """);
             }
 
             // 2. Send OTP (no email uniqueness check)
             otpService.sendOtp(email);
 
             return ResponseEntity.ok("""
-                    <div class="text-green-600 mb-2">
-                        OTP sent successfully! Please check your email.
-                    </div>
-                    """);
+                        <div class="text-green-600 mb-2">
+                            OTP sent successfully! Please check your email.
+                        </div>
+                        """);
         } catch (Exception e) {
+            logger.error("Error sending OTP for email verification to {}: {}", email, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("""
-                            <div class="text-red-600 mb-2">
-                                Error sending OTP. Please try again.
-                            </div>
-                            """);
+                                <div class="text-red-600 mb-2">
+                                    Error sending OTP. Please try again.
+                                </div>
+                                """);
         }
     }
 
@@ -354,10 +290,9 @@ public class VisitorController {
 
             return ResponseEntity.ok("Visitor registered successfully");
         } catch (Exception e) {
+            logger.error("Error during visitor registration for email {}: {}", visitor.getEmail(), e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error registering visitor: " + e.getMessage());
         }
     }
-
-
 }
