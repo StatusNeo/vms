@@ -6,14 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile; // Add this import
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.statusneo.vms.repository.EmailService; 
+import com.statusneo.vms.repository.EmailService;
+import com.statusneo.vms.repository.OtpNotificationService;
+import com.statusneo.vms.repository.VisitorNotificationService;
+import com.statusneo.vms.repository.MeetingNotificationService;
+import com.statusneo.vms.repository.VisitorReportService;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +29,16 @@ import java.util.Base64;
  * using Microsoft Graph API for production environment.
  */
 @Service
-@Profile("!qa") // This service will be active for any profile EXCEPT "qa"
-public class ProdEmailService implements EmailService { // Implement the interface
+@Profile("!test") // This service will be active for any profile EXCEPT "test"
+public class GraphEmailService implements 
+                            EmailService,
+                            OtpNotificationService,
+                            VisitorNotificationService,
+                            MeetingNotificationService,
+                            VisitorReportService
 
-    private static final Logger logger = LoggerFactory.getLogger(ProdEmailService.class);
+{ 
+    private static final Logger logger = LoggerFactory.getLogger(GraphEmailService.class);
 
     private final VisitorRepository visitorRepository;
     private final ExcelService excelService;
@@ -42,14 +52,14 @@ public class ProdEmailService implements EmailService { // Implement the interfa
     @Value("${visitor.system.notification.subject}")
     private String notificationSubject;
 
-    @Value("${app.user-email}")
+    @Value("${app.user-email:}")
     private String userEmail;
 
     @Value("${visitor.system.employee.notification.subject}")
     private String employeeNotificationSubject;
 
     @Autowired
-    public ProdEmailService(VisitorRepository visitorRepository,
+    public GraphEmailService(VisitorRepository visitorRepository,
                             ExcelService excelService,
                             OAuth2AuthorizedClientManager authorizedClientManager,
                             RestTemplate restTemplate) {
@@ -207,19 +217,5 @@ public class ProdEmailService implements EmailService { // Implement the interfa
     @Override 
     public void sendMeetingNotification(String email, String whomToMeet) {
         sendEmail(email, employeeNotificationSubject, "You have a visitor to meet: " + whomToMeet);
-    }
-
-    @Override
-    public List<String> getSentEmails() {
-        // This method is not applicable for the production service.
-        // It's meant for the QA mock.
-        return Collections.emptyList(); 
-    }
-
-    @Override
-    public void clearSentEmails() {
-        // This method is not applicable for the production service.
-        // It's meant for the QA mock.
-        // Do nothing
     }
 }

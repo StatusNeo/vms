@@ -1,9 +1,8 @@
 spring:
-  application:
-    name: VMS
-  docker:
-    compose:
-      lifecycle-management: start_only
+  config:
+    activate:
+      on-profile: test
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -12,6 +11,10 @@ spring:
       hibernate:
         format_sql: true
 
+  docker:
+    compose:
+      lifecycle-management: start_only
+
 gg:
   jte:
     developmentMode: true
@@ -19,4 +22,4 @@ gg:
 visitor:
   system:
     otp:
-      subject: OTP Verification Code
+      subject: Test OTP Code

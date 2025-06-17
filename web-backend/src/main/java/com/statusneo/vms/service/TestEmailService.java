@@ -5,7 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile; // Add this import
 import org.springframework.stereotype.Service;
-import com.statusneo.vms.repository.EmailService; 
+import com.statusneo.vms.repository.EmailService;
+import com.statusneo.vms.repository.OtpNotificationService;
+import com.statusneo.vms.repository.VisitorNotificationService;
+import com.statusneo.vms.repository.MeetingNotificationService;
+import com.statusneo.vms.repository.VisitorReportService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,10 +19,16 @@ import java.util.List;
  * This service does not send actual emails and logs attempts instead.
  */
 @Service
-@Profile("qa") // This service will ONLY be active when the "qa" profile is active
-public class QaEmailService implements EmailService {
+@Profile("test") // This service will ONLY be active when the "test" profile is active
+public class TestEmailService implements
+                            EmailService,
+                            OtpNotificationService,
+                            VisitorNotificationService,
+                            MeetingNotificationService,
+                            VisitorReportService
+{
 
-    private static final Logger logger = LoggerFactory.getLogger(QaEmailService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestEmailService.class);
 
     private final List<String> sentEmailsLog = Collections.synchronizedList(new ArrayList<>());
 
@@ -54,16 +64,5 @@ public class QaEmailService implements EmailService {
     public void sendMeetingNotification(String email, String whomToMeet) {
         String body = "MOCK You have a visitor to meet: " + whomToMeet;
         sendEmail(email, "MOCK Meeting Notification", body);
-    }
-
-    @Override
-    public List<String> getSentEmails() {
-        return new ArrayList<>(sentEmailsLog); // Return a copy to prevent external modification
-    }
-
-    @Override
-    public void clearSentEmails() {
-        sentEmailsLog.clear();
-        logger.info("Cleared mock email log.");
     }
 }

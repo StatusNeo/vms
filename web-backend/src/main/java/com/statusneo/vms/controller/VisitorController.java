@@ -3,13 +3,10 @@ package com.statusneo.vms.controller;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
-import com.statusneo.vms.repository.EmployeeRepository;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
-import com.statusneo.vms.repository.EmailService; // Ensure this imports the INTERFACE
+import com.statusneo.vms.repository.EmailService;
 import com.statusneo.vms.service.EmployeeService;
-import com.statusneo.vms.service.ExcelService;
-import com.statusneo.vms.service.FileStorageService;
 import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.PendingRegistrationService;
 import com.statusneo.vms.service.VisitService;
@@ -46,19 +43,10 @@ public class VisitorController {
     private VisitService visitService;
 
     @Autowired
-    private EmailService emailService; // Ensure this is autowiring the INTERFACE
+    private EmailService emailService;
 
     @Autowired
     private EmployeeService employeeService;
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private ExcelService excelService;
-
-    @Autowired
-    private FileStorageService fileStorageService;
 
     @Autowired
     private PendingRegistrationService pendingRegistrationService;
@@ -255,21 +243,16 @@ public class VisitorController {
     @PostMapping("/register")
     public ResponseEntity<?> registerVisitor(@RequestBody Visitor visitor) {
         try {
-            // Validate required fields
-            if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
-                return ResponseEntity.badRequest().body("Email is required");
+            Visitor savedVisitor = visitService.saveVisitor(visitor);
+
+            if (savedVisitor == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Failed to register visitor.");
             }
 
-            // Save visitor to database
-            Visitor savedVisitor = visitorRepository.save(visitor);
-
-            // Send notification email
-            emailService.sendVisitorEmail(savedVisitor);
-
-            // Send OTP to visitor
-            otpService.sendOtp(visitor.getEmail());
-
             return ResponseEntity.ok("Visitor registered successfully");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.error("Error during visitor registration for email {}: {}", visitor.getEmail(), e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

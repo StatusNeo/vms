@@ -29,7 +29,7 @@ public class VisitService {
     private VisitorRepository visitorRepository;
 
     @Autowired
-    private ProdEmailService emailService;
+    private GraphEmailService emailService;
 
     @Autowired
     private VisitRepository visitRepository;
