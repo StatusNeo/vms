@@ -1,10 +1,10 @@
-package com.statusneo.vms;
+// package com.statusneo.vms;
 
-import org.springframework.boot.SpringApplication;
+// import org.springframework.boot.SpringApplication;
 
-public class TestVisitorApplication {
+// public class TestVisitorApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.from(VmsApplication::main).with(TestcontainersConfiguration.class).run(args);
-	}
-}
+// 	public static void main(String[] args) {
+// 		SpringApplication.from(VmsApplication::main).with(TestcontainersConfiguration.class).run(args);
+// 	}
+// }

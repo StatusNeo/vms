@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.statusneo.vms.repository.EmailService; 
+import com.statusneo.vms.repository.OtpNotificationService; 
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,9 @@ public class OtpService {
     @Autowired
     private EmailService emailService; // Change from concrete class to interface
 
+     @Autowired
+    private OtpNotificationService otpNotificationService;
+    
     @Value("${visitor.system.otp.subject}")
     private String otpSubject;
 
@@ -50,7 +55,7 @@ public class OtpService {
 
         otpRepository.save(otpEntity);
         // Call the sendOtp method from the EmailService interface, which will delegate to the active implementation
-        emailService.sendOtp(email, otp); // Using the dedicated sendOtp method on EmailService
+        otpNotificationService.sendOtp(email, otp); // Using the dedicated sendOtp method on EmailService
     }
 
     public Optional<Otp> getLatestOtpByEmail(String email) {

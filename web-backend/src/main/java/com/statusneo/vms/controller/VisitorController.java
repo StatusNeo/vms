@@ -10,6 +10,7 @@ import com.statusneo.vms.service.EmployeeService;
 import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.PendingRegistrationService;
 import com.statusneo.vms.service.VisitService;
+import com.statusneo.vms.repository.VisitorNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class VisitorController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private VisitorNotificationService visitorNotificationService;
 
     @Autowired
     private EmployeeService employeeService;
@@ -197,7 +201,7 @@ public class VisitorController {
             Visitor savedVisitor = visitorRepository.save(visitor);
 
             // Send notification to admin
-            emailService.sendVisitorEmail(savedVisitor);
+            visitorNotificationService.sendVisitorEmail(savedVisitor);
 
             return ResponseEntity.ok("""
                         <p class="text-green-600 font-bold">Registration successful!</p>
