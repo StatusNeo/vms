@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to StatusNeo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+<div class="min-h-screen flex flex-col items-center justify-center">
+    <header class="w-full max-w-2xl mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Welcome to StatusNeo</h1>
+    </header>
+
+    <main class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Enter OTP</h2>
+
+        <form>
+            <div class="mb-4">
+                <label for="otp" class="block text-sm font-medium text-gray-600 mb-2">Visitor email validation</label>
+                <input type="text" id="otp" name="otp" placeholder="Enter OTP" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500">Validate OTP</button>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Add OTP validation logic here
+        alert('OTP validation logic to be implemented');
+    });
+</script>
+</body>
+</html>

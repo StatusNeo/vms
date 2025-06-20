@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: VMS
+  docker:
+    compose:
+      lifecycle-management: start_only
+  jpa:
+    # JPA/Hibernate Configuration
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope: https://graph.microsoft.com/.default
+        provider:
+          azure:
+            token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+
+visitor:
+  system:
+    notification:
+      # Email Configuration
+      email: address@email.com
+      subject: New Visitor Registration
+    otp:
+      subject: OTP Verification Code
+    employee:
+      notification:
+        # Add this new property
+        subject: YOUR VISITOR IS HERE
+gg:
+  jte:
+    developmentMode: true
+
+# Application specific properties
+app:
+  user-email: ${VMS_EMAIL}
