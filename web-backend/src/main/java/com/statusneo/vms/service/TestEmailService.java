@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile; // Add this import
 import org.springframework.stereotype.Service;
-import com.statusneo.vms.repository.EmailRepository;
+import com.statusneo.vms.service.EmailService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Service
 @Profile("test") // This service will ONLY be active when the "test" profile is active
-public class TestEmailService implements EmailRepository
+public class TestEmailService implements EmailService
 {
 
     private static final Logger logger = LoggerFactory.getLogger(TestEmailService.class);

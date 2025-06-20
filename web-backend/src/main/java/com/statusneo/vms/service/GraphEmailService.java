@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.statusneo.vms.repository.EmailRepository;
+import com.statusneo.vms.service.EmailService;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Base64;
  */
 @Service
 @Profile("!test") // This service will be active for any profile EXCEPT "test"
-public class GraphEmailService implements EmailRepository
+public class GraphEmailService implements EmailService
 
 { 
     private static final Logger logger = LoggerFactory.getLogger(GraphEmailService.class);
