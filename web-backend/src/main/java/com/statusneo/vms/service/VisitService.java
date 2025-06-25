@@ -55,18 +55,16 @@ public class VisitService {
         // Save visitor details
         return visitRepository.save(visit);
 
-        // Send OTP
-//        notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
-    }
-//
-//    @Transactional
-//    public Visitor saveVisitor(Visitor visitor) {
-//        Visitor savedVisitor = visitorRepository.save(visitor);
-//        emailService.sendVisitorEmail(savedVisitor);
-//        otpService.sendOtp(savedVisitor.getEmail());
-//        return savedVisitor;
-//    }
-
+    /**
+     * Resends an OTP for an existing visit if the resend limit hasn't been reached.
+     *
+     * @param visit The visit to resend the OTP for
+     * @return true if the OTP was resent successfully, false if the resend limit has been reached
+     */
+    public boolean resendOtp(Visit visit) {
+        if (visit.getVisitor() == null || visit.getVisitor().getEmail() == null) {
+            return false;
+        }
 
 //    public Visitor registerVisitor(Visitor visitor) {
 //        // Save visitor
