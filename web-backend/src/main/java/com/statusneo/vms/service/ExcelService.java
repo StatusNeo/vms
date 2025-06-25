@@ -24,9 +24,16 @@ public class ExcelService {
             // Header Row
             Row headerRow = sheet.createRow(0);
             String[] columns = {"ID", "Name", "Email", "Phone", "Address", "Registered At"};
+
+            // Apply header styling
+            CellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(columns[i]);
+                cell.setCellStyle(headerStyle);
             }
 
             // Data Rows
@@ -38,6 +45,7 @@ public class ExcelService {
                 row.createCell(2).setCellValue(visitor.getEmail());
                 row.createCell(3).setCellValue(visitor.getPhoneNumber());
                 row.createCell(4).setCellValue(visitor.getAddress());
+                row.createCell(5).setCellValue(visitor.getCreatedAt().toString());  // createdAt is a LocalDateTime
 //                row.createCell(5).setCellValue(visitor.getRegisteredAt().toString());
             }
 
