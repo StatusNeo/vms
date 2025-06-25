@@ -4,16 +4,12 @@ import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,37 +19,23 @@ public class VisitService {
 
     private final ExecutorService asyncExecutor = Executors.newFixedThreadPool(4);
 
-    @Autowired
-    private OtpService otpService;
+    private final OtpService otpService;
 
-    @Autowired
-    private NotificationService notificationService;
+    private final VisitorRepository visitorRepository;
 
-    @Autowired
-    private VisitorRepository visitorRepository;
+    private final EmailService emailService;
 
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private VisitRepository visitRepository;
+    private final VisitRepository visitRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(VisitService.class);
 
-
-
-    //    @Transactional(readOnly = true)
-    public boolean visitorExists(String email) {
-        return visitorRepository.existsByEmail(email);
+    public VisitService(OtpService otpService, VisitorRepository visitorRepository, EmailService emailService, VisitRepository visitRepository) {
+        this.otpService = otpService;
+        this.visitorRepository = visitorRepository;
+        this.emailService = emailService;
+        this.visitRepository = visitRepository;
     }
 
-    // Register visit with OTP
-    public Visit registerVisit(Visit visit) {
-        visit.setOtp(otpService.generatedOtp());
-        visit.setVisitDate(LocalDateTime.now());
-
-        // Save visitor details
-        return visitRepository.save(visit);
 
         // Send OTP
 //        notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
@@ -68,66 +50,40 @@ public class VisitService {
 //    }
 
 
-//    public Visitor registerVisitor(Visitor visitor) {
-//        // Save visitor
-//        Visitor savedVisitor = visitorRepository.save(visitor);
-//
-//        try {
-//            // Send Excel report to admin automatically
-//            emailService.sendVisitorData("arshu.rashid.khan@gmail.com");  // Change to the recipient email
-//        } catch (MessagingException | IOException e) {
-//            e.printStackTrace(); // Log the error
-//        }
-//
-//        return savedVisitor;
-//    }
-
-
-    public CompletableFuture<Visitor> saveVisitorAsync(Visitor visitor) {
-        // Validate before save
-        if (visitorExists(visitor.getEmail())) {
-            throw new IllegalStateException("Visitor already exists");
-        }
-
-        return CompletableFuture.supplyAsync(() -> {
-            Visitor savedVisitor = visitorRepository.save(visitor);
-            asyncSendNotifications(savedVisitor);
-            return savedVisitor;
-        }, asyncExecutor);
+        return otpService.sendOtp(visit.getVisitor().getEmail(), visit);
     }
 
-    private void asyncSendNotifications(Visitor visitor) {
-        asyncExecutor.execute(() -> {
-            try {
-                emailService.sendVisitorEmail(visitor);
-                otpService.sendOtp(visitor.getEmail());
-            } catch (Exception e) {
-                logger.error("Async notification failed", e);
-            }
-        });
-    }
-
+    /**
+     * Registers a new visit and generates an OTP for visitor verification.
+     * The OTP is associated with the visit and sent to the visitor's email.
+     *
+     * @param visitor The visitor to register
+     * @return The saved visit entity
+     */
     @Transactional
-    public Visitor saveVisitor(Visitor visitor) {
-        // Simply save the visitor without checking for duplicates
+    public Visit registerVisit(Visitor visitor) {
+        // Save the visitor first to get an ID
         Visitor savedVisitor = visitorRepository.save(visitor);
+        // Create a new Visit object and associate it with the saved Visitor
+        Visit visit = new Visit();
+        visit.setVisitor(savedVisitor);
+        visit.setVisitDate(LocalDateTime.now()); // Set the visit date to now
 
-        // Send notifications asynchronously
+        // Save the visit to the database
+        Visit savedVisit = visitRepository.save(visit);
+
+        // Generate and send OTP asynchronously
         CompletableFuture.runAsync(() -> {
             try {
-                emailService.sendVisitorEmail(savedVisitor);
-                otpService.sendOtp(savedVisitor.getEmail());
+                otpService.sendOtp(savedVisitor.getEmail(), savedVisit);
             } catch (Exception e) {
-                logger.error("Async notification failed", e);
+                logger.error("Async OTP sending failed", e);
             }
-        });
+        }, asyncExecutor);
 
-        return savedVisitor;
+        // Return the saved visitor details
+        return savedVisit;
+
     }
-
-    public List<Visitor> getAllVisitors() {
-        return visitorRepository.findAll();
-    }
-
 
 }
