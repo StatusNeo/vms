@@ -1,16 +1,14 @@
-spring:
-  mail:
-    password: springboot
-    username: duke
-    host: 127.0.0.1
-    port: 3025 # default protocol port + 3000 as offset
-    protocol: smtp
-greenMailBean:
-  autostart: true
-  smtpProtocol: true
-  pop3Protocol: true
-  portOffset: 3000
-  hostname: 127.0.0.1
-  users:
-    - to:password@localhost
-    - from:password@localhost
+visitor:
+  system:
+    notification:
+      email: test@example.com
+      subject: Test Notification
+    employee:
+      notification:
+        subject: Test Employee Notification
+    otp:
+      subject: OTP Verification Code
+
+gg:
+  jte:
+    developmentMode: true
