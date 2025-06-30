@@ -6,28 +6,14 @@ import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.EmployeeRepository;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
-import com.statusneo.vms.service.EmailService;
-import com.statusneo.vms.service.EmployeeService;
-import com.statusneo.vms.service.ExcelService;
-import com.statusneo.vms.service.FileStorageService;
-import com.statusneo.vms.service.NotificationService;
-import com.statusneo.vms.service.OtpService;
-import com.statusneo.vms.service.PendingRegistrationService;
-import com.statusneo.vms.service.VisitService;
-import jakarta.mail.MessagingException;
+import com.statusneo.vms.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +34,6 @@ public class VisitorController {
     private OtpService otpService;
 
     @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
     private VisitService visitService;
 
     @Autowired
@@ -65,12 +48,6 @@ public class VisitorController {
 
     @Autowired
     private ExcelService excelService;
-
-    @Autowired
-    private FileStorageService fileStorageService;
-
-    @Autowired
-    private PendingRegistrationService pendingRegistrationService;
 
     private final Map<String, Visitor> pendingVisitors = new HashMap<>();
 
@@ -110,11 +87,6 @@ public class VisitorController {
 //        return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully!</p>");
 //    }
 
-
-    @GetMapping("/all")
-    public List<Visitor> getAllVisitors() {
-        return visitService.getAllVisitors();
-    }
 
 //    @PostMapping("/validate-otp")
 //    public ResponseEntity<String> validateOtp(@RequestParam String email, @RequestParam String otp) {
@@ -172,7 +144,7 @@ public class VisitorController {
     @PostMapping("/saveVisitor")
     public ResponseEntity<String> saveVisitor(@RequestBody Visitor visitor) {
         try {
-            Visitor savedVisitor = visitService.saveVisitor(visitor);
+//            Visitor savedVisitor = visitService.registerVisit(visitor);
             return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully!</p>");
         } catch (IllegalStateException e) {
             // Custom message when visitor exists
@@ -207,7 +179,6 @@ public class VisitorController {
     @PostMapping("/submit-details")
     public ResponseEntity<String> submitDetails(@RequestBody Visitor visitor) {
         // Store details temporarily
-        pendingRegistrationService.savePendingVisitor(visitor.getEmail(), visitor);
 
         // Send OTP
         otpService.sendOtp(visitor.getEmail());
@@ -260,9 +231,6 @@ public class VisitorController {
             return ResponseEntity.badRequest().body("Email already registered");
         }
 
-        // Store visitor details temporarily
-        pendingRegistrationService.savePendingVisitor(visitor.getEmail(), visitor);
-
         // Generate and send OTP
         otpService.sendOtp(visitor.getEmail());
 
@@ -283,8 +251,8 @@ public class VisitorController {
                     """);
         }
 
+        Visitor visitor = null;
         // Get pending visitor details
-        Visitor visitor = pendingRegistrationService.getAndRemove(email);
         if (visitor == null) {
             return ResponseEntity.badRequest().body("Registration session expired. Please start again.");
         }

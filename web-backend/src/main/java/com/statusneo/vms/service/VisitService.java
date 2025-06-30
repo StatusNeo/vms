@@ -39,7 +39,7 @@ public class VisitService {
 
         // Send OTP
 //        notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
-    }
+//    }
 //
 //    @Transactional
 //    public Visitor saveVisitor(Visitor visitor) {
@@ -50,8 +50,8 @@ public class VisitService {
 //    }
 
 
-        return otpService.sendOtp(visit.getVisitor().getEmail(), visit);
-    }
+//        return otpService.sendOtp(visit.getVisitor().getEmail(), visit);
+//    }
 
     /**
      * Registers a new visit and generates an OTP for visitor verification.
@@ -75,7 +75,7 @@ public class VisitService {
         // Generate and send OTP asynchronously
         CompletableFuture.runAsync(() -> {
             try {
-                otpService.sendOtp(savedVisitor.getEmail(), savedVisit);
+                otpService.sendOtp(savedVisitor.getEmail());
             } catch (Exception e) {
                 logger.error("Async OTP sending failed", e);
             }
