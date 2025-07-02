@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -126,13 +127,13 @@ public class EmailService {
      * @param visitor The visitor whose details should be included in the notification
      * @throws RuntimeException if email sending fails
      */
-    public void sendVisitorEmail(Visitor visitor) {
-        try {
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to send visitor email", e);
-        }
-    }
+//    public void sendVisitorEmail(Visitor visitor) {
+//        try {
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to send visitor email", e);
+//        }
+//    }
 
     /**
      * Creates a formatted message containing visitor details.
@@ -155,23 +156,23 @@ public class EmailService {
     }
 
 
-    public void sendVisitorReport() {
-        try {
-            List<Visitor> visitors = visitorRepository.findAll();
-            byte[] excelFile = excelService.generateVisitorExcel(visitors);
-
-//            MimeMessage message = mailSender.createMimeMessage();
-//            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//            helper.setFrom(senderEmail);
-//            helper.setTo(recipientEmail);
-//            helper.setSubject(notificationSubject + " Report");
-//            helper.setText("Please find attached the visitor report.");
-//            helper.addAttachment("Visitor_Report.xlsx", new ByteArrayResource(excelFile));
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to send visitor report", e);
-        }
-    }
+//    public void sendVisitorReport() {
+//        try {
+//            List<Visitor> visitors = visitorRepository.findAll();
+//            byte[] excelFile = excelService.generateVisitorExcel(visitors);
+//
+////            MimeMessage message = mailSender.createMimeMessage();
+////            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+////            helper.setFrom(senderEmail);
+////            helper.setTo(recipientEmail);
+////            helper.setSubject(notificationSubject + " Report");
+////            helper.setText("Please find attached the visitor report.");
+////            helper.addAttachment("Visitor_Report.xlsx", new ByteArrayResource(excelFile));
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to send visitor report", e);
+//        }
+//    }
 
     // Add methods from NotificationService
     public void sendOtp(String email, String otp) {
@@ -181,5 +182,79 @@ public class EmailService {
     public void sendMeetingNotification(String email, String whomToMeet) {
         sendEmail(email, "Meeting Notification", "You have a visitor to meet: " + whomToMeet);
     }
+
+
+
+    /**
+     * Sends a notification email about a new visitor to the system administrator.
+     *
+     * @param visitor The visitor whose details should be included in the notification
+     * @throws RuntimeException if email sending fails
+     */
+    public void sendVisitorEmail(Visitor visitor) {
+        try {
+            String message = createVisitorDetailsMessage(visitor);
+            boolean sent = sendEmail(recipientEmail, notificationSubject, message);
+            if (!sent) {
+                throw new RuntimeException("Email not accepted by server");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send visitor email", e);
+        }
+    }
+
+    /**
+     * Sends a weekly visitor report as an Excel attachment to the admin.
+     */
+    public void sendVisitorReport() {
+        try {
+            List<Visitor> visitors = visitorRepository.findAll();
+            byte[] excelFile = excelService.generateVisitorExcel(visitors);
+
+            String accessToken = getAccessToken();
+            String endpoint = String.format("https://graph.microsoft.com/v1.0/users/%s/sendMail", userEmail);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(accessToken);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Prepare attachment
+            String base64Excel = Base64.getEncoder().encodeToString(excelFile);
+            Map<String, Object> attachment = new HashMap<>();
+            attachment.put("@odata.type", "#microsoft.graph.fileAttachment");
+            attachment.put("name", "Visitor_Report.xlsx");
+            attachment.put("contentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            attachment.put("contentBytes", base64Excel);
+
+            // Prepare email body
+            Map<String, Object> emailBody = new HashMap<>();
+            emailBody.put("contentType", "Text");
+            emailBody.put("content", "Please find attached the visitor report.");
+
+            // Prepare message
+            Map<String, Object> message = new HashMap<>();
+            message.put("subject", notificationSubject + " Report");
+            message.put("body", emailBody);
+            message.put("toRecipients", Collections.singletonList(
+                    Collections.singletonMap("emailAddress",
+                            Collections.singletonMap("address", recipientEmail))));
+            message.put("attachments", Collections.singletonList(attachment));
+
+            Map<String, Object> emailData = new HashMap<>();
+            emailData.put("message", message);
+            emailData.put("saveToSentItems", "true");
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(emailData, headers);
+            ResponseEntity<Void> response = restTemplate.exchange(endpoint, HttpMethod.POST, request, Void.class);
+
+            if (!response.getStatusCode().equals(HttpStatus.ACCEPTED)) {
+                throw new RuntimeException("Email not accepted by server");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send visitor report", e);
+        }
+    }
+
+
 
 }
