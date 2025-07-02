@@ -26,7 +26,7 @@ visitor:
   system:
     notification:
       # Email Configuration
-      email: address@email.com
+      email: test@email.com
       subject: New Visitor Registration
     otp:
       subject: OTP Verification Code
@@ -40,4 +40,4 @@ gg:
 
 # Application specific properties
 app:
-  user-email: ${VMS_EMAIL}
+  user-email: vms@statusneo.com

@@ -31,8 +31,7 @@ The project uses Spring Boot 3.4.5 with the following key configurations:
 1. **Database**: PostgreSQL is used as the primary database
 2. **Template Engine**: JTE (Java Template Engine) is used for HTML templates
 3. **Authentication**: Azure AD integration via Spring Security OAuth2
-4. **Email**: Spring Mail with GreenMail for testing
-5. **File Upload**: Apache POI for Excel file handling
+4. **File Upload**: Apache POI for Excel file handling
 
 Required environment variables:
 - `SPRING_DATASOURCE_URL`: Database connection URL
@@ -45,7 +44,7 @@ Required environment variables:
 ### Test Structure
 - Unit tests: `src/test/java`
 - Test resources: `src/test/resources`
-- Integration tests use TestContainers for database and GreenMail for email testing
+- Integration tests use TestContainers for database
 
 ### Running Tests
 1. **All Tests**:
@@ -72,7 +71,6 @@ Required environment variables:
 
 2. **Integration Tests**:
    - Use TestContainers for database testing
-   - Use GreenMail for email testing
    - Example:
    ```java
    @SpringBootTest
@@ -121,7 +119,6 @@ src/
 - JTE 3.1.12
 - Apache POI 5.2.5
 - TestContainers
-- GreenMail 2.0.1
 
 ### Security Considerations
 1. **Authentication**:

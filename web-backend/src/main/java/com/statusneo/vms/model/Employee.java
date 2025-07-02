@@ -16,8 +16,6 @@ public class Employee {
     private String name;
     private String email;  // Add this field
 
-    // ... existing getters and setters ...
-
     public String getEmail() {
         return email;
     }

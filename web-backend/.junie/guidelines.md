@@ -35,7 +35,7 @@ Required environment variables:
 ### Test Structure
 - Unit tests: `src/test/java`
 - Test resources: `src/test/resources`
-- Integration tests use TestContainers for database and GreenMail for email testing
+- Integration tests use TestContainers for database
 
 ### Running Tests
 1. **All Tests**:
@@ -177,7 +177,6 @@ src/
 - JTE 3.1.12
 - Apache POI 5.2.5
 - TestContainers
-- GreenMail 2.0.1
 
 ### Security Considerations
 1. **Authentication**:

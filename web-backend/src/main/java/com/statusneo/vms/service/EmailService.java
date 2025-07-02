@@ -2,14 +2,9 @@ package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitorRepository;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -39,7 +34,6 @@ public class EmailService {
     @Value("${visitor.system.notification.subject}")
     private String notificationSubject;
 
-    @Value("${spring.mail.username}")
     private String senderEmail;
 
     @Value("${app.user-email}")
@@ -134,11 +128,7 @@ public class EmailService {
      */
     public void sendVisitorEmail(Visitor visitor) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(senderEmail);
-            message.setTo(recipientEmail);
-            message.setSubject(notificationSubject + ": " + visitor.getName());
-            message.setText(createVisitorDetailsMessage(visitor));
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to send visitor email", e);
         }
