@@ -42,6 +42,9 @@ public class VisitorController {
     @Autowired
     private EmployeeService employeeService;
 
+    @Autowired
+    private NotificationService notificationService;
+
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -251,18 +254,18 @@ public class VisitorController {
                     """);
         }
 
-        Visitor visitor = null;
-        // Get pending visitor details
+        Visitor visitor = visitorRepository.findByEmail(email)
+                .orElse(null);
+
         if (visitor == null) {
-            return ResponseEntity.badRequest().body("Registration session expired. Please start again.");
+            return ResponseEntity.badRequest().body("Registration session expired...");
         }
 
         try {
             // Save visitor to database
             Visitor savedVisitor = visitorRepository.save(visitor);
 
-            // Send notification to admin
-            emailService.sendVisitorEmail(savedVisitor);
+            notificationService.notifyVisitorOnRegistration(savedVisitor);
 
             return ResponseEntity.ok("""
                     <p class="text-green-600 font-bold">Registration successful!</p>
@@ -314,8 +317,23 @@ public class VisitorController {
             // Save visitor to database
             Visitor savedVisitor = visitorRepository.save(visitor);
 
+            Visit visit = new Visit();
+            visit.setVisitor(visitor);
+            visit.setHost(visitor.getName());
+            visit.setVisitDate(LocalDateTime.now());
+            visit.setIsApproved(true);
+            visitRepository.save(visit);
+
+            //notify the visitor for their successfull registration
+            notificationService.notifyVisitorOnRegistration(savedVisitor);
+
+
+            //notify host for the arrival of visitor
+            notificationService.notifyHost(visit);
+
+
             // Send notification email
-            emailService.sendVisitorEmail(savedVisitor);
+            //notificationService.notifyVisitorOnRegistration(savedVisitor);
 
             // Send OTP to visitor
             otpService.sendOtp(visitor.getEmail());

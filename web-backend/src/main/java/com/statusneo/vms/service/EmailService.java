@@ -2,6 +2,8 @@ package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitorRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -27,6 +29,8 @@ public class EmailService {
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;
     private final RestTemplate restTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     @Value("${visitor.system.notification.email}")
     private String recipientEmail;
@@ -126,13 +130,45 @@ public class EmailService {
      * @param visitor The visitor whose details should be included in the notification
      * @throws RuntimeException if email sending fails
      */
-    public void sendVisitorEmail(Visitor visitor) {
-        try {
+//    public void sendVisitorEmail(Visitor visitor) {
+//        try {
+//
+//            String body = createVisitorDetailsMessage(visitor);
+//            sendEmail(visitor.getEmail(), "Visitor Registration Confirmation", body);
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to send visitor email", e);
+//        }
+//    }
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to send visitor email", e);
+    public String getEmailFromAzureAD(String displayName) {
+        logger.info("Attempting to fetch email for display name: {}", displayName);
+        String accessToken = getAccessToken();
+        logger.debug("****************************Access token retrieved successfully.*********************************8");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        String url = "https://graph.microsoft.com/v1.0/users?$filter=displayName eq '" + displayName + "'";
+
+        logger.debug("***************************Sending request to URL: {}*******************************", url);
+
+
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
+
+        List<Map<String, Object>> users = (List<Map<String, Object>>) response.getBody().get("value");
+
+        if (!users.isEmpty()) {
+            return (String) users.get(0).get("mail");
         }
+
+        logger.error("**********************No email found for display name: {}*********************", displayName);
+
+        throw new RuntimeException("***********************Host email not found in Azure AD for name: **********************" + displayName);
     }
+
 
     /**
      * Creates a formatted message containing visitor details.
@@ -140,19 +176,19 @@ public class EmailService {
      * @param visitor The visitor whose details to format
      * @return A formatted string containing visitor information
      */
-    private String createVisitorDetailsMessage(Visitor visitor) {
-        return String.format("""
-            Visitor Details:
-            Name: %s
-            Phone: %s
-            Email: %s
-            Address: %s
-            """,
-                visitor.getName(),
-                visitor.getPhoneNumber(),
-                visitor.getEmail(),
-                visitor.getAddress());
-    }
+//    private String createVisitorDetailsMessage(Visitor visitor) {
+//        return String.format("""
+//            Visitor Details:
+//            Name: %s
+//            Phone: %s
+//            Email: %s
+//            Address: %s
+//            """,
+//                visitor.getName(),
+//                visitor.getPhoneNumber(),
+//                visitor.getEmail(),
+//                visitor.getAddress());
+//    }
 
 
     public void sendVisitorReport() {
