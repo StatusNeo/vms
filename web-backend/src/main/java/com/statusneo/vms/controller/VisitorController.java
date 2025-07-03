@@ -258,12 +258,6 @@ public class VisitorController {
         }
 
         try {
-            // Save visitor to database
-            Visitor savedVisitor = visitorRepository.save(visitor);
-
-            // Send notification to admin
-            emailService.sendVisitorEmail(savedVisitor);
-
             return ResponseEntity.ok("""
                     <p class="text-green-600 font-bold">Registration successful!</p>
                     """);
@@ -311,11 +305,6 @@ public class VisitorController {
                 return ResponseEntity.badRequest().body("Email is required");
             }
 
-            // Save visitor to database
-            Visitor savedVisitor = visitorRepository.save(visitor);
-
-            // Send notification email
-            emailService.sendVisitorEmail(savedVisitor);
 
             // Send OTP to visitor
             otpService.sendOtp(visitor.getEmail());
