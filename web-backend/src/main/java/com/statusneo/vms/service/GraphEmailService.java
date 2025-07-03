@@ -23,20 +23,6 @@ public class GraphEmailService implements EmailService {
     private final OAuth2AuthorizedClientManager authorizedClientManager;
     private final RestTemplate restTemplate;
 
-    @Value("${visitor.system.notification.email}")
-    private String recipientEmail;
-
-    @Value("${visitor.system.notification.subject}")
-    private String notificationSubject;
-
-    private String senderEmail;
-
-    @Value("${app.user-email}")
-    private String userEmail;
-
-    @Value("${visitor.system.employee.notification.subject}")
-    private String employeeNotificationSubject;
-
     /**
      * Constructs a new EmailService with required dependencies.
      *
@@ -72,10 +58,10 @@ public class GraphEmailService implements EmailService {
     /**
      * Sends a simple email with the default sender.
      *
+     * @param fromEmail Sender email address (should be a valid Microsoft Graph user)
      * @param toEmail   Recipient email address
      * @param subject   Email subject
      * @param body      Email body content
-     * @param fromEmail
      * @return true if the email was sent successfully, false otherwise
      */
     @Override
@@ -110,7 +96,4 @@ public class GraphEmailService implements EmailService {
 
         return response.getStatusCode().equals(HttpStatus.ACCEPTED);
     }
-
-
-
 }

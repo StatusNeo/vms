@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,33 +33,22 @@ class GraphEmailServiceTest {
     private OAuth2AuthorizedClient authorizedClient;
 
     @Mock
-    private org.springframework.security.oauth2.core.OAuth2AccessToken accessToken;
+    private OAuth2AccessToken accessToken;
 
     @InjectMocks
     private GraphEmailService graphEmailService;
-
-    @Value("${app.user-email:testuser@example.com}")
-    private String userEmail;
 
    @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         graphEmailService = new GraphEmailService(authorizedClientManager, restTemplate);
-        // Set the userEmail field via reflection if needed
-        try {
-            java.lang.reflect.Field field = GraphEmailService.class.getDeclaredField("userEmail");
-            field.setAccessible(true);
-            field.set(graphEmailService, userEmail);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
     void testSendEmail_Success() {
         // Arrange
-        String fromEmail = "vms@statusneo.com";
-        String toEmail = "akshay.mathur@statusneo.com";
+        String fromEmail = "system-user@example.com";
+        String toEmail = "recipient@example.com";
         String subject = "Test Subject";
         String body = "Test Body";
         String fakeToken = "fake-access-token";
@@ -82,7 +72,7 @@ class GraphEmailServiceTest {
     @Test
     void testSendEmail_Failure() {
         // Arrange
-        String fromEmail = "recipient@example.com";
+        String fromEmail = "system-user@example.com";
         String toEmail = "recipient@example.com";
         String subject = "Test Subject";
         String body = "Test Body";
