@@ -63,6 +63,7 @@ public class VisitService {
     @Transactional
     public Visit registerVisit(Visitor visitor) {
         // Save the visitor first to get an ID
+        // Save visitor to database
         Visitor savedVisitor = visitorRepository.save(visitor);
         // Create a new Visit object and associate it with the saved Visitor
         Visit visit = new Visit();
@@ -81,6 +82,8 @@ public class VisitService {
             }
         }, asyncExecutor);
 
+        // Send notification to admin
+//        emailService.sendVisitorEmail(savedVisitor);
         // Return the saved visitor details
         return savedVisit;
 

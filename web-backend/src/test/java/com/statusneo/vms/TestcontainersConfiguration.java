@@ -10,7 +10,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @TestConfiguration(proxyBeanMethods = false)
-class TestcontainersConfiguration {
+public class TestcontainersConfiguration {
 
 	/*
 	* @RestartScope keeps the testcontainers postgresql alive during spring-dev-tools restart

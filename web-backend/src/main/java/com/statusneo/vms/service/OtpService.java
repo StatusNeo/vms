@@ -39,6 +39,12 @@ public class OtpService {
         return String.valueOf(otp);
     }
 
+
+
+    // Add methods from NotificationService
+    private void sendOtp(String email, String otp) {
+        emailService.sendEmail("fromEmail", email, "Your OTP", "Your OTP is: " + otp );
+    }
     public void sendOtp(String email) {
         String otp = generateOtp();
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES);
@@ -49,7 +55,7 @@ public class OtpService {
         otpEntity.setExpirationTime(expirationTime);
 
         otpRepository.save(otpEntity);
-        emailService.sendEmail(email, otpSubject, "Your OTP is: " + otp);
+        emailService.sendEmail(email, otpSubject, "Your OTP is: " + otp, null);
     }
 
     public Optional<Otp> getLatestOtpByEmail(String email) {
