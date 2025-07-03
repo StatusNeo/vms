@@ -4,7 +4,18 @@ spring:
 #    url: jdbc:postgresql://localhost:5432/postgres
 #    username: postgres
 #    password: password
-
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope: https://graph.microsoft.com/.default
+        provider:
+          azure:
+            token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
 server:
   # Server Configuration
   port: "443"
