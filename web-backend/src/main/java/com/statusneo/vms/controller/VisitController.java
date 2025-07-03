@@ -58,6 +58,7 @@ public class VisitController {
             model.addAttribute("message", "Error sending OTP. Please try again.");
             return "email-verification";
         }
+        return "";
     }
 
     @PostMapping("/complete-registration")
