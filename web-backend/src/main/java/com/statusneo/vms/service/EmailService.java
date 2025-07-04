@@ -1,15 +1,13 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.model.Email;
+
 public interface EmailService {
     /**
-     * Sends a simple email with the default sender.
+     * Sends an email using the provided Email object.
      *
-     * @param fromEmail Sender email address
-     * @param toEmail   Recipient email address
-     * @param subject   Email subject
-     * @param body      Email body content
+     * @param email Email object containing all necessary fields
      * @return true if the email was sent successfully, false otherwise
      */
-    boolean sendEmail(String fromEmail, String toEmail, String subject, String body);
-
+    boolean sendEmail(Email email);
 }

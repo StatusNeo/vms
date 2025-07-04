@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduledTasks {
 
-    private final EmailService emailService;
+    private final ExcelService excelService;
 
-    public ScheduledTasks(EmailService emailService) {
-        this.emailService = emailService;
+    public ScheduledTasks(ExcelService excelService) {
+        this.excelService = excelService;
     }
 
-//    @Scheduled(fixedRate = 12 * 60 * 60 * 1000) // Runs every 12 hours
+    @Scheduled(fixedRate = 12 * 60 * 60 * 1000) // Runs every 12 hours
     public void sendVisitorReport() {
-        emailService.sendVisitorReport();
+        excelService.sendVisitorReport();
     }
 }

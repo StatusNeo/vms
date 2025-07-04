@@ -1,10 +1,14 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Visitor;
+import com.statusneo.vms.model.Attachment;
+import com.statusneo.vms.repository.VisitorRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +19,17 @@ import java.util.List;
 public class ExcelService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExcelService.class);
+    private final VisitorRepository visitorRepository;
+    private final EmailService emailService;
+    @Value("${vms.system-email}")
+    private String systemEmail;
+    @Value("${vms.admin-email}")
+    private String adminEmail;
+
+    public ExcelService(VisitorRepository visitorRepository, EmailService emailService) {
+        this.visitorRepository = visitorRepository;
+        this.emailService = emailService;
+    }
 
     public byte[] generateVisitorExcel(List<Visitor> visitors) throws IOException {
         logger.info("Generating Excel file for {} visitors", visitors.size());
@@ -61,6 +76,29 @@ public class ExcelService {
         } catch (IOException e) {
             logger.error("Failed to generate Excel file", e);
             throw e;
+        }
+    }
+
+    void sendVisitorReport() {
+        try {
+            List<Visitor> visitors = visitorRepository.findAll();
+            byte[] excelFile = generateVisitorExcel(visitors);
+            Attachment attachment = new Attachment(
+                    "visitor_report.xlsx",
+                    excelFile,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            emailService.sendEmail(
+                    new Email(
+                            systemEmail,
+                            List.of(adminEmail),
+                            "Visitor Report",
+                            "Please find attached the visitor report.",
+                            List.of(attachment)
+                    )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send visitor report", e);
         }
     }
 }
