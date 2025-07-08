@@ -2,6 +2,7 @@ package com.statusneo.vms.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -18,6 +19,7 @@ import java.util.Map;
  * Manages visitor notifications, OTP delivery, and employee communications.
  */
 @Service
+@Profile({"prod"})
 public class GraphEmailService implements EmailService {
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;

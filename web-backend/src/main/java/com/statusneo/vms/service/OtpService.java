@@ -55,7 +55,7 @@ public class OtpService {
         otpEntity.setExpirationTime(expirationTime);
 
         otpRepository.save(otpEntity);
-        emailService.sendEmail(email, otpSubject, "Your OTP is: " + otp, null);
+        emailService.sendEmail("Sahil@Statusneo.com",email, otpSubject, "Your OTP is: " + otp);
     }
 
     public Optional<Otp> getLatestOtpByEmail(String email) {
