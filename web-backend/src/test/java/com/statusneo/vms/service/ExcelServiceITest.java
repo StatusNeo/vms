@@ -3,13 +3,13 @@ package com.statusneo.vms.service;
 import com.statusneo.vms.TestcontainersConfiguration;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitorRepository;
-import com.statusneo.vms.service.ExcelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 @Disabled("Enable this test with real credentials and configuration for full integration testing.")
+@ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
 class ExcelServiceITest {
 

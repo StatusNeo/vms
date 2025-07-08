@@ -12,7 +12,7 @@ public class ScheduledTasks {
         this.excelService = excelService;
     }
 
-    @Scheduled(fixedRate = 12 * 60 * 60 * 1000) // Runs every 12 hours
+    @Scheduled(fixedRateString = "${vms.scheduled.report.rate:43200000}") // Runs every 12 hours by default
     public void sendVisitorReport() {
         excelService.sendVisitorReport();
     }
