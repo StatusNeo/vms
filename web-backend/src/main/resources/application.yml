@@ -39,5 +39,6 @@ gg:
     developmentMode: true
 
 # Application specific properties
-app:
-  user-email: vms@statusneo.com
+vms:
+  system-email: test@email.com
+  admin-email: test@email.com

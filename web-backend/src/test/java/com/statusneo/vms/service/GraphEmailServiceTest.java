@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import com.statusneo.vms.model.Email;
+
 class GraphEmailServiceTest {
 
     @Mock
@@ -62,7 +64,7 @@ class GraphEmailServiceTest {
                 .thenReturn(responseEntity);
 
         // Act
-        boolean result = graphEmailService.sendEmail(fromEmail, toEmail, subject, body);
+        boolean result = graphEmailService.sendEmail(Email.of(fromEmail, toEmail, subject, body));
 
         // Assert
         assertTrue(result);
@@ -87,7 +89,7 @@ class GraphEmailServiceTest {
                 .thenReturn(responseEntity);
 
         // Act
-        boolean result = graphEmailService.sendEmail(fromEmail, toEmail, subject, body );
+        boolean result = graphEmailService.sendEmail(Email.of(fromEmail, toEmail, subject, body));
 
         // Assert
         assertFalse(result);
