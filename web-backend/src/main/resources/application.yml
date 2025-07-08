@@ -41,3 +41,7 @@ gg:
 # Application specific properties
 app:
   user-email: vms@statusneo.com
+
+
+msgraph:
+  base-url: http://localhost:8089
