@@ -29,9 +29,9 @@ public class AsyncConfig {
     public Executor emailTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // Set minimum number of threads that will be maintained
-        executor.setCorePoolSize(5);
+        executor.setCorePoolSize(2);
         // Set maximum number of threads that can be created
-        executor.setMaxPoolSize(10);
+        executor.setMaxPoolSize(4);
         // Set maximum number of tasks that can be queued
         executor.setQueueCapacity(100);
         // Set thread name prefix for logging purposes

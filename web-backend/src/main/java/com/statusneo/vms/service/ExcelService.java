@@ -1,10 +1,14 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Visitor;
+import com.statusneo.vms.model.Attachment;
+import com.statusneo.vms.repository.VisitorRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +19,17 @@ import java.util.List;
 public class ExcelService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExcelService.class);
+    private final VisitorRepository visitorRepository;
+    private final EmailService emailService;
+    @Value("${vms.system-email}")
+    private String systemEmail;
+    @Value("${vms.admin-email}")
+    private String adminEmail;
+
+    public ExcelService(VisitorRepository visitorRepository, EmailService emailService) {
+        this.visitorRepository = visitorRepository;
+        this.emailService = emailService;
+    }
 
     public byte[] generateVisitorExcel(List<Visitor> visitors) throws IOException {
         logger.info("Generating Excel file for {} visitors", visitors.size());
@@ -24,9 +39,16 @@ public class ExcelService {
             // Header Row
             Row headerRow = sheet.createRow(0);
             String[] columns = {"ID", "Name", "Email", "Phone", "Address", "Registered At"};
+
+            // Apply header styling
+            CellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(columns[i]);
+                cell.setCellStyle(headerStyle);
             }
 
             // Data Rows
@@ -38,6 +60,7 @@ public class ExcelService {
                 row.createCell(2).setCellValue(visitor.getEmail());
                 row.createCell(3).setCellValue(visitor.getPhoneNumber());
                 row.createCell(4).setCellValue(visitor.getAddress());
+                row.createCell(5).setCellValue(visitor.getCreatedAt().toString());  // createdAt is a LocalDateTime
 //                row.createCell(5).setCellValue(visitor.getRegisteredAt().toString());
             }
 
@@ -53,6 +76,29 @@ public class ExcelService {
         } catch (IOException e) {
             logger.error("Failed to generate Excel file", e);
             throw e;
+        }
+    }
+
+    void sendVisitorReport() {
+        try {
+            List<Visitor> visitors = visitorRepository.findAll();
+            byte[] excelFile = generateVisitorExcel(visitors);
+            Attachment attachment = new Attachment(
+                    "visitor_report.xlsx",
+                    excelFile,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            emailService.sendEmail(
+                    new Email(
+                            systemEmail,
+                            List.of(adminEmail),
+                            "Visitor Report",
+                            "Please find attached the visitor report.",
+                            List.of(attachment)
+                    )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send visitor report", e);
         }
     }
 }

@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: dev
   application:
     name: VMS
   docker:
@@ -41,9 +39,6 @@ gg:
     developmentMode: true
 
 # Application specific properties
-app:
-  user-email: vms@statusneo.com
-
-
-msgraph:
-  base-url: http://localhost:8089
+vms:
+  system-email: test@email.com
+  admin-email: test@email.com

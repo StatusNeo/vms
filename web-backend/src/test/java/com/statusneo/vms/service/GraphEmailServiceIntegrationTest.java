@@ -1,15 +1,21 @@
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.TestcontainersConfiguration;
+import com.statusneo.vms.model.Email;
+import com.statusneo.vms.model.Attachment;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
 class GraphEmailServiceIntegrationTest {
 
@@ -29,7 +35,19 @@ class GraphEmailServiceIntegrationTest {
         String subject = "Integration Test Subject";
         String body = "This is a test email from GraphEmailService integration test.";
 
-        boolean result = graphEmailService.sendEmail(fromEmail, toEmail, subject, body);
+        // Add a test attachment
+        byte[] fileData = "Hello, this is a test attachment.".getBytes();
+        Attachment attachment = new Attachment("test.txt", fileData, "text/plain");
+
+        boolean result = graphEmailService.sendEmail(
+            new Email(
+                fromEmail,
+                List.of(toEmail),
+                subject,
+                body,
+                List.of(attachment)
+            )
+        );
         assertTrue(result, "Email should be sent successfully in integration environment");
     }
 } 

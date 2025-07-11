@@ -1,5 +1,6 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Otp;
 import com.statusneo.vms.repository.OtpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +40,8 @@ public class OtpService {
         return String.valueOf(otp);
     }
 
-
-
-    // Add methods from NotificationService
     private void sendOtp(String email, String otp) {
-        emailService.sendEmail("fromEmail", email, "Your OTP", "Your OTP is: " + otp );
+        emailService.sendEmail(Email.of("fromEmail", email, "Your OTP", "Your OTP is: " + otp));
     }
     public void sendOtp(String email) {
         String otp = generateOtp();
@@ -55,21 +53,18 @@ public class OtpService {
         otpEntity.setExpirationTime(expirationTime);
 
         otpRepository.save(otpEntity);
-        emailService.sendEmail("Sahil@Statusneo.com",email, otpSubject, "Your OTP is: " + otp);
+        emailService.sendEmail(Email.of(email, email, otpSubject, "Your OTP is: " + otp));
     }
 
     public Optional<Otp> getLatestOtpByEmail(String email) {
         List<Otp> otps = otpRepository.findByEmailOrdered(email);
-        return otps.isEmpty() ? Optional.empty() : Optional.of(otps.get(0));
+        return otps.isEmpty() ? Optional.empty() : Optional.of(otps.getFirst());
     }
 
     public boolean validateOtp(String email, String otp) {
         Optional<Otp> latestOtp = getLatestOtpByEmail(email);
-        if (latestOtp.isEmpty()) {
-            return false;
-        }
-        return !latestOtp.get().getExpirationTime().isBefore(LocalDateTime.now()) &&
-                latestOtp.get().getOtp().equals(otp);
+        return latestOtp.filter(value -> !value.getExpirationTime().isBefore(LocalDateTime.now()) &&
+                value.getOtp().equals(otp)).isPresent();
     }
 
     public void markEmailAsVerified(String email) {
