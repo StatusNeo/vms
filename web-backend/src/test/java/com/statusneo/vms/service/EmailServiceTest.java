@@ -4,6 +4,7 @@
     import static org.junit.jupiter.api.Assertions.assertTrue;
 
     import com.github.tomakehurst.wiremock.WireMockServer;
+    import com.statusneo.vms.model.Email;
     import org.junit.jupiter.api.*;
     import org.mockito.InjectMocks;
 
@@ -37,6 +38,6 @@
             String subject = "Integration Test Subject";
             String body = "This is a test email from GraphEmailService integration test.";
 
-            boolean result = wiremockMailService.sendEmail(fromEmail, toEmail, subject, body);
+            boolean result = wiremockMailService.sendEmail(Email.of(fromEmail, toEmail, subject, body));
             assertTrue(result, "Email should be sent successfully in integration environment");    }
     }

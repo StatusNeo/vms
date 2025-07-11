@@ -1,5 +1,6 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.model.Email;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
@@ -29,21 +30,21 @@ public class WiremockMailServiceImpl implements EmailService{
      * Sends a simple email for local/dev testing.
      *
      * */
-    public boolean sendEmail(String fromEmail,String toEmail, String subject, String body) {
-        String endpoint = String.format(graphBaseUrl + "/v1.0/%s/sendMail", fromEmail);
+    public boolean sendEmail(Email email) {
+        String endpoint = String.format(graphBaseUrl + "/v1.0/%s/sendMail", email.from());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         headers.setBearerAuth("dummy-token");
         Map<String, Object> payload = Map.of(
                 "message", Map.of(
-                        "subject", subject,
+                        "subject", email.subject(),
                         "body", Map.of(
                                 "contentType", "Text",
-                                "content", body
+                                "content", email.body()
                         ),
                         "toRecipients", List.of(
-                                Map.of("emailAddress", Map.of("address", toEmail))
+                                Map.of("emailAddress", Map.of("address", email.to()))
                         )
                 ),
                 "saveToSentItems", true
