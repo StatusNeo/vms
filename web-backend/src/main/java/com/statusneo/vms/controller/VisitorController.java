@@ -47,6 +47,9 @@ public class VisitorController {
     private EmployeeRepository employeeRepository;
 
     @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
     private ExcelService excelService;
 
     private final Map<String, Visitor> pendingVisitors = new HashMap<>();
@@ -242,30 +245,45 @@ public class VisitorController {
             @RequestParam String email,
             @RequestParam String otp) {
 
-        // Validate OTP
+        // 1. Validate OTP
         if (!otpService.validateOtp(email, otp)) {
             return ResponseEntity.badRequest().body("""
-                    <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                        Invalid OTP, please try again
-                    </div>
-                    """);
+            <div id="otp-error-message" class="text-red-600 font-bold mb-4">
+                Invalid OTP, please try again
+            </div>
+            """);
         }
 
-        Visitor visitor = null;
-        // Get pending visitor details
+        // 2. Get Visitor from DB
+        Visitor visitor = visitorRepository.findByEmail(email).orElse(null);
         if (visitor == null) {
             return ResponseEntity.badRequest().body("Registration session expired. Please start again.");
         }
 
         try {
+            // 3. Save visitor if not already saved (redundant if already persisted earlier)
+            visitorRepository.save(visitor);
+
+            // 4. Notify Visitor
+            notificationService.sendVisitorConfirmationEmail(visitor);
+
+            // ✅ 5. Notify Host
+            Employee host = visitor.getHost();
+            if (host == null) {
+                return ResponseEntity.badRequest().body("Host information missing for visitor.");
+            }
+
+            notificationService.sendHostNotification(visitor, host);
+
             return ResponseEntity.ok("""
-                    <p class="text-green-600 font-bold">Registration successful!</p>
-                    """);
+            <p class="text-green-600 font-bold">Registration successful!</p>
+            """);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("""
-                    <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
+            <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
         }
     }
+
 
     @PostMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestParam String email) {
