@@ -42,13 +42,6 @@ public class VisitorController {
     @Autowired
     private EmployeeService employeeService;
 
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private NotificationService notificationService;
-
     @Autowired
     private ExcelService excelService;
 
@@ -245,42 +238,28 @@ public class VisitorController {
             @RequestParam String email,
             @RequestParam String otp) {
 
-        // 1. Validate OTP
+        // Validate OTP
         if (!otpService.validateOtp(email, otp)) {
             return ResponseEntity.badRequest().body("""
-            <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                Invalid OTP, please try again
-            </div>
-            """);
+                    <div id="otp-error-message" class="text-red-600 font-bold mb-4">
+                        Invalid OTP, please try again
+                    </div>
+                    """);
         }
 
-        // 2. Get Visitor from DB
-        Visitor visitor = visitorRepository.findByEmail(email).orElse(null);
+        Visitor visitor = null;
+        // Get pending visitor details
         if (visitor == null) {
             return ResponseEntity.badRequest().body("Registration session expired. Please start again.");
         }
 
         try {
-            // 3. Save visitor if not already saved (redundant if already persisted earlier)
-            visitorRepository.save(visitor);
-
-            // 4. Notify Visitor
-            notificationService.sendVisitorConfirmationEmail(visitor);
-
-            // ✅ 5. Notify Host
-            Employee host = visitor.getHost();
-            if (host == null) {
-                return ResponseEntity.badRequest().body("Host information missing for visitor.");
-            }
-
-            notificationService.sendHostNotification(visitor, host);
-
             return ResponseEntity.ok("""
-            <p class="text-green-600 font-bold">Registration successful!</p>
-            """);
+                    <p class="text-green-600 font-bold">Registration successful!</p>
+                    """);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("""
-            <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
+                    <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
         }
     }
 
