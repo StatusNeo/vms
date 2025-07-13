@@ -42,10 +42,6 @@ public class VisitorController {
     @Autowired
     private EmployeeService employeeService;
 
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
     @Autowired
     private ExcelService excelService;
 
@@ -266,6 +262,7 @@ public class VisitorController {
                     <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
         }
     }
+
 
     @PostMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestParam String email) {
