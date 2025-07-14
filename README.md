@@ -9,9 +9,9 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## Attribution
 
-While not legally required, if you use [Your App Name] in your project, we'd appreciate attribution:
+While not legally required, if you use this VMS, we'd appreciate attribution:
 - Link back to this repository
-- Mention us in your project credits
+- Mention us in your credits
 - A quick shout-out on social media
 
 This helps us know our work is useful and helps others discover the project!
