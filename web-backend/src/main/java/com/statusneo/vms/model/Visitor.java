@@ -52,6 +52,19 @@ public class Visitor {
 	@Column(name = "picture_path")
 	private String picturePath;
 
+	@ManyToOne
+	@JoinColumn(name = "host_id", referencedColumnName = "id")
+	private Employee host;
+
+	// getters & setters
+	public Employee getHost() {
+		return host;
+	}
+
+	public void setHost(Employee host) {
+		this.host = host;
+	}
+
 	/**
 	 * Default constructor required by JPA.
 	 */
