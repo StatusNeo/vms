@@ -98,6 +98,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>3.5.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.azure.spring</groupId>
             <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
         </dependency>
@@ -152,6 +158,21 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>3.13.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-jetty12</artifactId>
+            <version>3.13.1</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>
