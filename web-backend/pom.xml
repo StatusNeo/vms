@@ -156,13 +156,7 @@
         <dependency>
             <groupId>org.wiremock</groupId>
             <artifactId>wiremock-standalone</artifactId>
-            <version>3.9.2</version> <!-- latest 3.x stable with Jetty 12 -->
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-jetty12</artifactId>
-            <version>3.10.0</version>
+            <version>3.9.2</version>
             <scope>test</scope>
         </dependency>
 
