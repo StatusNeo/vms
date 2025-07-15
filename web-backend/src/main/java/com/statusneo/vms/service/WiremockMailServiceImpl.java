@@ -20,6 +20,9 @@ public class WiremockMailServiceImpl implements EmailService{
 
     private final RestTemplate restTemplate;
 
+    @Value("${wiremock.mail.url}")
+    private String wiremockMailUrl;
+
     public WiremockMailServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -28,7 +31,7 @@ public class WiremockMailServiceImpl implements EmailService{
      *
      * */
     public boolean sendEmail(Email email) {
-        String endpoint = String.format("http://localhost:8089/v1.0/users/%s/sendMail", email.from());
+        String endpoint = String.format(wiremockMailUrl, email.from());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
