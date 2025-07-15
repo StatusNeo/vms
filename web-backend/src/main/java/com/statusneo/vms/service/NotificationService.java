@@ -3,16 +3,22 @@ package com.statusneo.vms.service;
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visitor;
+import com.statusneo.vms.util.EmailTemplateProcessor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class NotificationService {
     private final EmailService emailService;
+    private final EmailTemplateProcessor templateProcessor;
 
-    public NotificationService(EmailService emailService) {
+
+    public NotificationService(EmailService emailService, EmailTemplateProcessor templateProcessor) {
         this.emailService = emailService;
+        this.templateProcessor = templateProcessor;
     }
 
     public void sendVisitorConfirmationEmail(Visitor visitor) {
@@ -39,23 +45,19 @@ public class NotificationService {
 
     public void sendHostNotification(Visitor visitor, Employee host) {
         String subject = "Visitor Alert";
-        String body = String.format("""
-                Dear %s,
-                You have a new visitor coming to meet you.
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("hostName", host.getName());
+        placeholders.put("visitorName", visitor.getName());
+        placeholders.put("visitorEmail", visitor.getEmail());
 
-                Visitor Name: %s
-                Email: %s
-
-                Please be ready to receive them.
-                """, host.getName(), visitor.getName(), visitor.getEmail());
+  String body = templateProcessor.loadTemplate("hostNotification.txt", placeholders);
 
         Email email = Email.of(
-                "noreply@company.com",
-                List.of(host.getEmail()),
-                subject,
-                body
-        );
-
+                 "noreply@company.com",
+                 List.of(host.getEmail()),
+                 subject,
+                 body
+                 );
         emailService.sendEmail(email);
     }
 }
