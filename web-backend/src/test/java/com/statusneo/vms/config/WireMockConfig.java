@@ -24,8 +24,9 @@ public class WireMockConfig {
         wireMockServer = new WireMockServer(WireMockConfiguration.options().port(8089));
         wireMockServer.start();
 
+        logger.info("WireMock server started at port {}", wireMockServer.port());
         wireMockServer.stubFor(
-                post(urlMatching("/v1.0/.*/sendMail"))
+                post(urlMatching("/v1\\.0/users/[^/]+@[^/]+/sendMail"))
                         .willReturn(
                                 aResponse()
                                         .withStatus(202)
