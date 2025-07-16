@@ -3,6 +3,7 @@ package com.statusneo.vms.service;
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visitor;
+import com.statusneo.vms.util.EmailTemplateProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -15,12 +16,13 @@ import static org.mockito.Mockito.*;
 
 public class NotificationServiceTest {
     private EmailService emailService;
+    private EmailTemplateProcessor templateProcessor;
     private NotificationService notificationService;
-
     @BeforeEach
     void setUp() {
         emailService = mock(EmailService.class);
-        notificationService = new NotificationService(emailService);
+        templateProcessor = mock(EmailTemplateProcessor.class);
+        notificationService = new NotificationService(emailService, templateProcessor);
     }
 
     @Test
@@ -34,7 +36,7 @@ public class NotificationServiceTest {
 
         notificationService.sendVisitorConfirmationEmail(visitor);
 
-        verify(emailService, times(1)).sendEmail(emailCaptor.capture());
+        verify(emailService).sendEmail(emailCaptor.capture());
         Email sentEmail = emailCaptor.getValue();
 
         assertEquals("noreply@company.com", sentEmail.from());
@@ -59,6 +61,15 @@ public class NotificationServiceTest {
         Visitor visitor = new Visitor();
         visitor.setName("Jane Smith");
         visitor.setEmail("jane.smith@example.com");
+        String expectedTemplate = """
+                Dear Host Person,
+                You have a new visitor coming to meet you.
+                Visitor Name: Jane Smith
+                Email: jane.smith@example.com
+                Please be ready to receive them.
+                """;
+
+        when(templateProcessor.loadTemplate(eq("hostNotification.txt"), any())).thenReturn(expectedTemplate);
 
         Employee host = new Employee();
         host.setName("Host Person");
@@ -69,24 +80,14 @@ public class NotificationServiceTest {
 
         notificationService.sendHostNotification(visitor, host);
 
-        verify(emailService, times(1)).sendEmail(emailCaptor.capture());
+        verify(emailService).sendEmail(emailCaptor.capture());
         Email sentEmail = emailCaptor.getValue();
 
         assertEquals("noreply@company.com", sentEmail.from());
         assertEquals(List.of("host@example.com"), sentEmail.to());
         assertEquals("Visitor Alert", sentEmail.subject());
 
-        String expectedBody = """
-                Dear Host Person,
-                You have a new visitor coming to meet you.
-
-                Visitor Name: Jane Smith
-                Email: jane.smith@example.com
-
-                Please be ready to receive them.
-                """;
-
-        assertEquals(expectedBody.strip(), sentEmail.body().strip());
+        assertEquals(expectedTemplate.strip(), sentEmail.body().strip());
     }
 
 }
