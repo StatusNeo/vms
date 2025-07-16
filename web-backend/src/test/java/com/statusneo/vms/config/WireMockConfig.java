@@ -21,10 +21,11 @@ public class WireMockConfig {
 
     @PostConstruct
     public void startMockServer() {
-        wireMockServer = new WireMockServer(WireMockConfiguration.options().port(8089));
+        wireMockServer = new WireMockServer(WireMockConfiguration.options().dynamicPort());
         wireMockServer.start();
 
         logger.info("WireMock server started at port {}", wireMockServer.port());
+        System.setProperty("wiremock.mail.url", "http://localhost:" + wireMockServer.port()+"/v1.0/users/%s/sendMail");
         wireMockServer.stubFor(
                 post(urlMatching("/v1\\.0/users/[^/]+@[^/]+/sendMail"))
                         .willReturn(
