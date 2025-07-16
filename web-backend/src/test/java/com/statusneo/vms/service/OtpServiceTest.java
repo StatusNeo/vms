@@ -26,8 +26,11 @@ class OtpServiceTest {
     private EmailService emailService;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception{
         MockitoAnnotations.openMocks(this);
+        Field field = OtpService.class.getDeclaredField("otpSubject");
+        field.setAccessible(true);
+        field.set(otpService, "Test OTP Subject");
     }
 
 
@@ -102,4 +105,52 @@ class OtpServiceTest {
         method.setAccessible(true);
         method.invoke(otpService, email, "123456");
     }
+
+    @Test
+    void testSendOtpSavesAndSendsEmail() {
+        String email = "visitor@mail.com";
+
+        otpService.sendOtp(email);
+
+        verify(otpRepository, times(1)).save(any(Otp.class));
+        verify(emailService, times(1)).sendEmail(argThat(emailObj ->
+                emailObj.to().contains(email) && emailObj.body().contains("Your OTP is:")
+        ));
+    }
+
+    @Test
+    void testResendOtpWithinTwoMinutesFails() {
+        String email = "visitor@gmail.com";
+        Otp recentOtp = new Otp();
+        recentOtp.setEmail(email);
+        recentOtp.setOtp("123456");
+        recentOtp.setExpirationTime(LocalDateTime.now().plusMinutes(10));
+
+        when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(recentOtp));
+
+        boolean result = otpService.resendOtp(email);
+
+        assertFalse(result);
+        verify(emailService, never()).sendEmail(any());
+    }
+
+    @Test
+    void testResendOtpAfterTwoMinutesSucceeds() {
+        String email = "visitor@gmail.com";
+        Otp oldOtp = new Otp();
+        oldOtp.setEmail(email);
+        oldOtp.setOtp("123456");
+
+        oldOtp.setExpirationTime(LocalDateTime.now().plusMinutes(10).minusMinutes(2).minusSeconds(1));
+
+        when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(oldOtp));
+
+        boolean result = otpService.resendOtp(email);
+
+        assertTrue(result);
+        verify(emailService, times(1)).sendEmail(any());
+    }
+
+
+
 }
