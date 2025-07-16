@@ -41,9 +41,6 @@ public class VisitorController {
     @Autowired
     private EmployeeService employeeService;
 
-    @Autowired
-    private ExcelService excelService;
-
     // Store pending visitors by email during registration
     private final Map<String, Visitor> pendingVisitors = new HashMap<>();
 
