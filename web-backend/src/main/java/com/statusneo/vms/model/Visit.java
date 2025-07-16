@@ -23,7 +23,11 @@ public class Visit {
     /**
      * The visitor associated with this visit.
      */
-    @OneToOne
+//    @OneToOne
+//    @JoinColumn(name = "visitor_id")
+//    private Visitor visitor;
+
+    @ManyToOne
     @JoinColumn(name = "visitor_id")
     private Visitor visitor;
 

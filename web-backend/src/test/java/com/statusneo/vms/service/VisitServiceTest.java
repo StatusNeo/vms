@@ -14,8 +14,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @SpringBootTest
 @Testcontainers
 public class VisitServiceTest {
@@ -25,6 +23,7 @@ public class VisitServiceTest {
             .withDatabaseName("test")
             .withUsername("test")
             .withPassword("test");
+                    
     @Autowired
     private VisitService visitorService;
 
