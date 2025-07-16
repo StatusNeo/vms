@@ -29,29 +29,28 @@ public class VisitService {
 
     private static final Logger logger = LoggerFactory.getLogger(VisitService.class);
 
-    public VisitService(OtpService otpService, VisitorRepository visitorRepository, EmailService emailService, VisitRepository visitRepository) {
+    public VisitService(OtpService otpService, VisitorRepository visitorRepository, EmailService emailService,
+            VisitRepository visitRepository) {
         this.otpService = otpService;
         this.visitorRepository = visitorRepository;
         this.emailService = emailService;
         this.visitRepository = visitRepository;
     }
 
+    // Send OTP
+    // notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
+    // }
+    //
+    // @Transactional
+    // public Visitor saveVisitor(Visitor visitor) {
+    // Visitor savedVisitor = visitorRepository.save(visitor);
+    // emailService.sendVisitorEmail(savedVisitor);
+    // otpService.sendOtp(savedVisitor.getEmail());
+    // return savedVisitor;
+    // }
 
-        // Send OTP
-//        notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
-//    }
-//
-//    @Transactional
-//    public Visitor saveVisitor(Visitor visitor) {
-//        Visitor savedVisitor = visitorRepository.save(visitor);
-//        emailService.sendVisitorEmail(savedVisitor);
-//        otpService.sendOtp(savedVisitor.getEmail());
-//        return savedVisitor;
-//    }
-
-
-//        return otpService.sendOtp(visit.getVisitor().getEmail(), visit);
-//    }
+    // return otpService.sendOtp(visit.getVisitor().getEmail(), visit);
+    // }
 
     /**
      * Registers a new visit and generates an OTP for visitor verification.
@@ -83,7 +82,7 @@ public class VisitService {
         }, asyncExecutor);
 
         // Send notification to admin
-//        emailService.sendVisitorEmail(savedVisitor);
+        // emailService.sendVisitorEmail(savedVisitor);
         // Return the saved visitor details
         return savedVisit;
 

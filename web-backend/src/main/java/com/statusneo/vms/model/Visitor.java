@@ -128,6 +128,9 @@ public class Visitor {
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
+		if (phoneNumber == null || !phoneNumber.matches("^\\d{10}$")) {
+			throw new IllegalArgumentException("Phone number must be exactly 10 digits and numeric");
+		}
 		this.phoneNumber = phoneNumber;
 	}
 
