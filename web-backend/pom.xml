@@ -154,9 +154,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>3.9.2</version>
+            <groupId>org.wiremock.integrations</groupId>
+            <artifactId>wiremock-spring-boot</artifactId>
+            <version>3.0.1</version>
             <scope>test</scope>
         </dependency>
 
