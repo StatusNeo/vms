@@ -20,7 +20,7 @@ public class WiremockMailServiceImpl implements EmailService{
 
     private final RestTemplate restTemplate;
 
-    @Value("${wiremock.mail.url}")
+    @Value("${mail.url}")
     private String wiremockMailUrl;
 
     public WiremockMailServiceImpl(RestTemplate restTemplate) {

@@ -43,6 +43,5 @@ vms:
   system-email: test@email.com
   admin-email: test@email.com
 
-wiremock:
-  mail:
-    url: http://localhost:8089/v1.0/users/%s/sendMail
+mail:
+  url: http://localhost:8089/v1.0/users/%s/sendMail
