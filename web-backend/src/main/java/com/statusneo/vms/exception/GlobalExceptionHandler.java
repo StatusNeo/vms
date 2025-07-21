@@ -1,12 +1,13 @@
-package com.statusneo.vms.config;
+package com.statusneo.vms.exception;
 
 import gg.jte.TemplateException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.NoSuchElementException;
-
+@ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public String handleNoSuchElement(NoSuchElementException ex, Model model) {
