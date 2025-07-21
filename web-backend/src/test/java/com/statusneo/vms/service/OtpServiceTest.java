@@ -152,7 +152,7 @@ class OtpServiceTest {
 
         when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(recentOtp));
 
-        boolean result = otpService.resendOtp(email);
+        boolean result = otpService.canResendOtp(email);
 
         assertFalse(result);
         verify(emailService, never()).sendEmail(any());
@@ -169,7 +169,7 @@ class OtpServiceTest {
 
         when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(oldOtp));
 
-        boolean result = otpService.resendOtp(email);
+        boolean result = otpService.canResendOtp(email);
 
         assertTrue(result);
 
