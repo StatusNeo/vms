@@ -5,15 +5,26 @@ import com.statusneo.vms.model.Otp;
 import com.statusneo.vms.repository.OtpRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import org.mockito.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class OtpServiceTest {
 
@@ -141,7 +152,7 @@ class OtpServiceTest {
 
         when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(recentOtp));
 
-        boolean result = otpService.resendOtp(email);
+        boolean result = otpService.canResendOtp(email);
 
         assertFalse(result);
         verify(emailService, never()).sendEmail(any());
@@ -158,7 +169,7 @@ class OtpServiceTest {
 
         when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(oldOtp));
 
-        boolean result = otpService.resendOtp(email);
+        boolean result = otpService.canResendOtp(email);
 
         assertTrue(result);
 

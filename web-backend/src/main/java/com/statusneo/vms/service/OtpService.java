@@ -86,7 +86,7 @@ public class OtpService {
      * @param email The email to resend the OTP to.
      * @return true if OTP was resent, false if not enough time has passed.
      */
-    public boolean resendOtp(String email) {
+    public boolean canResendOtp(String email) {
         Optional<Otp> latestOtp = getLatestOtpByEmail(email);
         if (latestOtp.isPresent()) {
             LocalDateTime lastSent = latestOtp.get().getExpirationTime().minusMinutes(OTP_EXPIRATION_MINUTES);

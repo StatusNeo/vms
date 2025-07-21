@@ -1,15 +1,13 @@
 package com.statusneo.vms.service;
 
-import com.statusneo.vms.TestcontainersConfiguration;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -19,16 +17,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-// @SpringBootTest
-// @Testcontainers
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@ActiveProfiles("test")
-@Import(TestcontainersConfiguration.class)
+@Testcontainers
 
-class VisitServiceIntegrationTest {
+public class VisitServiceIntegrationTest {
 
     @Container
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")

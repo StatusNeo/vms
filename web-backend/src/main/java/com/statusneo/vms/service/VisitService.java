@@ -49,22 +49,6 @@ public class VisitService {
         this.emailService = emailService;
         this.visitRepository = visitRepository;
     }
-
-    // Send OTP
-    // notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
-    // }
-    //
-    // @Transactional
-    // public Visitor saveVisitor(Visitor visitor) {
-    // Visitor savedVisitor = visitorRepository.save(visitor);
-    // emailService.sendVisitorEmail(savedVisitor);
-    // otpService.sendOtp(savedVisitor.getEmail());
-    // return savedVisitor;
-    // }
-
-    // return otpService.sendOtp(visit.getVisitor().getEmail(), visit);
-    // }
-
     /**
      * Registers a new visit and generates an OTP for visitor verification.
      * The OTP is associated with the visit and sent to the visitor's email.
