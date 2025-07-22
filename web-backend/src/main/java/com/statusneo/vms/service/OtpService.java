@@ -1,3 +1,16 @@
+/* ********************************************************************
+ *
+ *  Copyright (c) 2025 Statusneo.
+ *
+ * All rights Reserved.
+ *
+ * Redistribution and use of any source or binary or in any form, without
+ * written approval and permission is prohibited.
+ *
+ * Please read the Terms of use, Disclaimer and Privacy Policy on https://www.statusneo.com/
+ *
+ * **********************************************************************
+ */
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Email;
@@ -29,6 +42,8 @@ public class OtpService {
     private static final int OTP_EXPIRATION_MINUTES = 10;
     private final Map<String, Boolean> verifiedEmails = new ConcurrentHashMap<>();
     private final Map<String, LocalDateTime> verificationTimestamps = new ConcurrentHashMap<>();
+    private final Map<String, Integer> otpAttempts = new ConcurrentHashMap<>();
+    private static final int MAX_OTP_ATTEMPTS = 2;
 
     public String generatedOtp() {
         return String.valueOf(new Random().nextInt(900000) + 100000); // 6-digit OTP
@@ -43,6 +58,7 @@ public class OtpService {
     private void sendOtp(String email, String otp) {
         emailService.sendEmail(Email.of("fromEmail", email, "Your OTP", "Your OTP is: " + otp));
     }
+
     public void sendOtp(String email) {
         String otp = generateOtp();
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES);
@@ -61,13 +77,47 @@ public class OtpService {
         return otps.isEmpty() ? Optional.empty() : Optional.of(otps.getFirst());
     }
 
-    public boolean validateOtp(String email, String otp) {
+    // Track OTP attempts per email
+
+    /**
+     * Resends a new OTP to the given email if at least 2 minutes have passed since
+     * the last OTP was sent.
+     *
+     * @param email The email to resend the OTP to.
+     * @return true if OTP was resent, false if not enough time has passed.
+     */
+    public boolean canResendOtp(String email) {
         Optional<Otp> latestOtp = getLatestOtpByEmail(email);
-        return latestOtp.filter(value -> !value.getExpirationTime().isBefore(LocalDateTime.now()) &&
+        if (latestOtp.isPresent()) {
+            LocalDateTime lastSent = latestOtp.get().getExpirationTime().minusMinutes(OTP_EXPIRATION_MINUTES);
+            if (lastSent.plusMinutes(2).isAfter(LocalDateTime.now())) {
+                // Less than 2 minutes since last OTP sent
+                return false;
+            }
+        }
+        sendOtp(email);
+        return true;
+    }
+
+    public boolean validateOtp(String email, String otp) {
+        int attempts = otpAttempts.getOrDefault(email, 0);
+        if (attempts >= MAX_OTP_ATTEMPTS) {
+            return false;
+        }
+
+        Optional<Otp> latestOtp = getLatestOtpByEmail(email);
+        boolean valid = latestOtp.filter(value -> !value.getExpirationTime().isBefore(LocalDateTime.now()) &&
                 value.getOtp().equals(otp)).isPresent();
+        if (!valid) {
+            otpAttempts.put(email, attempts + 1);
+        } else {
+            otpAttempts.remove(email); // Reset on success
+        }
+        return valid;
     }
 
     public void markEmailAsVerified(String email) {
+        otpAttempts.remove(email); // Reset attempts on verification
         verifiedEmails.put(email, true);
         verificationTimestamps.put(email, LocalDateTime.now());
     }
@@ -82,7 +132,14 @@ public class OtpService {
     }
 
     public void clearVerifiedEmail(String email) {
-        verifiedEmails.remove(email);
-        verificationTimestamps.remove(email);
+        otpAttempts.remove(email); // Reset attempts on clear
     }
+
+    /**
+     * Returns true if the visitor has reached the max OTP attempts.
+     */
+    public boolean hasExceededOtpAttempts(String email) {
+        return otpAttempts.getOrDefault(email, 0) >= MAX_OTP_ATTEMPTS;
+    }
+
 }
