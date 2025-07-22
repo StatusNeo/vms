@@ -42,3 +42,7 @@ gg:
 vms:
   system-email: test@email.com
   admin-email: test@email.com
+
+app:
+  email:
+    sender: noreply@company.com

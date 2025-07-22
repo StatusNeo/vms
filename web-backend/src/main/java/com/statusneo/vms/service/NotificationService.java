@@ -1,5 +1,6 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.config.EmailProperties;
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visitor;
@@ -14,10 +15,12 @@ import java.util.Map;
 public class NotificationService {
     private final EmailService emailService;
     private final EmailTemplateProcessor templateProcessor;
+    private final EmailProperties emailProperties;
 
-    public NotificationService(EmailService emailService, EmailTemplateProcessor templateProcessor) {
+    public NotificationService(EmailService emailService, EmailTemplateProcessor templateProcessor, EmailProperties emailProperties) {
         this.emailService = emailService;
         this.templateProcessor = templateProcessor;
+        this.emailProperties = emailProperties;
     }
 
     public void sendVisitorConfirmationEmail(Visitor visitor) {
@@ -33,7 +36,7 @@ public class NotificationService {
                 """, visitor.getName(), visitor.getName(), visitor.getEmail());
 
         Email email = Email.of(
-                "noreply@company.com",
+                emailProperties.getSender(),
                 List.of(visitor.getEmail()),
                 subject,
                 body
@@ -52,7 +55,7 @@ public class NotificationService {
                   String body = templateProcessor.loadTemplate("hostNotification.txt", placeholders);
 
         Email email = Email.of(
-                "noreply@company.com",
+                emailProperties.getSender(),
                 List.of(host.getEmail()),
                 subject,
                 body

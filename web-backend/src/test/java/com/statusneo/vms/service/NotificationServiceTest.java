@@ -1,5 +1,6 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.config.EmailProperties;
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visitor;
@@ -17,12 +18,15 @@ import static org.mockito.Mockito.*;
 public class NotificationServiceTest {
     private EmailService emailService;
     private EmailTemplateProcessor templateProcessor;
+    private EmailProperties emailProperties;
     private NotificationService notificationService;
     @BeforeEach
     void setUp() {
         emailService = mock(EmailService.class);
         templateProcessor = mock(EmailTemplateProcessor.class);
-        notificationService = new NotificationService(emailService, templateProcessor);
+        emailProperties = mock(EmailProperties.class);
+        when(emailProperties.getSender()).thenReturn("noreply@company.com");
+        notificationService = new NotificationService(emailService, templateProcessor, emailProperties);
     }
 
     @Test
@@ -86,7 +90,6 @@ public class NotificationServiceTest {
         assertEquals("noreply@company.com", sentEmail.from());
         assertEquals(List.of("host@example.com"), sentEmail.to());
         assertEquals("Visitor Alert", sentEmail.subject());
-
         assertEquals(expectedTemplate.strip(), sentEmail.body().strip());
     }
 
