@@ -1,3 +1,24 @@
+/* ********************************************************************
+ *
+ *  Copyright (c) 2025 Statusneo.
+ *
+ * All rights Reserved.
+ *
+ * Redistribution and use of any source or binary or in any form, without
+ * written approval and permission is prohibited.
+ *
+ * Please read the Terms of use, Disclaimer and Privacy Policy on https://www.statusneo.com/
+ *
+ * **********************************************************************
+ */
+
+/*
+ * Notification Service to send Email notification to host and visitor
+ *
+ *  @author Anurag Sharma
+ *
+ */
+
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.config.EmailProperties;
