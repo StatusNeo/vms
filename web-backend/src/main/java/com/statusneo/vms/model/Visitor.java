@@ -1,3 +1,4 @@
+
 package com.statusneo.vms.model;
 
 import jakarta.persistence.Column;
@@ -18,6 +19,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "visitor")
 public class Visitor {
+
+	private static final String PHONE_NUMBER_REGEX = "^\\d{10}$";
+
 
 	/**
 	 * Unique identifier for the visitor.
@@ -128,6 +132,9 @@ public class Visitor {
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
+		if (phoneNumber == null || !phoneNumber.matches(PHONE_NUMBER_REGEX)) {
+			throw new IllegalArgumentException("Phone number must be exactly 10 digits and numeric");
+		}
 		this.phoneNumber = phoneNumber;
 	}
 
