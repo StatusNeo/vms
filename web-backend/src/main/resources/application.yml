@@ -46,3 +46,9 @@ vms:
 app:
   email:
     sender: noreply@company.com
+    visitor-confirmation:
+      subject: Registration Successful
+      template: visitorConfirmation.txt
+    host-notification:
+      subject: Visitor Alert
+      template: hostNotification.txt

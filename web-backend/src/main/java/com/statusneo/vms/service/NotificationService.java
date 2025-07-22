@@ -24,16 +24,16 @@ public class NotificationService {
     }
 
     public void sendVisitorConfirmationEmail(Visitor visitor) {
-        String subject = "Registration Successful";
-        String body = String.format("""
-                Dear %s,
-                Your visit registration was successful.
+        String subject = emailProperties.getVisitorConfirmation().getSubject();
 
-                Name: %s
-                Email: %s
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("visitorName", visitor.getName());
+        placeholders.put("visitorEmail", visitor.getEmail());
 
-                Thank you!
-                """, visitor.getName(), visitor.getName(), visitor.getEmail());
+        String body = templateProcessor.loadTemplate(
+                emailProperties.getVisitorConfirmation().getTemplate(),
+                placeholders
+        );
 
         Email email = Email.of(
                 emailProperties.getSender(),
@@ -45,14 +45,19 @@ public class NotificationService {
         emailService.sendEmail(email);
     }
 
+
     public void sendHostNotification(Visitor visitor, Employee host) {
-        String subject = "Visitor Alert";
+        String subject = emailProperties.getHostNotification().getSubject();
+
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("hostName", host.getName());
         placeholders.put("visitorName", visitor.getName());
         placeholders.put("visitorEmail", visitor.getEmail());
 
-                  String body = templateProcessor.loadTemplate("hostNotification.txt", placeholders);
+        String body = templateProcessor.loadTemplate(
+                emailProperties.getHostNotification().getTemplate(),
+                placeholders
+        );
 
         Email email = Email.of(
                 emailProperties.getSender(),

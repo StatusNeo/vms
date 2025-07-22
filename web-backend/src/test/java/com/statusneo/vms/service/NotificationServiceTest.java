@@ -9,23 +9,43 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class NotificationServiceTest {
+
     private EmailService emailService;
     private EmailTemplateProcessor templateProcessor;
     private EmailProperties emailProperties;
+    private EmailProperties.VisitorConfirmation visitorConfirmationProps;
+    private EmailProperties.HostNotification hostNotificationProps;
     private NotificationService notificationService;
+
     @BeforeEach
     void setUp() {
         emailService = mock(EmailService.class);
         templateProcessor = mock(EmailTemplateProcessor.class);
+
         emailProperties = mock(EmailProperties.class);
+        visitorConfirmationProps = mock(EmailProperties.VisitorConfirmation.class);
+        hostNotificationProps = mock(EmailProperties.HostNotification.class);
+
         when(emailProperties.getSender()).thenReturn("noreply@company.com");
+
+        when(emailProperties.getVisitorConfirmation()).thenReturn(visitorConfirmationProps);
+        when(visitorConfirmationProps.getSubject()).thenReturn("Registration Successful");
+        when(visitorConfirmationProps.getTemplate()).thenReturn("visitorConfirmation.txt");
+
+        when(emailProperties.getHostNotification()).thenReturn(hostNotificationProps);
+        when(hostNotificationProps.getSubject()).thenReturn("Visitor Alert");
+        when(hostNotificationProps.getTemplate()).thenReturn("hostNotification.txt");
+
         notificationService = new NotificationService(emailService, templateProcessor, emailProperties);
     }
 
@@ -35,19 +55,7 @@ public class NotificationServiceTest {
         visitor.setName("John Doe");
         visitor.setEmail("john.doe@example.com");
 
-        when(emailService.sendEmail(any(Email.class))).thenReturn(true);
-        ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
-
-        notificationService.sendVisitorConfirmationEmail(visitor);
-
-        verify(emailService).sendEmail(emailCaptor.capture());
-        Email sentEmail = emailCaptor.getValue();
-
-        assertEquals("noreply@company.com", sentEmail.from());
-        assertEquals(List.of("john.doe@example.com"), sentEmail.to());
-        assertEquals("Registration Successful", sentEmail.subject());
-
-        String expectedBody = """
+        String expectedTemplate = """
                 Dear John Doe,
                 Your visit registration was successful.
 
@@ -57,7 +65,23 @@ public class NotificationServiceTest {
                 Thank you!
                 """;
 
-        assertEquals(expectedBody.strip(), sentEmail.body().strip());
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("visitorName", "John Doe");
+        placeholders.put("visitorEmail", "john.doe@example.com");
+
+        when(templateProcessor.loadTemplate(eq("visitorConfirmation.txt"), any())).thenReturn(expectedTemplate);
+        when(emailService.sendEmail(any(Email.class))).thenReturn(true);
+
+        ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
+        notificationService.sendVisitorConfirmationEmail(visitor);
+
+        verify(emailService).sendEmail(emailCaptor.capture());
+        Email sentEmail = emailCaptor.getValue();
+
+        assertEquals("noreply@company.com", sentEmail.from());
+        assertEquals(List.of("john.doe@example.com"), sentEmail.to());
+        assertEquals("Registration Successful", sentEmail.subject());
+        assertEquals(expectedTemplate.strip(), sentEmail.body().strip());
     }
 
     @Test
@@ -65,6 +89,11 @@ public class NotificationServiceTest {
         Visitor visitor = new Visitor();
         visitor.setName("Jane Smith");
         visitor.setEmail("jane.smith@example.com");
+
+        Employee host = new Employee();
+        host.setName("Host Person");
+        host.setEmail("host@example.com");
+
         String expectedTemplate = """
                 Dear Host Person,
                 You have a new visitor coming to meet you.
@@ -74,14 +103,9 @@ public class NotificationServiceTest {
                 """;
 
         when(templateProcessor.loadTemplate(eq("hostNotification.txt"), any())).thenReturn(expectedTemplate);
-
-        Employee host = new Employee();
-        host.setName("Host Person");
-        host.setEmail("host@example.com");
-
         when(emailService.sendEmail(any(Email.class))).thenReturn(true);
-        ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
 
+        ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
         notificationService.sendHostNotification(visitor, host);
 
         verify(emailService).sendEmail(emailCaptor.capture());
@@ -92,5 +116,4 @@ public class NotificationServiceTest {
         assertEquals("Visitor Alert", sentEmail.subject());
         assertEquals(expectedTemplate.strip(), sentEmail.body().strip());
     }
-
 }
