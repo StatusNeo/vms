@@ -1,4 +1,3 @@
-
 /*
  * Copyright [2025] StatusNeo
  *
@@ -21,33 +20,35 @@ package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Otp;
+import com.statusneo.vms.model.Visit;
+import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.OtpRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class OtpServiceTest {
 
-    @InjectMocks
     private OtpService otpService;
 
     @Mock
@@ -56,70 +57,111 @@ class OtpServiceTest {
     @Mock
     private EmailService emailService;
 
-    @BeforeEach
-    void setUp() throws Exception{
-        MockitoAnnotations.openMocks(this);
-        Field field = OtpService.class.getDeclaredField("otpSubject");
-        field.setAccessible(true);
-        field.set(otpService, "Your OTP");
-    }
+    private Visit testVisit;
+    private Visitor testVisitor;
 
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        otpService = new OtpService(otpRepository, emailService, "Your OTP");
+
+        // Setup test data
+        testVisitor = new Visitor();
+        testVisitor.setId(1L);
+        testVisitor.setName("John Doe");
+        testVisitor.setEmail("test@example.com");
+        testVisitor.setPhoneNumber("1234567890");
+
+        testVisit = new Visit();
+        testVisit.setId(1L);
+        testVisit.setVisitor(testVisitor);
+        testVisit.setHost("Jane Smith");
+        testVisit.setVisitDate(LocalDateTime.now());
+    }
 
     @Test
     void testValidateOtpSuccessAndFailure() {
-        String email = "test@example.com";
         String otpValue = "654321";
         Otp otp = new Otp();
-        otp.setEmail(email);
+        otp.setEmail(testVisitor.getEmail());
         otp.setOtp(otpValue);
         otp.setExpirationTime(LocalDateTime.now().plusMinutes(10));
-        when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(otp));
+        otp.setVisit(testVisit);
 
-        boolean valid = otpService.validateOtp(email, otpValue);
+        // Mock the isValidOtp method that validateOtp actually calls
+        when(otpRepository.isValidOtp(eq(testVisit), eq(otpValue), any(LocalDateTime.class)))
+                .thenReturn(true);
+        when(otpRepository.isValidOtp(eq(testVisit), eq("wrong"), any(LocalDateTime.class)))
+                .thenReturn(false);
+
+        boolean valid = otpService.validateOtp(testVisit, otpValue);
         assertTrue(valid);
 
-        valid = otpService.validateOtp(email, "wrong");
+        valid = otpService.validateOtp(testVisit, "wrong");
         assertFalse(valid);
 
-        otpService.validateOtp(email, "wrong");
-        otpService.validateOtp(email, "wrong");
-        assertTrue(otpService.hasExceededOtpAttempts(email));
+        otpService.validateOtp(testVisit, "wrong");
+        otpService.validateOtp(testVisit, "wrong");
+        assertTrue(otpService.hasExceededOtpAttempts(testVisit));
     }
 
     @Test
-    void testMarkAndCheckEmailVerified() {
-        String email = "test@example.com";
-        otpService.markEmailAsVerified(email);
-        assertTrue(otpService.isEmailVerified(email));
+    void testGetLatestOtpByVisitReturnsEmptyIfNone() {
+        // Updated to use the optimized repository method
+        when(otpRepository.findFirstByVisitOrderByCreatedAtDesc(testVisit)).thenReturn(Optional.empty());
+        assertTrue(otpService.getLatestOtpByVisit(testVisit).isEmpty());
     }
 
     @Test
-    void testEmailVerificationExpires() throws Exception {
-        String email = "test@example.com";
-        otpService.markEmailAsVerified(email);
+    void testResendOtpWithinTwoMinutesFails() {
+        Otp recentOtp = new Otp();
+        recentOtp.setEmail(testVisitor.getEmail());
+        recentOtp.setOtp("222222");
+        recentOtp.setExpirationTime(LocalDateTime.now().plusMinutes(9));
+        recentOtp.setVisit(testVisit);
+        recentOtp.setCreatedAt(LocalDateTime.now().minusMinutes(1)); // Recent OTP
+        recentOtp.setResendCount(0);
+
+        // Updated to use the optimized repository method
+        when(otpRepository.findFirstByVisitOrderByCreatedAtDesc(testVisit)).thenReturn(Optional.of(recentOtp));
+
+        boolean result = otpService.canResendOtp(testVisit);
+
+        assertFalse(result);
+        verify(emailService, never()).sendEmail(any());
+    }
+
+    @Test
+    void testMarkAndCheckVisitVerified() {
+        otpService.markVisitAsVerified(testVisit);
+        assertTrue(otpService.isVisitVerified(testVisit));
+    }
+
+    @Test
+    void testVisitVerificationExpires() throws Exception {
+        otpService.markVisitAsVerified(testVisit);
 
         Field field = OtpService.class.getDeclaredField("verificationTimestamps");
         field.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<String, LocalDateTime> timestamps = (Map<String, LocalDateTime>) field.get(otpService);
+        Map<Long, LocalDateTime> timestamps = (Map<Long, LocalDateTime>) field.get(otpService);
 
-        timestamps.put(email, LocalDateTime.now().minusMinutes(16));
-        assertFalse(otpService.isEmailVerified(email));
+        timestamps.put(testVisit.getId(), LocalDateTime.now().minusMinutes(16));
+        assertFalse(otpService.isVisitVerified(testVisit));
     }
 
     @Test
-    void testClearVerifiedEmailResetsAttempts() {
-        String email = "test@example.com";
-        otpService.validateOtp(email, "wrong");
-        otpService.clearVerifiedEmail(email);
-        assertFalse(otpService.hasExceededOtpAttempts(email));
+    void testClearVerifiedVisitResetsAttempts() {
+        otpService.validateOtp(testVisit, "wrong");
+        otpService.clearVerifiedVisit(testVisit);
+        assertFalse(otpService.hasExceededOtpAttempts(testVisit));
     }
 
     @Test
-    void testGetLatestOtpByEmailReturnsEmptyIfNone() {
-        String email = "test@example.com";
-        when(otpRepository.findByEmailOrdered(email)).thenReturn(Collections.emptyList());
-        assertTrue(otpService.getLatestOtpByEmail(email).isEmpty());
+    void testGetLatestOtpByVisitIdReturnsEmptyIfNone() {
+        // Updated to use the optimized repository method
+        when(otpRepository.findFirstByVisitIdOrderByCreatedAtDesc(testVisit.getId())).thenReturn(Optional.empty());
+        assertTrue(otpService.getLatestOtpByVisitId(testVisit.getId()).isEmpty());
     }
 
     @Test
@@ -130,83 +172,129 @@ class OtpServiceTest {
     }
 
     @Test
-    void testSendOtpPrivateMethod() throws Exception {
-        String email = "test@example.com";
-        Method method = OtpService.class.getDeclaredMethod("sendOtp", String.class, String.class);
-        method.setAccessible(true);
-        method.invoke(otpService, email, "123456");
-    }
-
-    @Test
     void testSendOtpSavesAndSendsEmail() {
-        String email = "noreply@company.com";
-
-        otpService.sendOtp(email);
+        otpService.sendOtp(testVisit);
 
         ArgumentCaptor<Otp> otpCaptor = ArgumentCaptor.forClass(Otp.class);
         verify(otpRepository).save(otpCaptor.capture());
         Otp savedOtp = otpCaptor.getValue();
-        assertEquals(email, savedOtp.getEmail());
+
+        assertEquals(testVisitor.getEmail(), savedOtp.getEmail());
+        assertEquals(testVisit, savedOtp.getVisit());
         assertNotNull(savedOtp.getOtp());
         assertTrue(savedOtp.getOtp().matches("\\d{6}"));
+        assertNotNull(savedOtp.getExpirationTime());
 
         ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
         verify(emailService).sendEmail(emailCaptor.capture());
         Email sentEmail = emailCaptor.getValue();
 
-        assertEquals("noreply@company.com", sentEmail.from());
-        assertEquals(List.of(email), sentEmail.to());
+        assertEquals(testVisitor.getEmail(), sentEmail.from());
+        assertEquals(List.of(testVisitor.getEmail()), sentEmail.to());
         assertEquals("Your OTP", sentEmail.subject());
-        assertTrue(sentEmail.body().contains("Your OTP is: " + savedOtp.getOtp()));
+        assertTrue(sentEmail.body().contains("Your OTP for visit to " + testVisit.getHost() + " is: " + savedOtp.getOtp()));
     }
 
     @Test
-    void testResendOtpWithinTwoMinutesFails() {
-        String email = "visitor@gmail.com";
+    void testResendOtpAfterTwoMinutesSucceeds() {
+        Otp oldOtp = new Otp();
+        oldOtp.setEmail(testVisitor.getEmail());
+        oldOtp.setOtp("123456");
+        oldOtp.setExpirationTime(LocalDateTime.now().plusMinutes(7));
+        oldOtp.setVisit(testVisit);
+        oldOtp.setCreatedAt(LocalDateTime.now().minusMinutes(3));
+        oldOtp.setResendCount(0);
 
-        Otp recentOtp = new Otp();
-        recentOtp.setEmail(email);
-        recentOtp.setOtp("222222");
-        recentOtp.setExpirationTime(LocalDateTime.now().plusMinutes(9));
+        // Updated to use the optimized repository method
+        when(otpRepository.findFirstByVisitOrderByCreatedAtDesc(testVisit)).thenReturn(Optional.of(oldOtp));
 
-        when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(recentOtp));
+        boolean result = otpService.canResendOtp(testVisit);
 
-        boolean result = otpService.canResendOtp(email);
+        assertTrue(result);
+
+        // Capture all save calls (expecting 2: one for new OTP, one for updating resend count)
+        ArgumentCaptor<Otp> otpCaptor = ArgumentCaptor.forClass(Otp.class);
+        verify(otpRepository, times(2)).save(otpCaptor.capture());
+
+        List<Otp> savedOtps = otpCaptor.getAllValues();
+        assertEquals(2, savedOtps.size());
+
+        // First save should be the new OTP
+        Otp newOtp = savedOtps.get(0);
+        assertNotNull(newOtp.getOtp());
+        assertEquals(testVisitor.getEmail(), newOtp.getEmail());
+        assertEquals(testVisit, newOtp.getVisit());
+        assertTrue(newOtp.getOtp().matches("\\d{6}"));
+        assertNotEquals("123456", newOtp.getOtp()); // Should be different from old OTP
+
+        // Second save should be the old OTP with updated resend count
+        Otp updatedOldOtp = savedOtps.get(1);
+        assertEquals("123456", updatedOldOtp.getOtp()); // Same OTP value as original
+        assertEquals(1, updatedOldOtp.getResendCount()); // Resend count should be incremented
+
+        // Verify email was sent
+        ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
+        verify(emailService).sendEmail(emailCaptor.capture());
+        Email sentEmail = emailCaptor.getValue();
+
+        assertEquals(testVisitor.getEmail(), sentEmail.from());
+        assertEquals(List.of(testVisitor.getEmail()), sentEmail.to());
+        assertEquals("Your OTP", sentEmail.subject());
+        assertTrue(sentEmail.body().contains("Your OTP for visit to " + testVisit.getHost() + " is: " + newOtp.getOtp()));
+    }
+
+    @Test
+    void testResendOtpFailsWhenMaxResendCountReached() {
+        Otp maxResendOtp = new Otp();
+        maxResendOtp.setEmail(testVisitor.getEmail());
+        maxResendOtp.setOtp("123456");
+        maxResendOtp.setExpirationTime(LocalDateTime.now().plusMinutes(7));
+        maxResendOtp.setVisit(testVisit);
+        maxResendOtp.setCreatedAt(LocalDateTime.now().minusMinutes(5));
+        maxResendOtp.setResendCount(2); // Max resend count reached
+
+        // Updated to use the optimized repository method
+        when(otpRepository.findFirstByVisitOrderByCreatedAtDesc(testVisit)).thenReturn(Optional.of(maxResendOtp));
+
+        boolean result = otpService.canResendOtp(testVisit);
 
         assertFalse(result);
         verify(emailService, never()).sendEmail(any());
     }
 
     @Test
-    void testResendOtpAfterTwoMinutesSucceeds() {
-        String email = "noreply@company.com";
+    void testValidateOtpWithExpiredOtp() {
+        String otpValue = "654321";
 
-        Otp oldOtp = new Otp();
-        oldOtp.setEmail(email);
-        oldOtp.setOtp("123456");
-        oldOtp.setExpirationTime(LocalDateTime.now().plusMinutes(10).minusMinutes(2).minusSeconds(1));
+        // For expired OTP test, we should mock the isValidOtp method since that's what validateOtp uses
+        when(otpRepository.isValidOtp(eq(testVisit), eq(otpValue), any(LocalDateTime.class)))
+                .thenReturn(false); // Expired OTP returns false
 
-        when(otpRepository.findByEmailOrdered(email)).thenReturn(List.of(oldOtp));
-
-        boolean result = otpService.canResendOtp(email);
-
-        assertTrue(result);
-
-        ArgumentCaptor<Otp> otpCaptor = ArgumentCaptor.forClass(Otp.class);
-        verify(otpRepository).save(otpCaptor.capture());
-        Otp newOtp = otpCaptor.getValue();
-        assertNotNull(newOtp.getOtp());
-        assertEquals(email, newOtp.getEmail());
-        assertTrue(newOtp.getOtp().matches("\\d{6}"));
-
-        ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
-        verify(emailService).sendEmail(emailCaptor.capture());
-        Email sentEmail = emailCaptor.getValue();
-
-        assertEquals("noreply@company.com", sentEmail.from());
-        assertEquals(List.of(email), sentEmail.to());
-        assertEquals("Your OTP", sentEmail.subject());
-        assertTrue(sentEmail.body().contains("Your OTP is: " + newOtp.getOtp()));
+        boolean valid = otpService.validateOtp(testVisit, otpValue);
+        assertFalse(valid);
     }
 
+    @Test
+    void testMultipleVisitsHaveIndependentOtpTracking() {
+        // Create second visit
+        Visit secondVisit = new Visit();
+        secondVisit.setId(2L);
+        secondVisit.setVisitor(testVisitor);
+        secondVisit.setHost("Bob Wilson");
+        secondVisit.setVisitDate(LocalDateTime.now());
+
+        // Mock isValidOtp to return false for wrong attempts
+        when(otpRepository.isValidOtp(eq(testVisit), eq("wrong1"), any(LocalDateTime.class))).thenReturn(false);
+        when(otpRepository.isValidOtp(eq(testVisit), eq("wrong2"), any(LocalDateTime.class))).thenReturn(false);
+        when(otpRepository.isValidOtp(eq(testVisit), eq("wrong3"), any(LocalDateTime.class))).thenReturn(false);
+
+        // Exceed attempts for first visit
+        otpService.validateOtp(testVisit, "wrong1");
+        otpService.validateOtp(testVisit, "wrong2");
+        otpService.validateOtp(testVisit, "wrong3");
+
+        // Second visit should not be affected
+        assertFalse(otpService.hasExceededOtpAttempts(secondVisit));
+        assertTrue(otpService.hasExceededOtpAttempts(testVisit));
+    }
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright [2025] StatusNeo
  *
@@ -28,20 +27,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @Testcontainers
-
 public class VisitServiceIntegrationTest {
 
     @Container
@@ -66,10 +71,18 @@ public class VisitServiceIntegrationTest {
     @Autowired
     private VisitRepository visitRepository;
 
+    @MockitoBean
+    private OtpService otpService;
+
     @BeforeEach
     void cleanDatabase() {
         visitRepository.deleteAll();
         visitorRepository.deleteAll();
+    }
+
+    @BeforeEach
+    void setupMocks() {
+        doNothing().when(otpService).sendOtp(any(Visit.class));
     }
 
     @Test
@@ -96,6 +109,8 @@ public class VisitServiceIntegrationTest {
         Optional<Visit> foundVisit = visitRepository.findById(savedVisit.getId());
         assertTrue(foundVisit.isPresent());
         assertEquals(savedVisit.getId(), foundVisit.get().getId());
+        await().atMost(3, TimeUnit.SECONDS)
+                .untilAsserted(() -> verify(otpService, times(1)).sendOtp(any(Visit.class)));
     }
 
     @Test
@@ -112,6 +127,10 @@ public class VisitServiceIntegrationTest {
         assertNotNull(visit);
         assertEquals("Bob", visit.getVisitor().getName());
         assertEquals("bob@example.com", visit.getVisitor().getEmail());
+
+        // Verify OTP was sent for the visit
+        await().atMost(3, TimeUnit.SECONDS)
+                .untilAsserted(() -> verify(otpService, times(1)).sendOtp(any(Visit.class)));
     }
 
     @Test
@@ -127,6 +146,9 @@ public class VisitServiceIntegrationTest {
         assertNotNull(visit.getVisitDate());
         assertTrue(visit.getVisitDate().isAfter(LocalDateTime.now().minusMinutes(1)));
         assertTrue(visit.getVisitDate().isBefore(LocalDateTime.now().plusMinutes(1)));
+
+        await().atMost(3, TimeUnit.SECONDS)
+                .untilAsserted(() -> verify(otpService, times(1)).sendOtp(any(Visit.class)));
     }
 
     @Test
@@ -144,10 +166,56 @@ public class VisitServiceIntegrationTest {
         assertNotNull(secondVisit);
         assertEquals(firstVisit.getVisitor().getEmail(), secondVisit.getVisitor().getEmail());
 
-        // There should be two visits for the same visitor
         long visitCount = visitRepository.findAll().stream()
                 .filter(v -> v.getVisitor().getEmail().equals("dana@example.com"))
                 .count();
         assertEquals(2, visitCount);
+
+        await().atMost(3, TimeUnit.SECONDS)
+                .untilAsserted(() -> verify(otpService, times(2)).sendOtp(any(Visit.class)));
+    }
+
+    @Test
+    void testRegisterVisitHandlesOtpServiceFailureGracefully() {
+        Visitor visitor = new Visitor();
+        visitor.setName("Eve");
+        visitor.setPhoneNumber("5556667777");
+        visitor.setEmail("eve@example.com");
+        visitor.setAddress("202 Maple St");
+
+        doNothing().when(otpService).sendOtp(any(Visit.class));
+
+        Visit savedVisit = visitService.registerVisit(visitor);
+
+        // Visit should still be created successfully
+        assertNotNull(savedVisit);
+        assertNotNull(savedVisit.getId());
+        assertEquals("Eve", savedVisit.getVisitor().getName());
+        Optional<Visit> foundVisit = visitRepository.findById(savedVisit.getId());
+        assertTrue(foundVisit.isPresent());
+
+        // Verify OTP service was attempted
+        await().atMost(3, TimeUnit.SECONDS)
+                .untilAsserted(() -> verify(otpService, times(1)).sendOtp(any(Visit.class)));
+    }
+
+    @Test
+    void testVisitEntityAssociationWithOtpService() {
+        Visitor visitor = new Visitor();
+        visitor.setName("Frank");
+        visitor.setPhoneNumber("8889990000");
+        visitor.setEmail("frank@example.com");
+        visitor.setAddress("303 Birch St");
+
+        Visit savedVisit = visitService.registerVisit(visitor);
+
+        await().atMost(3, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+                    verify(otpService, times(1)).sendOtp(any(Visit.class));
+
+                    assertNotNull(savedVisit.getVisitor());
+                    assertEquals("frank@example.com", savedVisit.getVisitor().getEmail());
+                    assertNotNull(savedVisit.getVisitDate());
+                });
     }
 }

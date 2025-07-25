@@ -27,6 +27,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDateTime;
 
 /**
@@ -55,6 +58,8 @@ public class Visitor {
 	/**
 	 * Contact phone number of the visitor.
 	 */
+	@NotNull(message = "Phone number cannot be null")
+	@Pattern(regexp = "^\\d{10}$", message = "Phone number must be exactly 10 digits")
 	private String phoneNumber;
 
 	/**
@@ -149,12 +154,8 @@ public class Visitor {
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
-		if (phoneNumber == null || !phoneNumber.matches(PHONE_NUMBER_REGEX)) {
-			throw new IllegalArgumentException("Phone number must be exactly 10 digits and numeric");
-		}
 		this.phoneNumber = phoneNumber;
 	}
-
 	public String getEmail() {
 		return email;
 	}
