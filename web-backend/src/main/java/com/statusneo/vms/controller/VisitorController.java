@@ -92,25 +92,25 @@ public class VisitorController {
 //                ResponseEntity.badRequest().body("Invalid or expired OTP!");
 //    }
 
-    @PostMapping("/validate-otp") // Changed to POST for better practice
-    public ResponseEntity<String> validateOtp(
-            @RequestParam String email,
-            @RequestParam String otp) {
-
-        boolean isValid = otpService.validateOtp(email, otp);
-
-        if (isValid) {
-            return ResponseEntity.ok("""
-                        <p class="text-green-600 font-bold">OTP Verified Successfully!</p>
-                    """);
-        } else {
-            return ResponseEntity.ok("""
-                    <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                        Invalid OTP, please try again
-                    </div>
-                    """);
-        }
-    }
+//    @PostMapping("/validate-otp") // Changed to POST for better practice
+//    public ResponseEntity<String> validateOtp(
+//            @RequestParam String email,
+//            @RequestParam String otp) {
+//
+//        boolean isValid = otpService.validateOtp(email, otp);
+//
+//        if (isValid) {
+//            return ResponseEntity.ok("""
+//                        <p class="text-green-600 font-bold">OTP Verified Successfully!</p>
+//                    """);
+//        } else {
+//            return ResponseEntity.ok("""
+//                    <div id="otp-error-message" class="text-red-600 font-bold mb-4">
+//                        Invalid OTP, please try again
+//                    </div>
+//                    """);
+//        }
+//    }
 //
 //    @PostMapping("/send-report")
 //    public String sendReport(@RequestParam String email) {
@@ -172,14 +172,14 @@ public class VisitorController {
 //    }
 
 
-    @PostMapping("/submit-details")
-    public ResponseEntity<String> submitDetails(@RequestBody Visitor visitor) {
-        // Store details temporarily
-
-        // Send OTP
-        otpService.sendOtp(visitor.getEmail());
-        return ResponseEntity.ok("OTP sent to email");
-    }
+//    @PostMapping("/submit-details")
+//    public ResponseEntity<String> submitDetails(@RequestBody Visitor visitor) {
+//        // Store details temporarily
+//
+//        // Send OTP
+//        otpService.sendOtp(visitor.getEmail());
+//        return ResponseEntity.ok("OTP sent to email");
+//    }
 
 //    // Updated registration endpoint
 //    @PostMapping("/complete-registration")
@@ -204,114 +204,114 @@ public class VisitorController {
 //    }
 
     // New endpoint in your Controller
-    @PostMapping("/send-otp")
-    public ResponseEntity<String> sendOtpForRegistration(@RequestBody Visitor visitor) {
-        // 1. Validate inputs
-        // 2. Send OTP
-        otpService.sendOtp(visitor.getEmail());
-        return ResponseEntity.ok("OTP sent");
-    }
+//    @PostMapping("/send-otp")
+//    public ResponseEntity<String> sendOtpForRegistration(@RequestBody Visitor visitor) {
+//        // 1. Validate inputs
+//        // 2. Send OTP
+//        otpService.sendOtp(visitor.getEmail());
+//        return ResponseEntity.ok("OTP sent");
+//    }
 
-    @PostMapping("/initiate-registration")
-    public ResponseEntity<String> initiateRegistration(@RequestBody Visitor visitor) {
-        // Validate required fields
-        if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
-            return ResponseEntity.badRequest().body("Email is required");
-        }
-        if (visitor.getName() == null || visitor.getName().isEmpty()) {
-            return ResponseEntity.badRequest().body("Name is required");
-        }
+//    @PostMapping("/initiate-registration")
+//    public ResponseEntity<String> initiateRegistration(@RequestBody Visitor visitor) {
+//        // Validate required fields
+//        if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
+//            return ResponseEntity.badRequest().body("Email is required");
+//        }
+//        if (visitor.getName() == null || visitor.getName().isEmpty()) {
+//            return ResponseEntity.badRequest().body("Name is required");
+//        }
+//
+//        // Check if email already exists
+//        if (visitorRepository.existsByEmail(visitor.getEmail())) {
+//            return ResponseEntity.badRequest().body("Email already registered");
+//        }
+//
+//        // Generate and send OTP
+//        otpService.sendOtp(visitor.getEmail());
+//
+//        return ResponseEntity.ok("OTP sent to your email");
+//    }
 
-        // Check if email already exists
-        if (visitorRepository.existsByEmail(visitor.getEmail())) {
-            return ResponseEntity.badRequest().body("Email already registered");
-        }
-
-        // Generate and send OTP
-        otpService.sendOtp(visitor.getEmail());
-
-        return ResponseEntity.ok("OTP sent to your email");
-    }
-
-    @PostMapping("/complete-registration")
-    public ResponseEntity<String> completeRegistration(
-            @RequestParam String email,
-            @RequestParam String otp) {
-
-        // Validate OTP
-        if (!otpService.validateOtp(email, otp)) {
-            return ResponseEntity.badRequest().body("""
-                    <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                        Invalid OTP, please try again
-                    </div>
-                    """);
-        }
-
-        Visitor visitor = null;
-        // Get pending visitor details
-        if (visitor == null) {
-            return ResponseEntity.badRequest().body("Registration session expired. Please start again.");
-        }
-
-        try {
-            return ResponseEntity.ok("""
-                    <p class="text-green-600 font-bold">Registration successful!</p>
-                    """);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("""
-                    <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
-        }
-    }
-
-
-    @PostMapping("/verify-email")
-    public ResponseEntity<String> verifyEmail(@RequestParam String email) {
-        try {
-            // 1. Validate email format only
-            if (email == null || !email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-                return ResponseEntity.badRequest().body("""
-                        <div class="text-red-600 mb-2">
-                            Please enter a valid email address
-                        </div>
-                        """);
-            }
-
-            // 2. Send OTP (no email uniqueness check)
-            otpService.sendOtp(email);
-
-            return ResponseEntity.ok("""
-                    <div class="text-green-600 mb-2">
-                        OTP sent successfully! Please check your email.
-                    </div>
-                    """);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("""
-                            <div class="text-red-600 mb-2">
-                                Error sending OTP. Please try again.
-                            </div>
-                            """);
-        }
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> registerVisitor(@RequestBody Visitor visitor) {
-        try {
-            // Validate required fields
-            if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
-                return ResponseEntity.badRequest().body("Email is required");
-            }
+//    @PostMapping("/complete-registration")
+//    public ResponseEntity<String> completeRegistration(
+//            @RequestParam String email,
+//            @RequestParam String otp) {
+//
+//        // Validate OTP
+//        if (!otpService.validateOtp(email, otp)) {
+//            return ResponseEntity.badRequest().body("""
+//                    <div id="otp-error-message" class="text-red-600 font-bold mb-4">
+//                        Invalid OTP, please try again
+//                    </div>
+//                    """);
+//        }
+//
+//        Visitor visitor = null;
+//        // Get pending visitor details
+//        if (visitor == null) {
+//            return ResponseEntity.badRequest().body("Registration session expired. Please start again.");
+//        }
+//
+//        try {
+//            return ResponseEntity.ok("""
+//                    <p class="text-green-600 font-bold">Registration successful!</p>
+//                    """);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body("""
+//                    <p class="text-red-600">Error during registration: """ + e.getMessage() + "</p>");
+//        }
+//    }
 
 
-            // Send OTP to visitor
-            otpService.sendOtp(visitor.getEmail());
+//    @PostMapping("/verify-email")
+//    public ResponseEntity<String> verifyEmail(@RequestParam String email) {
+//        try {
+//            // 1. Validate email format only
+//            if (email == null || !email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+//                return ResponseEntity.badRequest().body("""
+//                        <div class="text-red-600 mb-2">
+//                            Please enter a valid email address
+//                        </div>
+//                        """);
+//            }
+//
+//            // 2. Send OTP (no email uniqueness check)
+//            otpService.sendOtp(email);
+//
+//            return ResponseEntity.ok("""
+//                    <div class="text-green-600 mb-2">
+//                        OTP sent successfully! Please check your email.
+//                    </div>
+//                    """);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("""
+//                            <div class="text-red-600 mb-2">
+//                                Error sending OTP. Please try again.
+//                            </div>
+//                            """);
+//        }
+//    }
 
-            return ResponseEntity.ok("Visitor registered successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error registering visitor: " + e.getMessage());
-        }
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<?> registerVisitor(@RequestBody Visitor visitor) {
+//        try {
+//            // Validate required fields
+//            if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
+//                return ResponseEntity.badRequest().body("Email is required");
+//            }
+//
+//
+//            // Send OTP to visitor
+//            otpService.sendOtp(visitor.getEmail());
+//
+//            return ResponseEntity.ok("Visitor registered successfully");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Error registering visitor: " + e.getMessage());
+//        }
+//    }
 
 
 }
