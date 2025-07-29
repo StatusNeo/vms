@@ -25,11 +25,14 @@ import com.statusneo.vms.repository.EmployeeRepository;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
 import com.statusneo.vms.service.*;
+import gg.jte.TemplateEngine;
+import gg.jte.output.StringOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -62,6 +65,12 @@ public class VisitorController {
 
     @Autowired
     private ExcelService excelService;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
+
+
 
     private final Map<String, Visitor> pendingVisitors = new HashMap<>();
 
@@ -141,19 +150,13 @@ public class VisitorController {
 //    }
 
     @GetMapping("/search")
-    public String searchEmployees(@RequestParam("employee") String query) {
+    public String searchEmployees(@RequestParam("employee") String query, Model model) {
         logger.info("Received search request for employee: {}", query);
         List<Employee> employees = employeeService.searchEmployeesByName(query);
-        StringBuilder html = new StringBuilder();
-        for (Employee employee : employees) {
-            html.append("<li class='px-3 py-2 hover:bg-gray-100 cursor-pointer' onclick='selectEmployee(\"")
-                    .append(employee.getName())
-                    .append("\")'>")
-                    .append(employee.getName())
-                    .append("</li>");
-        }
-        return html.toString();
+        model.addAttribute("employees", employees);
+        return "employeeSearchResults";
     }
+
 
     @PostMapping("/saveVisitor")
     public ResponseEntity<String> saveVisitor(@RequestBody Visitor visitor) {
