@@ -1,44 +1,43 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: VMS
   docker:
     compose:
       lifecycle-management: start_only
   jpa:
-    # JPA/Hibernate Configuration
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: create-drop  # Reset DB state on each test run
+    show-sql: false          # Usually disabled in test for cleaner logs
   security:
     oauth2:
       client:
         registration:
           azure:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
+            client-id: test-client-id
+            client-secret: test-client-secret
             authorization-grant-type: client_credentials
             scope: https://graph.microsoft.com/.default
         provider:
           azure:
-            token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+            token-uri: https://login.microsoftonline.com/test-tenant-id/oauth2/v2.0/token
 
 visitor:
   system:
     notification:
-      # Email Configuration
       email: test@email.com
-      subject: New Visitor Registration
+      subject: New Visitor Registration (Test)
     otp:
-      subject: OTP Verification Code
+      subject: OTP Verification Code (Test)
     employee:
       notification:
-        # Add this new property
-        subject: YOUR VISITOR IS HERE
+        subject: YOUR VISITOR IS HERE (Test)
+
 gg:
   jte:
     developmentMode: true
 
-# Application specific properties
 vms:
   system-email: test@email.com
   admin-email: test@email.com
@@ -49,3 +48,5 @@ mail:
 graph:
   api:
     url: http://localhost:${wiremock.server.port}
+
+
