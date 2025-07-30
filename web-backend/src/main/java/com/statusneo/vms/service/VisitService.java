@@ -78,7 +78,7 @@ public class VisitService {
             try {
                 otpService.sendOtp(savedVisit);
             } catch (Exception e) {
-                logger.error("OTP sending failed", e);
+                logger.error("Async OTP sending failed", e);
             }
         }, asyncExecutor);
         // Return the saved visitor details

@@ -88,10 +88,10 @@ class OtpServiceTest {
         otp.setExpirationTime(LocalDateTime.now().plusMinutes(10));
         otp.setVisit(testVisit);
 
-        // Mock the isValidOtp method that validateOtp actually calls
-        when(otpRepository.isValidOtp(eq(testVisit), eq(otpValue), any(LocalDateTime.class)))
+        // Mock the existsByVisitAndOtpAndExpirationTimeAfter method that validateOtp actually calls
+        when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq(otpValue), any(LocalDateTime.class)))
                 .thenReturn(true);
-        when(otpRepository.isValidOtp(eq(testVisit), eq("wrong"), any(LocalDateTime.class)))
+        when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq("wrong"), any(LocalDateTime.class)))
                 .thenReturn(false);
 
         boolean valid = otpService.validateOtp(testVisit, otpValue);
@@ -266,8 +266,8 @@ class OtpServiceTest {
     void testValidateOtpWithExpiredOtp() {
         String otpValue = "654321";
 
-        // For expired OTP test, we should mock the isValidOtp method since that's what validateOtp uses
-        when(otpRepository.isValidOtp(eq(testVisit), eq(otpValue), any(LocalDateTime.class)))
+        // For expired OTP test, we should mock the existsByVisitAndOtpAndExpirationTimeAfter method since that's what validateOtp uses
+        when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq(otpValue), any(LocalDateTime.class)))
                 .thenReturn(false); // Expired OTP returns false
 
         boolean valid = otpService.validateOtp(testVisit, otpValue);
@@ -283,10 +283,10 @@ class OtpServiceTest {
         secondVisit.setHost("Bob Wilson");
         secondVisit.setVisitDate(LocalDateTime.now());
 
-        // Mock isValidOtp to return false for wrong attempts
-        when(otpRepository.isValidOtp(eq(testVisit), eq("wrong1"), any(LocalDateTime.class))).thenReturn(false);
-        when(otpRepository.isValidOtp(eq(testVisit), eq("wrong2"), any(LocalDateTime.class))).thenReturn(false);
-        when(otpRepository.isValidOtp(eq(testVisit), eq("wrong3"), any(LocalDateTime.class))).thenReturn(false);
+        // Mock existsByVisitAndOtpAndExpirationTimeAfter to return false for wrong attempts
+        when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq("wrong1"), any(LocalDateTime.class))).thenReturn(false);
+        when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq("wrong2"), any(LocalDateTime.class))).thenReturn(false);
+        when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq("wrong3"), any(LocalDateTime.class))).thenReturn(false);
 
         // Exceed attempts for first visit
         otpService.validateOtp(testVisit, "wrong1");

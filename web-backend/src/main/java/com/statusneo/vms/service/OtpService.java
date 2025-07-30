@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -145,7 +144,7 @@ public class OtpService {
         if (attempts >= MAX_OTP_ATTEMPTS) {
             return false;
         }
-        boolean valid = otpRepository.isValidOtp(visit, otpCode, LocalDateTime.now());
+        boolean valid = otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(visit, otpCode, LocalDateTime.now());
 
         if (!valid) {
             otpAttempts.put(visitId, attempts + 1);
