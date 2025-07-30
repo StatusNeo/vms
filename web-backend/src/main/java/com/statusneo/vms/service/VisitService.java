@@ -83,28 +83,24 @@ public class VisitService {
         // Save the visitor first to get an ID
         // Save visitor to database
         Visitor savedVisitor = visitorRepository.save(visitor);
+
         // Create a new Visit object and associate it with the saved Visitor
         Visit visit = new Visit();
         visit.setVisitor(savedVisitor);
-        visit.setVisitDate(LocalDateTime.now()); // Set the visit date to now
+        visit.setVisitDate(LocalDateTime.now());
 
         // Save the visit to the database
         Visit savedVisit = visitRepository.save(visit);
 
-        // Generate and send OTP asynchronously
         CompletableFuture.runAsync(() -> {
             try {
-                otpService.sendOtp(savedVisitor.getEmail());
+                otpService.sendOtp(savedVisit);
             } catch (Exception e) {
                 logger.error("Async OTP sending failed", e);
             }
         }, asyncExecutor);
-
-        // Send notification to admin
-//        emailService.sendVisitorEmail(savedVisitor);
         // Return the saved visitor details
         return savedVisit;
-
     }
 
 }
