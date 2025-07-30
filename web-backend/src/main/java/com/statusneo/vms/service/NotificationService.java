@@ -28,57 +28,57 @@ package com.statusneo.vms.service;
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visitor;
+import gg.jte.TemplateEngine;
+import gg.jte.output.StringOutput;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class NotificationService {
-    private final EmailService emailService;
 
-    public NotificationService(EmailService emailService) {
+    private final EmailService emailService;
+    private final TemplateEngine templateEngine;
+
+    public NotificationService(EmailService emailService, TemplateEngine templateEngine) {
         this.emailService = emailService;
+        this.templateEngine = templateEngine;
     }
 
     public void sendVisitorConfirmationEmail(Visitor visitor) {
-        String subject = "Registration Successful";
-        String body = String.format("""
-                Dear %s,
-                Your visit registration was successful.
+        Map<String, Object> params = new HashMap<>();
+        params.put("visitorName", visitor.getName());
+        params.put("visitorEmail", visitor.getEmail());
 
-                Name: %s
-                Email: %s
-
-                Thank you!
-                """, visitor.getName(), visitor.getName(), visitor.getEmail());
+        StringOutput output = new StringOutput();
+        templateEngine.render("visitorConfirmation.jte", params, output);
 
         Email email = Email.of(
                 "noreply@company.com",
                 List.of(visitor.getEmail()),
-                subject,
-                body
+                "Registration Successful",
+                output.toString()
         );
 
         emailService.sendEmail(email);
     }
 
     public void sendHostNotification(Visitor visitor, Employee host) {
-        String subject = "Visitor Alert";
-        String body = String.format("""
-                Dear %s,
-                You have a new visitor coming to meet you.
+        Map<String, Object> params = new HashMap<>();
+        params.put("hostName", host.getName());
+        params.put("visitorName", visitor.getName());
+        params.put("visitorEmail", visitor.getEmail());
 
-                Visitor Name: %s
-                Email: %s
-
-                Please be ready to receive them.
-                """, host.getName(), visitor.getName(), visitor.getEmail());
+        StringOutput output = new StringOutput();
+        templateEngine.render("hostNotification.jte", params, output);
 
         Email email = Email.of(
                 "noreply@company.com",
                 List.of(host.getEmail()),
-                subject,
-                body
+                "Visitor Alert",
+                output.toString()
         );
 
         emailService.sendEmail(email);
