@@ -1,10 +1,13 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +21,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Testcontainers
@@ -76,18 +76,18 @@ public class VisitServiceTest {
         visitor.setAddress("123 Delhi Address");
 
         Visit visit = visitService.registerVisit(visitor);
-
         String dummyOtp = "123456";
 
         Mockito.when(otpService.validateOtp(any(Visit.class), eq(dummyOtp))).thenReturn(true);
 
-        Mockito.doNothing().when(otpService).markVisitAsVerified(any(Visit.class));
-
-        boolean result = visitService.confirmVisit(visit.getId(), dummyOtp);
-
+        VerificationResult result = visitService.confirmVisit(visit.getId(), dummyOtp);
         Visit updatedVisit = visitRepository.findById(visit.getId()).orElse(null);
 
-        assertTrue(result, "Visit should be confirmed successfully");
+        assertNotNull(result);
+        assertTrue(result.isSuccess(), "OTP verification should be successful");
+        assertFalse(result.isReattempt(), "Reattempt should be false on success");
+        assertEquals("OTP verified successfully", result.getMessage());
+
         assertNotNull(updatedVisit, "Updated visit should not be null");
         assertTrue(updatedVisit.getIsApproved(), "Visit should be marked as approved");
     }

@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitRepository;
@@ -104,19 +105,22 @@ public class VisitService {
     }
 
     @Transactional
-    public boolean confirmVisit(Long visitId, String otpCode) {
+    public VerificationResult confirmVisit(Long visitId, String otpCode) {
         Visit visit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found for ID: " + visitId));
 
         boolean isValid = otpService.validateOtp(visit, otpCode);
 
-        if (isValid) {
-            otpService.markVisitAsVerified(visit);
-            visit.setIsApproved(true);
-            visitRepository.save(visit);
-            return true;
-        } else {
-            return false;
+        if (!isValid) {
+            boolean shouldReattempt = !otpService.hasExceededOtpAttempts(visit);
+            return new VerificationResult(false, shouldReattempt, shouldReattempt
+                    ? "Invalid OTP. Please try again." : "Maximum attempts exceeded.");
         }
+
+        visit.setIsApproved(true);
+        visitRepository.save(visit);
+
+        return new VerificationResult(true, false, "OTP verified successfully");
     }
+
 }
