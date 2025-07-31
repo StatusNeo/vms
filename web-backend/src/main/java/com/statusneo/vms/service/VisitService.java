@@ -103,4 +103,20 @@ public class VisitService {
         return savedVisit;
     }
 
+    @Transactional
+    public boolean confirmVisit(Long visitId, String otpCode) {
+        Visit visit = visitRepository.findById(visitId)
+                .orElseThrow(() -> new IllegalArgumentException("Visit not found for ID: " + visitId));
+
+        boolean isValid = otpService.validateOtp(visit, otpCode);
+
+        if (isValid) {
+            otpService.markVisitAsVerified(visit);
+            visit.setIsApproved(true);
+            visitRepository.save(visit);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
