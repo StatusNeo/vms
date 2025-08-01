@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.controller;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
@@ -108,9 +109,9 @@ public class VisitorController {
             return ResponseEntity.badRequest().body("Invalid visit ID");
         }
 
-        boolean isValid = otpService.validateOtp(visit, otp);
+        VerificationResult result = otpService.validateOtp(visit, otp);
 
-        if (isValid) {
+        if (result.success()) {
             otpService.markVisitAsVerified(visit);
             return ResponseEntity.ok("<p class=\"text-green-600 font-bold\">OTP Verified Successfully!</p>");
         } else {
