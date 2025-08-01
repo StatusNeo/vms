@@ -1,27 +1,10 @@
 package com.statusneo.vms.dto;
 
-public class VerificationResult {
-    private boolean success;
-    private boolean reattempt;
-    private String message;
-
-    public VerificationResult(boolean success, boolean reattempt, String message) {
-        this.success = success;
-        this.reattempt = reattempt;
-        this.message = message;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-
-    public boolean isReattempt() {
-        return reattempt;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-}
-
+/**
+ * DTO representing the result of OTP verification.
+ *
+ * @param success  Indicates if OTP verification was successful.
+ * @param reattempt Indicates whether the user can reattempt OTP verification.
+ * @param message  Message to be returned to the client.
+ */
+public record VerificationResult(boolean success, boolean reattempt, String message) {}

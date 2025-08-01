@@ -18,6 +18,7 @@
 
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Otp;
 import com.statusneo.vms.model.Visit;
@@ -82,28 +83,31 @@ class OtpServiceTest {
     @Test
     void testValidateOtpSuccessAndFailure() {
         String otpValue = "654321";
-        Otp otp = new Otp();
-        otp.setEmail(testVisitor.getEmail());
-        otp.setOtp(otpValue);
-        otp.setExpirationTime(LocalDateTime.now().plusMinutes(10));
-        otp.setVisit(testVisit);
 
-        // Mock the existsByVisitAndOtpAndExpirationTimeAfter method that validateOtp actually calls
         when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq(otpValue), any(LocalDateTime.class)))
                 .thenReturn(true);
         when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq("wrong"), any(LocalDateTime.class)))
                 .thenReturn(false);
 
-        boolean valid = otpService.validateOtp(testVisit, otpValue);
-        assertTrue(valid);
+        VerificationResult result = otpService.validateOtp(testVisit, otpValue);
+        assertTrue(result.success());
+        assertFalse(result.reattempt());
+        assertEquals("OTP verified successfully", result.message());
 
-        valid = otpService.validateOtp(testVisit, "wrong");
-        assertFalse(valid);
+        result = otpService.validateOtp(testVisit, "wrong");
+        assertFalse(result.success());
+        assertTrue(result.reattempt());
+        assertEquals("Invalid OTP. Please try again.", result.message());
 
-        otpService.validateOtp(testVisit, "wrong");
-        otpService.validateOtp(testVisit, "wrong");
+
+        result = otpService.validateOtp(testVisit, "wrong");
+        assertFalse(result.success());
+        assertFalse(result.reattempt());
+        assertEquals("Maximum attempts exceeded.", result.message());
+
         assertTrue(otpService.hasExceededOtpAttempts(testVisit));
     }
+
 
     @Test
     void testGetLatestOtpByVisitReturnsEmptyIfNone() {
@@ -266,12 +270,25 @@ class OtpServiceTest {
     void testValidateOtpWithExpiredOtp() {
         String otpValue = "654321";
 
-        // For expired OTP test, we should mock the existsByVisitAndOtpAndExpirationTimeAfter method since that's what validateOtp uses
         when(otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(eq(testVisit), eq(otpValue), any(LocalDateTime.class)))
-                .thenReturn(false); // Expired OTP returns false
+                .thenReturn(false);
 
-        boolean valid = otpService.validateOtp(testVisit, otpValue);
-        assertFalse(valid);
+        VerificationResult result1 = otpService.validateOtp(testVisit, otpValue);
+        assertFalse(result1.success());
+        assertTrue(result1.reattempt());
+        assertEquals("Invalid OTP. Please try again.", result1.message());
+
+        VerificationResult result2 = otpService.validateOtp(testVisit, otpValue);
+        assertFalse(result2.success());
+        assertFalse(result2.reattempt());
+        assertEquals("Maximum attempts exceeded.", result2.message());
+
+        VerificationResult result3 = otpService.validateOtp(testVisit, otpValue);
+        assertFalse(result3.success());
+        assertFalse(result3.reattempt());
+        assertEquals("Maximum attempts exceeded.", result3.message());
+
+        assertTrue(otpService.hasExceededOtpAttempts(testVisit));
     }
 
     @Test

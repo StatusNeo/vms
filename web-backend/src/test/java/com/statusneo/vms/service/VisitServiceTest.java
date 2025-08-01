@@ -66,7 +66,6 @@ public class VisitServiceTest {
 //        assertNotNull(registeredVisitor);
     }
 
-
     @Test
     public void testConfirmVisit_Success() {
         Visitor visitor = new Visitor();
@@ -78,15 +77,18 @@ public class VisitServiceTest {
         Visit visit = visitService.registerVisit(visitor);
         String dummyOtp = "123456";
 
-        Mockito.when(otpService.validateOtp(any(Visit.class), eq(dummyOtp))).thenReturn(true);
+        VerificationResult verificationResult = new VerificationResult(true, false, "OTP verified successfully");
+
+        Mockito.when(otpService.validateOtp(any(Visit.class), eq(dummyOtp)))
+                .thenReturn(verificationResult);
 
         VerificationResult result = visitService.confirmVisit(visit.getId(), dummyOtp);
         Visit updatedVisit = visitRepository.findById(visit.getId()).orElse(null);
 
         assertNotNull(result);
-        assertTrue(result.isSuccess(), "OTP verification should be successful");
-        assertFalse(result.isReattempt(), "Reattempt should be false on success");
-        assertEquals("OTP verified successfully", result.getMessage());
+        assertTrue(result.success(), "OTP verification should be successful");
+        assertFalse(result.reattempt(), "Reattempt should be false on success");
+        assertEquals("OTP verified successfully", result.message());
 
         assertNotNull(updatedVisit, "Updated visit should not be null");
         assertTrue(updatedVisit.getIsApproved(), "Visit should be marked as approved");

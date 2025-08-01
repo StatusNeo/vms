@@ -109,18 +109,14 @@ public class VisitService {
         Visit visit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found for ID: " + visitId));
 
-        boolean isValid = otpService.validateOtp(visit, otpCode);
+        VerificationResult result = otpService.validateOtp(visit, otpCode);
 
-        if (!isValid) {
-            boolean shouldReattempt = !otpService.hasExceededOtpAttempts(visit);
-            return new VerificationResult(false, shouldReattempt, shouldReattempt
-                    ? "Invalid OTP. Please try again." : "Maximum attempts exceeded.");
+        if (result.success()) {
+            visit.setIsApproved(true);
+            visitRepository.save(visit);
         }
 
-        visit.setIsApproved(true);
-        visitRepository.save(visit);
-
-        return new VerificationResult(true, false, "OTP verified successfully");
+        return result;
     }
 
 }
