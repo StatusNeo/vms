@@ -27,4 +27,6 @@ import java.util.List;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByNameStartingWithIgnoreCase(String name);
+
+    boolean existsByEmail(String mail);
 }
