@@ -26,12 +26,21 @@ public class ScheduledTasks {
 
     private final ExcelService excelService;
 
-    public ScheduledTasks(ExcelService excelService) {
+    private final EmployeeService employeeService;
+
+    public ScheduledTasks(ExcelService excelService, EmployeeService employeeService) {
         this.excelService = excelService;
+        this.employeeService = employeeService;
     }
 
     @Scheduled(fixedRateString = "${vms.scheduled.report.rate:43200000}") // Runs every 12 hours by default
     public void sendVisitorReport() {
         excelService.sendVisitorReport();
+    }
+
+    // Runs every 24 hours (default if not configured)
+    @Scheduled(fixedRateString = "${vms.scheduled.employee.sync.rate:24h}")
+    public void runDailySync() {
+        employeeService.syncEmployees();
     }
 }
