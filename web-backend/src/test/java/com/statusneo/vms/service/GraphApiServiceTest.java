@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.statusneo.vms.TestcontainersConfiguration;
+import com.statusneo.vms.model.EmployeeDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -72,24 +72,38 @@ public class GraphApiServiceTest {
                 .thenReturn(mockClient);
 
         wiremock.stubFor(get("/users")
-            .withHeader("Authorization", equalTo("Bearer mocked-access-token"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody("""
-                    {
-                        "value": [
-                            { "displayName": "Amit Jangra" },
-                            { "displayName": "John Doe" }
-                        ]
-                    }
-                """)));
+                .withHeader("Authorization", equalTo("Bearer mocked-access-token"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("""
+                                    {
+                                        "value": [
+                                            {
+                                                "displayName": "Amit Jangra",
+                                                "mail": "amit.jangra@example.com"
+                                            },
+                                            {
+                                                "displayName": "John Doe",
+                                                "mail": "john.doe@example.com"
+                                            }
+                                        ]
+                                    }
+                                """)));
     }
 
     @Test
     public void shouldReturnEmployeeList() {
-        List<String> employees = graphApiService.getEmployees();
-        assertEquals(List.of("Amit Jangra", "John Doe"), employees);
+        List<EmployeeDTO> employees = graphApiService.getEmployees();
+
+        assertEquals(2, employees.size());
+
+        assertEquals("Amit Jangra", employees.get(0).getDisplayName());
+        assertEquals("amit.jangra@example.com", employees.get(0).getMail());
+
+        assertEquals("John Doe", employees.get(1).getDisplayName());
+        assertEquals("john.doe@example.com", employees.get(1).getMail());
     }
+
 
 }
