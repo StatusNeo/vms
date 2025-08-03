@@ -41,4 +41,9 @@ public class EmployeeService {
         logger.info("Found {} employees matching prefix '{}'", employees.size(), prefix);
         return employees;
     }
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
 }

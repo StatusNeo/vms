@@ -159,4 +159,12 @@ public class VisitorController {
                     .body("Error registering visitor: " + e.getMessage());
         }
     }
+
+    @GetMapping("/form")
+    public String showVisitorForm() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        StringOutput output = new StringOutput();
+        templateEngine.render("visitorRegistration", Map.of("employees", employees), output);
+        return output.toString();
+    }
 }
