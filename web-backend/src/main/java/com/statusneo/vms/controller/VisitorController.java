@@ -96,33 +96,6 @@ public class VisitorController {
         return "index";  // Looks for src/main/resources/templates/index.html
     }
 
-    @PostMapping("/validate-otp")
-    public ResponseEntity<String> validateOtp(
-            @RequestParam Long visitId,
-            @RequestParam String otp) {
-
-        // Find the visit by ID
-        Visit visit = visitRepository.findById(visitId)
-                .orElse(null);
-        if (visit == null) {
-            return ResponseEntity.badRequest().body("Invalid visit ID");
-        }
-
-        boolean isValid = otpService.validateOtp(visit, otp);
-
-        if (isValid) {
-            otpService.markVisitAsVerified(visit);
-            return ResponseEntity.ok("<p class=\"text-green-600 font-bold\">OTP Verified Successfully!</p>");
-        } else {
-            return ResponseEntity.ok("""
-                <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                    Invalid OTP, please try again
-                </div>
-                """);
-        }
-    }
-
-
 
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query, Model model) {
