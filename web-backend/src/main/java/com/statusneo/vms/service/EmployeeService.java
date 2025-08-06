@@ -19,6 +19,7 @@
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Employee;
+import com.statusneo.vms.model.EmployeeDTO;
 import com.statusneo.vms.repository.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +31,11 @@ import java.util.List;
 public class EmployeeService {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
     private final EmployeeRepository employeeRepository;
+    private final GraphApiService graphApiService;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, GraphApiService graphApiService) {
         this.employeeRepository = employeeRepository;
+        this.graphApiService = graphApiService;
     }
 
     public List<Employee> searchEmployeesByName(String prefix) {
@@ -40,5 +43,18 @@ public class EmployeeService {
         List<Employee> employees = employeeRepository.findByNameStartingWithIgnoreCase(prefix);
         logger.info("Found {} employees matching prefix '{}'", employees.size(), prefix);
         return employees;
+    }
+
+    public void syncEmployees() {
+        List<EmployeeDTO> employees = graphApiService.getEmployees();
+
+        for (EmployeeDTO dto : employees) {
+            if (dto.getMail() != null && !employeeRepository.existsByEmail(dto.getMail())) {
+                Employee employee = new Employee();
+                employee.setName(dto.getDisplayName());
+                employee.setEmail(dto.getMail());
+                employeeRepository.save(employee);
+            }
+        }
     }
 }
