@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.controller;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
@@ -96,32 +97,6 @@ public class VisitorController {
         return "index";  // Looks for src/main/resources/templates/index.html
     }
 
-    @PostMapping("/validate-otp")
-    public ResponseEntity<String> validateOtp(
-            @RequestParam Long visitId,
-            @RequestParam String otp) {
-
-        // Find the visit by ID
-        Visit visit = visitRepository.findById(visitId)
-                .orElse(null);
-        if (visit == null) {
-            return ResponseEntity.badRequest().body("Invalid visit ID");
-        }
-
-        boolean isValid = otpService.validateOtp(visit, otp);
-
-        if (isValid) {
-            otpService.markVisitAsVerified(visit);
-            return ResponseEntity.ok("<p class=\"text-green-600 font-bold\">OTP Verified Successfully!</p>");
-        } else {
-            return ResponseEntity.ok("""
-                <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                    Invalid OTP, please try again
-                </div>
-                """);
-        }
-    }
-
 
 
     @GetMapping("/search")
@@ -159,4 +134,15 @@ public class VisitorController {
                     .body("Error registering visitor: " + e.getMessage());
         }
     }
+
+    @PostMapping("/confirm-visit")
+    public String confirmVisit(@RequestParam("visitId") Long visitId,
+                               @RequestParam("otpCode") String otpCode,
+                               Model model) {
+        VerificationResult result = visitService.confirmVisit(visitId, otpCode);
+        model.addAttribute("result", result);
+        model.addAttribute("visitId", visitId);
+        return "visitConfirmationResult";
+    }
+
 }
