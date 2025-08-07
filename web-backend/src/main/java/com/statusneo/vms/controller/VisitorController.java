@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.controller;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
@@ -97,6 +98,7 @@ public class VisitorController {
     }
 
 
+
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query, Model model) {
         logger.info("Received search request for employee: {}", query);
@@ -132,4 +134,15 @@ public class VisitorController {
                     .body("Error registering visitor: " + e.getMessage());
         }
     }
+
+    @PostMapping("/confirm-visit")
+    public String confirmVisit(@RequestParam("visitId") Long visitId,
+                               @RequestParam("otpCode") String otpCode,
+                               Model model) {
+        VerificationResult result = visitService.confirmVisit(visitId, otpCode);
+        model.addAttribute("result", result);
+        model.addAttribute("visitId", visitId);
+        return "visitConfirmationResult";
+    }
+
 }
