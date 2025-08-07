@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.controller;
 
+import com.statusneo.vms.cache.EmployeeNameCache;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
@@ -69,6 +70,9 @@ public class VisitorController {
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Autowired
+    private EmployeeNameCache employeeNameCache;
+
 
     private final Map<String, Visitor> pendingVisitors = new HashMap<>();
 
@@ -100,9 +104,15 @@ public class VisitorController {
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query, Model model) {
         logger.info("Received search request for employee: {}", query);
-        List<Employee> employees = employeeService.searchEmployeesByName(query);
-        model.addAttribute("employees", employees);
+        List<String> employeeNames = employeeNameCache.getEmployeeNamesByPrefix(query);
+        model.addAttribute("employees", employeeNames);
         return "employeeSearchResults";
+    }
+
+    @GetMapping("/refresh-employee-cache")
+    public ResponseEntity<String> refreshEmployeeCache() {
+        employeeNameCache.initializeCache();
+        return ResponseEntity.ok("Cache refreshed");
     }
 
 
