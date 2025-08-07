@@ -1,5 +1,5 @@
 
-/*
+ /*
  * Copyright [2025] StatusNeo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,7 +70,7 @@ public class OtpService {
     private final Map<Long, Integer> otpAttempts = new ConcurrentHashMap<>();
     private static final int MAX_OTP_ATTEMPTS = 2;
 
-    public String generateOtp() {
+    private String generateOtp() {
         Random random = new Random();
         int otp = 100000 + random.nextInt(900000); // 6-digit OTP
         return String.valueOf(otp);
@@ -103,18 +103,8 @@ public class OtpService {
      * @param visit The visit entity
      * @return Optional of the latest OTP
      */
-    public Optional<Otp> getLatestOtpByVisit(Visit visit) {
+    private Optional<Otp> getLatestOtpByVisit(Visit visit) {
         return otpRepository.findFirstByVisitOrderByCreatedAtDesc(visit);
-    }
-
-
-    /**
-     * Get latest OTP by visit ID
-     * @param visitId The visit ID
-     * @return Optional of the latest OTP
-     */
-    public Optional<Otp> getLatestOtpByVisitId(Long visitId) {
-        return otpRepository.findFirstByVisitIdOrderByCreatedAtDesc(visitId);
     }
     /**
      * Check if OTP can be resent for a visit
@@ -178,45 +168,6 @@ public class OtpService {
             return new VerificationResult(false, canRetry,
                     canRetry ? "Invalid OTP. Please try again." : "Maximum attempts exceeded.");
         }
-    }
-
-    /**
-     * Mark visit as verified
-     * @param visit The visit entity to mark as verified
-     */
-    public void markVisitAsVerified(Visit visit) {
-        Long visitId = visit.getId();
-        otpAttempts.remove(visitId);
-        verifiedVisits.put(visitId, true);
-        verificationTimestamps.put(visitId, LocalDateTime.now());
-    }
-
-    /**
-     * Check if visit is verified
-     * @param visit The visit entity to check
-     * @return true if verified and not expired, false otherwise
-     */
-    public boolean isVisitVerified(Visit visit) {
-        Long visitId = visit.getId();
-        LocalDateTime timestamp = verificationTimestamps.get(visitId);
-
-        if (timestamp != null && timestamp.plusMinutes(15).isBefore(LocalDateTime.now())) {
-            clearVerifiedVisit(visit);
-            return false;
-        }
-
-        return verifiedVisits.getOrDefault(visitId, false);
-    }
-
-    /**
-     * Clear verified status for a visit
-     * @param visit The visit entity to clear
-     */
-    public void clearVerifiedVisit(Visit visit) {
-        Long visitId = visit.getId();
-        verifiedVisits.remove(visitId);
-        verificationTimestamps.remove(visitId);
-        otpAttempts.remove(visitId);
     }
 
     /**
