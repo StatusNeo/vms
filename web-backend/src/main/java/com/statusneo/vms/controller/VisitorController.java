@@ -145,4 +145,16 @@ public class VisitorController {
         return "visitConfirmationResult";
     }
 
+    @PostMapping("/resend-otp")
+    public String resendOtp(@RequestParam("visitId") Long visitId, Model model) {
+        Visit visit = visitRepository.findById(visitId)
+                .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
+
+        VerificationResult resendResult = otpService.resendOtpForVisit(visit);
+
+        model.addAttribute("result", resendResult);
+        model.addAttribute("visitId", visitId);
+        return "visitConfirmationResult";
+    }
+
 }

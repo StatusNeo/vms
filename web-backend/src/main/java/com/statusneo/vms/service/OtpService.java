@@ -140,6 +140,13 @@ public class OtpService {
         return true;
     }
 
+    public VerificationResult resendOtpForVisit(Visit visit) {
+        if (!canResendOtp(visit)) {
+            return new VerificationResult(false, false, "OTP resend limit reached or cooldown period not over.");
+        }
+        return new VerificationResult(true, true, "A new OTP has been sent to your email.");
+    }
+
     /**
      * Validate OTP for a specific visit
      * @param visit The visit entity

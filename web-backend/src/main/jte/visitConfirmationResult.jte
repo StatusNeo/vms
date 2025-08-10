@@ -11,11 +11,14 @@
 <h1>Visit Confirmation Result</h1>
 
 #if(result.success())
-<p style="color: green;">Visit confirmed successfully for ID: ${visitId}</p>
+<p style="color: green;">${result.message()}</p>
 #else
-<p style="color: red;">Failed to confirm visit: ${result.message()}</p>
+<p style="color: red;">${result.message()}</p>
 #if(result.reattempt())
-<p>You can try again.</p>
+<form action="/api/visitors/resend-otp" method="post">
+    <input type="hidden" name="visitId" value="${visitId}" />
+    <button type="submit">Resend OTP</button>
+</form>
 #endif
 #endif
 
