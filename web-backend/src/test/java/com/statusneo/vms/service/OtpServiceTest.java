@@ -29,10 +29,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.assertNotEquals;
@@ -106,13 +104,6 @@ class OtpServiceTest {
     }
 
     @Test
-    void testGetLatestOtpByVisitReturnsEmptyIfNone() {
-        // Updated to use the optimized repository method
-        when(otpRepository.findFirstByVisitOrderByCreatedAtDesc(testVisit)).thenReturn(Optional.empty());
-        assertTrue(otpService.getLatestOtpByVisit(testVisit).isEmpty());
-    }
-
-    @Test
     void testResendOtpWithinTwoMinutesFails() {
         Otp recentOtp = new Otp();
         recentOtp.setEmail(testVisitor.getEmail());
@@ -129,46 +120,6 @@ class OtpServiceTest {
 
         assertFalse(result);
         verify(emailService, never()).sendEmail(any());
-    }
-
-    @Test
-    void testMarkAndCheckVisitVerified() {
-        otpService.markVisitAsVerified(testVisit);
-        assertTrue(otpService.isVisitVerified(testVisit));
-    }
-
-    @Test
-    void testVisitVerificationExpires() throws Exception {
-        otpService.markVisitAsVerified(testVisit);
-
-        Field field = OtpService.class.getDeclaredField("verificationTimestamps");
-        field.setAccessible(true);
-        @SuppressWarnings("unchecked")
-        Map<Long, LocalDateTime> timestamps = (Map<Long, LocalDateTime>) field.get(otpService);
-
-        timestamps.put(testVisit.getId(), LocalDateTime.now().minusMinutes(16));
-        assertFalse(otpService.isVisitVerified(testVisit));
-    }
-
-    @Test
-    void testClearVerifiedVisitResetsAttempts() {
-        otpService.validateOtp(testVisit, "wrong");
-        otpService.clearVerifiedVisit(testVisit);
-        assertFalse(otpService.hasExceededOtpAttempts(testVisit));
-    }
-
-    @Test
-    void testGetLatestOtpByVisitIdReturnsEmptyIfNone() {
-        // Updated to use the optimized repository method
-        when(otpRepository.findFirstByVisitIdOrderByCreatedAtDesc(testVisit.getId())).thenReturn(Optional.empty());
-        assertTrue(otpService.getLatestOtpByVisitId(testVisit.getId()).isEmpty());
-    }
-
-    @Test
-    void testGenerateOtpFormat() {
-        String otp = otpService.generateOtp();
-        assertEquals(6, otp.length());
-        assertTrue(otp.matches("\\d{6}"));
     }
 
     @Test

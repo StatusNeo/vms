@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.controller;
 
+import com.statusneo.vms.cache.EmployeeNameCache;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
@@ -69,6 +70,9 @@ public class VisitorController {
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Autowired
+    private EmployeeNameCache employeeNameCache;
+
 
     private final Map<String, Visitor> pendingVisitors = new HashMap<>();
 
@@ -96,40 +100,19 @@ public class VisitorController {
         return "index";  // Looks for src/main/resources/templates/index.html
     }
 
-    @PostMapping("/validate-otp")
-    public ResponseEntity<String> validateOtp(
-            @RequestParam Long visitId,
-            @RequestParam String otp) {
-
-        // Find the visit by ID
-        Visit visit = visitRepository.findById(visitId)
-                .orElse(null);
-        if (visit == null) {
-            return ResponseEntity.badRequest().body("Invalid visit ID");
-        }
-
-        boolean isValid = otpService.validateOtp(visit, otp);
-
-        if (isValid) {
-            otpService.markVisitAsVerified(visit);
-            return ResponseEntity.ok("<p class=\"text-green-600 font-bold\">OTP Verified Successfully!</p>");
-        } else {
-            return ResponseEntity.ok("""
-                <div id="otp-error-message" class="text-red-600 font-bold mb-4">
-                    Invalid OTP, please try again
-                </div>
-                """);
-        }
-    }
-
-
 
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query, Model model) {
         logger.info("Received search request for employee: {}", query);
-        List<Employee> employees = employeeService.searchEmployeesByName(query);
-        model.addAttribute("employees", employees);
+        List<String> employeeNames = employeeNameCache.getEmployeeNamesByPrefix(query);
+        model.addAttribute("employees", employeeNames);
         return "employeeSearchResults";
+    }
+
+    @GetMapping("/refresh-employee-cache")
+    public ResponseEntity<String> refreshEmployeeCache() {
+        employeeNameCache.initializeCache();
+        return ResponseEntity.ok("Cache refreshed");
     }
 
 
