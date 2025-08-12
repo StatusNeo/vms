@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitRepository;
@@ -102,5 +103,21 @@ public class VisitService {
         // Return the saved visitor details
         return savedVisit;
     }
+
+    @Transactional
+    public VerificationResult confirmVisit(Long visitId, String otpCode) {
+        Visit visit = visitRepository.findById(visitId)
+                .orElseThrow(() -> new IllegalArgumentException("Visit not found for ID: " + visitId));
+
+        VerificationResult result = otpService.validateOtp(visit, otpCode);
+
+        if (result.success()) {
+            visit.setIsApproved(true);
+            visitRepository.save(visit);
+        }
+
+        return result;
+    }
+
 
 }
