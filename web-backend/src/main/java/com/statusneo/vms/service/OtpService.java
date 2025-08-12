@@ -36,6 +36,7 @@
  */
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Otp;
 import com.statusneo.vms.model.Visit;
@@ -139,28 +140,39 @@ public class OtpService {
         return true;
     }
 
+    public VerificationResult resendOtpForVisit(Visit visit) {
+        if (!canResendOtp(visit)) {
+            return new VerificationResult(false, false, "OTP resend limit reached or cooldown period not over.");
+        }
+        return new VerificationResult(true, true, "A new OTP has been sent to your email.");
+    }
+
     /**
      * Validate OTP for a specific visit
      * @param visit The visit entity
      * @param otpCode The OTP code to validate
      * @return true if valid, false otherwise
      */
-    public boolean validateOtp(Visit visit, String otpCode) {
+    public VerificationResult validateOtp(Visit visit, String otpCode) {
         Long visitId = visit.getId();
         int attempts = otpAttempts.getOrDefault(visitId, 0);
 
         if (attempts >= MAX_OTP_ATTEMPTS) {
-            return false;
+            return new VerificationResult(false, false, "Maximum attempts exceeded.");
         }
-        boolean valid = otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(visit, otpCode, LocalDateTime.now());
+        boolean valid = otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(
+                visit, otpCode, LocalDateTime.now()
+        );
 
-        if (!valid) {
-            otpAttempts.put(visitId, attempts + 1);
-        } else {
+        if (valid) {
             otpAttempts.remove(visitId);
+            return new VerificationResult(true, false, "OTP verified successfully");
+        } else {
+            otpAttempts.put(visitId, attempts + 1);
+            boolean canRetry = (attempts + 1) < MAX_OTP_ATTEMPTS;
+            return new VerificationResult(false, canRetry,
+                    canRetry ? "Invalid OTP. Please try again." : "Maximum attempts exceeded.");
         }
-
-        return valid;
     }
 
     /**
