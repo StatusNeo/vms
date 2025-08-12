@@ -19,6 +19,7 @@
 package com.statusneo.vms.controller;
 
 import com.statusneo.vms.cache.EmployeeNameCache;
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
@@ -104,8 +105,8 @@ public class VisitorController {
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query, Model model) {
         logger.info("Received search request for employee: {}", query);
-        List<String> employeeNames = employeeNameCache.getEmployeeNamesByPrefix(query);
-        model.addAttribute("employees", employeeNames);
+        List<Employee> employees = employeeService.searchEmployeesByName(query);
+        model.addAttribute("employees", employees);
         return "employeeSearchResults";
     }
 
@@ -141,5 +142,27 @@ public class VisitorController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error registering visitor: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/confirm-visit")
+    public String confirmVisit(@RequestParam("visitId") Long visitId,
+                               @RequestParam("otpCode") String otpCode,
+                               Model model) {
+        VerificationResult result = visitService.confirmVisit(visitId, otpCode);
+        model.addAttribute("result", result);
+        model.addAttribute("visitId", visitId);
+        return "visitConfirmationResult";
+    }
+
+    @PostMapping("/resend-otp")
+    public String resendOtp(@RequestParam("visitId") Long visitId, Model model) {
+        Visit visit = visitRepository.findById(visitId)
+                .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
+
+        VerificationResult resendResult = otpService.resendOtpForVisit(visit);
+
+        model.addAttribute("result", resendResult);
+        model.addAttribute("visitId", visitId);
+        return "visitConfirmationResult";
     }
 }
