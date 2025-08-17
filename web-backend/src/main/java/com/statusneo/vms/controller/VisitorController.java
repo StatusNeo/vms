@@ -130,18 +130,10 @@ public class VisitorController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerVisitor(@RequestBody Visitor visitor) {
-        try {
-            if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
-                return ResponseEntity.badRequest().body("Email is required");
-            }
-            // Register visit and send OTP
-            Visit savedVisit = visitService.registerVisit(visitor);
-            return ResponseEntity.ok("Visitor registered successfully. Visit ID: " + savedVisit.getId());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error registering visitor: " + e.getMessage());
-        }
+    public String registerVisitor(@ModelAttribute Visitor visitor, Model model) {
+        Visit savedVisit = visitService.registerVisit(visitor);
+        model.addAttribute("visitId", savedVisit.getId());
+        return "visitorOtpForm";
     }
 
     @PostMapping("/confirm-visit")
