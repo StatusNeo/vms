@@ -49,6 +49,10 @@ public class Employee {
         this.name = name;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Employee(String name) {
         this.name = name;
     }
