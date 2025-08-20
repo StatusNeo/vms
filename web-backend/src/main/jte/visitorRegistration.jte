@@ -7,9 +7,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Visitor Registration</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-</head>
+    <link href="/css/output.css" rel="stylesheet">
+    <script src="/webjars/htmx.org/1.9.6/dist/htmx.min.js"></script>
+    <script src="/webjars/htmx.org/1.9.6/dist/ext/json-enc.js"></script></head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
     <h2 class="text-2xl font-bold mb-6 text-center">Visitor Registration</h2>
