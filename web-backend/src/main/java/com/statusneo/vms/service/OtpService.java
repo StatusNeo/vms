@@ -50,138 +50,106 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
-public class OtpService {
+ @Service
+ public class OtpService {
 
-    private final OtpRepository otpRepository;
-    private final EmailService emailService;
-    private final String otpSubject;
+     private final OtpRepository otpRepository;
+     private final EmailService emailService;
+     private final String otpSubject;
 
-    public OtpService(OtpRepository otpRepository, EmailService emailService,
-                      @Value("${app.otp.subject:Your OTP}") String otpSubject) {
-        this.otpRepository = otpRepository;
-        this.emailService = emailService;
-        this.otpSubject = otpSubject;
-    }
+     public OtpService(OtpRepository otpRepository, EmailService emailService,
+                       @Value("${app.otp.subject:Your OTP}") String otpSubject) {
+         this.otpRepository = otpRepository;
+         this.emailService = emailService;
+         this.otpSubject = otpSubject;
+     }
 
-    private static final int OTP_EXPIRATION_MINUTES = 10;
-    private final Map<Long, Boolean> verifiedVisits = new ConcurrentHashMap<>();
-    private final Map<Long, LocalDateTime> verificationTimestamps = new ConcurrentHashMap<>();
-    private final Map<Long, Integer> otpAttempts = new ConcurrentHashMap<>();
-    private static final int MAX_OTP_ATTEMPTS = 2;
+     private static final int OTP_EXPIRATION_MINUTES = 10;
+     private static final int MAX_OTP_ATTEMPTS = 2;
+     private static final int MAX_RESEND_COUNT = 2;
+     private static final int RESEND_COOLDOWN_MINUTES = 2;
 
-    private String generateOtp() {
-        Random random = new Random();
-        int otp = 100000 + random.nextInt(900000); // 6-digit OTP
-        return String.valueOf(otp);
-    }
+     private final Map<Long, Integer> otpAttempts = new ConcurrentHashMap<>();
 
-    /**
-     * Sends OTP for a specific visit
-     * @param visit The visit entity for which OTP is being sent
-     */
-    public void sendOtp(Visit visit) {
-        String otp = generateOtp();
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES);
+     /**
+      * Public Method 1: Generate or resend OTP for a visit
+      */
+     public VerificationResult generateOtp(Visit visit) {
+         Optional<Otp> latestOtpOpt = getLatestOtpByVisit(visit);
 
-        Otp otpEntity = new Otp();
-        otpEntity.setEmail(visit.getVisitor().getEmail());
-        otpEntity.setOtp(otp);
-        otpEntity.setExpirationTime(expirationTime);
-        otpEntity.setVisit(visit);
+         if (latestOtpOpt.isPresent()) {
+             Otp latestOtp = latestOtpOpt.get();
 
-        otpRepository.save(otpEntity);
+             // Check cooldown
+             if (latestOtp.getCreatedAt().plusMinutes(RESEND_COOLDOWN_MINUTES).isAfter(LocalDateTime.now())) {
+                 return new VerificationResult(false, true,
+                         "Please wait before requesting a new OTP.");
+             }
 
-        // Send email to visitor
-        String visitorEmail = visit.getVisitor().getEmail();
-        emailService.sendEmail(Email.of(visitorEmail, visitorEmail, otpSubject,
-                "Your OTP for visit to " + visit.getHost() + " is: " + otp));
-    }
+             // Check resend limit
+             if (latestOtp.getResendCount() >= MAX_RESEND_COUNT) {
+                 return new VerificationResult(false, false,
+                         "OTP resend limit reached.");
+             }
+         }
 
-    /**
-     * Get latest OTP by visit
-     * @param visit The visit entity
-     * @return Optional of the latest OTP
-     */
-    private Optional<Otp> getLatestOtpByVisit(Visit visit) {
-        return otpRepository.findFirstByVisitOrderByCreatedAtDesc(visit);
-    }
-    /**
-     * Check if OTP can be resent for a visit
-     * @param visit The visit entity
-     * @return true if OTP can be resent, false otherwise
-     */
-    public boolean canResendOtp(Visit visit) {
-        Optional<Otp> latestOtp = getLatestOtpByVisit(visit);
-        if (latestOtp.isPresent()) {
-            Otp otp = latestOtp.get();
-            // Check if 2 minutes have passed since last OTP
-            LocalDateTime lastSent = otp.getCreatedAt();
-            if (lastSent.plusMinutes(2).isAfter(LocalDateTime.now())) {
-                return false;
-            }
+         // Generate new OTP
+         String otp = generateOtpCode();
+         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES);
 
-            // Check resend count limit
-            if (otp.getResendCount() >= 2) {
-                return false;
-            }
-        }
+         Otp otpEntity = new Otp();
+         otpEntity.setEmail(visit.getVisitor().getEmail());
+         otpEntity.setOtp(otp);
+         otpEntity.setExpirationTime(expirationTime);
+         otpEntity.setVisit(visit);
 
-        sendOtp(visit);
+         if (latestOtpOpt.isPresent()) {
+             otpEntity.setResendCount(latestOtpOpt.get().getResendCount() + 1);
+         }
 
-        // Update resend count for the latest OTP
-        latestOtp = getLatestOtpByVisit(visit);
-        if (latestOtp.isPresent()) {
-            Otp otp = latestOtp.get();
-            otp.incrementResendCount();
-            otpRepository.save(otp);
-        }
+         otpRepository.save(otpEntity);
 
-        return true;
-    }
+         // Send email
+         String visitorEmail = visit.getVisitor().getEmail();
+         emailService.sendEmail(Email.of(visitorEmail, visitorEmail, otpSubject,
+                 "Your OTP for visit to " + visit.getHost() + " is: " + otp));
 
-    public VerificationResult resendOtpForVisit(Visit visit) {
-        if (!canResendOtp(visit)) {
-            return new VerificationResult(false, false, "OTP resend limit reached or cooldown period not over.");
-        }
-        return new VerificationResult(true, true, "A new OTP has been sent to your email.");
-    }
+         return new VerificationResult(true, true, "OTP sent successfully.");
+     }
 
-    /**
-     * Validate OTP for a specific visit
-     * @param visit The visit entity
-     * @param otpCode The OTP code to validate
-     * @return true if valid, false otherwise
-     */
-    public VerificationResult validateOtp(Visit visit, String otpCode) {
-        Long visitId = visit.getId();
-        int attempts = otpAttempts.getOrDefault(visitId, 0);
+     /**
+      * Public Method 2: Validate OTP
+      */
+     public VerificationResult validateOtp(Visit visit, String otpCode) {
+         Long visitId = visit.getId();
+         int attempts = otpAttempts.getOrDefault(visitId, 0);
 
-        if (attempts >= MAX_OTP_ATTEMPTS) {
-            return new VerificationResult(false, false, "Maximum attempts exceeded.");
-        }
-        boolean valid = otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(
-                visit, otpCode, LocalDateTime.now()
-        );
+         if (attempts >= MAX_OTP_ATTEMPTS) {
+             return new VerificationResult(false, false, "Maximum attempts exceeded.");
+         }
 
-        if (valid) {
-            otpAttempts.remove(visitId);
-            return new VerificationResult(true, false, "OTP verified successfully");
-        } else {
-            otpAttempts.put(visitId, attempts + 1);
-            boolean canRetry = (attempts + 1) < MAX_OTP_ATTEMPTS;
-            return new VerificationResult(false, canRetry,
-                    canRetry ? "Invalid OTP. Please try again." : "Maximum attempts exceeded.");
-        }
-    }
+         boolean valid = otpRepository.existsByVisitAndOtpAndExpirationTimeAfter(
+                 visit, otpCode, LocalDateTime.now());
 
-    /**
-     * Check if visit has exceeded OTP attempts
-     * @param visit The visit entity to check
-     * @return true if exceeded, false otherwise
-     */
-    public boolean hasExceededOtpAttempts(Visit visit) {
-        return otpAttempts.getOrDefault(visit.getId(), 0) >= MAX_OTP_ATTEMPTS;
-    }
+         if (valid) {
+             otpAttempts.remove(visitId);
+             return new VerificationResult(true, false, "OTP verified successfully.");
+         } else {
+             otpAttempts.put(visitId, attempts + 1);
+             boolean canRetry = (attempts + 1) < MAX_OTP_ATTEMPTS;
+             return new VerificationResult(false, canRetry,
+                     canRetry ? "Invalid OTP. Please try again." : "Maximum attempts exceeded.");
+         }
+     }
 
-}
+     // ======== Private Helpers ========
+
+     private String generateOtpCode() {
+         Random random = new Random();
+         return String.valueOf(100000 + random.nextInt(900000)); // 6-digit OTP
+     }
+
+     private Optional<Otp> getLatestOtpByVisit(Visit visit) {
+         return otpRepository.findFirstByVisitOrderByCreatedAtDesc(visit);
+     }
+ }
