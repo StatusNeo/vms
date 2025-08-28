@@ -17,12 +17,14 @@
  */
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -82,7 +84,8 @@ public class VisitServiceIntegrationTest {
 
     @BeforeEach
     void setupMocks() {
-        doNothing().when(otpService).sendOtp(any(Visit.class));
+        Mockito.when(otpService.generateOtp(any(Visit.class)))
+                .thenReturn(new VerificationResult(true, true, "OTP sent successfully."));
     }
 
     @Test
@@ -110,7 +113,7 @@ public class VisitServiceIntegrationTest {
         assertTrue(foundVisit.isPresent());
         assertEquals(savedVisit.getId(), foundVisit.get().getId());
         await().atMost(3, TimeUnit.SECONDS)
-                .untilAsserted(() -> verify(otpService, times(1)).sendOtp(any(Visit.class)));
+                .untilAsserted(() -> verify(otpService, times(1)).generateOtp(any(Visit.class)));
     }
 
     @Test
@@ -130,7 +133,7 @@ public class VisitServiceIntegrationTest {
 
         // Verify OTP was sent for the visit
         await().atMost(3, TimeUnit.SECONDS)
-                .untilAsserted(() -> verify(otpService, times(1)).sendOtp(any(Visit.class)));
+                .untilAsserted(() -> verify(otpService, times(1)).generateOtp(any(Visit.class)));
     }
 
     @Test
@@ -148,7 +151,7 @@ public class VisitServiceIntegrationTest {
         assertTrue(visit.getVisitDate().isBefore(LocalDateTime.now().plusMinutes(1)));
 
         await().atMost(3, TimeUnit.SECONDS)
-                .untilAsserted(() -> verify(otpService, times(1)).sendOtp(any(Visit.class)));
+                .untilAsserted(() -> verify(otpService, times(1)).generateOtp(any(Visit.class)));
     }
 
     @Test
@@ -172,7 +175,7 @@ public class VisitServiceIntegrationTest {
         assertEquals(2, visitCount);
 
         await().atMost(3, TimeUnit.SECONDS)
-                .untilAsserted(() -> verify(otpService, times(2)).sendOtp(any(Visit.class)));
+                .untilAsserted(() -> verify(otpService, times(2)).generateOtp(any(Visit.class)));
     }
 
     @Test
@@ -183,7 +186,9 @@ public class VisitServiceIntegrationTest {
         visitor.setEmail("eve@example.com");
         visitor.setAddress("202 Maple St");
 
-        doNothing().when(otpService).sendOtp(any(Visit.class));
+        // Simulate failure in OTP generation
+        Mockito.when(otpService.generateOtp(any(Visit.class)))
+                .thenThrow(new RuntimeException("Simulated OTP failure"));
 
         Visit savedVisit = visitService.registerVisit(visitor);
 
@@ -191,12 +196,13 @@ public class VisitServiceIntegrationTest {
         assertNotNull(savedVisit);
         assertNotNull(savedVisit.getId());
         assertEquals("Eve", savedVisit.getVisitor().getName());
+
         Optional<Visit> foundVisit = visitRepository.findById(savedVisit.getId());
         assertTrue(foundVisit.isPresent());
 
         // Verify OTP service was attempted
         await().atMost(3, TimeUnit.SECONDS)
-                .untilAsserted(() -> verify(otpService, times(1)).sendOtp(any(Visit.class)));
+                .untilAsserted(() -> verify(otpService, times(1)).generateOtp(any(Visit.class)));
     }
 
     @Test
@@ -211,7 +217,7 @@ public class VisitServiceIntegrationTest {
 
         await().atMost(3, TimeUnit.SECONDS)
                 .untilAsserted(() -> {
-                    verify(otpService, times(1)).sendOtp(any(Visit.class));
+                    verify(otpService, times(1)).generateOtp(any(Visit.class));
 
                     assertNotNull(savedVisit.getVisitor());
                     assertEquals("frank@example.com", savedVisit.getVisitor().getEmail());

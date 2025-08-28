@@ -153,9 +153,9 @@ public class VisitorController {
         Visit visit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
-        VerificationResult resendResult = otpService.resendOtpForVisit(visit);
+        VerificationResult result = otpService.generateOtp(visit);
 
-        model.addAttribute("result", resendResult);
+        model.addAttribute("result", result);
         model.addAttribute("visitId", visitId);
         return "visitConfirmationResult";
     }

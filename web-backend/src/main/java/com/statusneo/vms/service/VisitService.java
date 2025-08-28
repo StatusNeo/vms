@@ -60,7 +60,7 @@ public class VisitService {
     }
 
 
-        // Send OTP
+    // Send OTP
 //        notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
 //    }
 //
@@ -85,26 +85,22 @@ public class VisitService {
      */
     @Transactional
     public Visit registerVisit(Visitor visitor) {
-        // Save the visitor first to get an ID
-        // Save visitor to database
         Visitor savedVisitor = visitorRepository.save(visitor);
 
-        // Create a new Visit object and associate it with the saved Visitor
         Visit visit = new Visit();
         visit.setVisitor(savedVisitor);
         visit.setVisitDate(LocalDateTime.now());
 
-        // Save the visit to the database
         Visit savedVisit = visitRepository.save(visit);
 
         CompletableFuture.runAsync(() -> {
             try {
-                otpService.sendOtp(savedVisit);
+                otpService.generateOtp(savedVisit); // Updated call
             } catch (Exception e) {
-                logger.error("Async OTP sending failed", e);
+                logger.error("Async OTP generation failed", e);
             }
         }, asyncExecutor);
-        // Return the saved visitor details
+
         return savedVisit;
     }
 

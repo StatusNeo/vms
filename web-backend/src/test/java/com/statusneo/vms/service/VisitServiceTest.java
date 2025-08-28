@@ -86,15 +86,13 @@ public class VisitServiceTest {
                 .thenReturn(verificationResult);
 
         VerificationResult result = visitService.confirmVisit(visit.getId(), dummyOtp);
-        Visit updatedVisit = visitRepository.findById(visit.getId()).orElse(null);
 
         assertNotNull(result);
         assertTrue(result.success(), "OTP verification should be successful");
         assertFalse(result.reattempt(), "Reattempt should be false on success");
         assertEquals("OTP verified successfully", result.message());
 
-        assertNotNull(updatedVisit, "Updated visit should not be null");
-        assertTrue(updatedVisit.getIsApproved(), "Visit should be marked as approved");
+        Visit updatedVisit = visitRepository.findById(visit.getId()).orElseThrow();
+        assertTrue(updatedVisit.getIsApproved(), "Visit should be approved after successful OTP verification");
     }
 }
-
