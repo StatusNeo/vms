@@ -19,6 +19,7 @@
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.dto.VerificationResult;
+import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitRepository;
@@ -42,21 +43,24 @@ public class VisitService {
 
     private final VisitorRepository visitorRepository;
 
+    private final NotificationService notificationService;
+
     private final EmailService emailService;
 
     private final VisitRepository visitRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(VisitService.class);
 
-    public VisitService(OtpService otpService, VisitorRepository visitorRepository, EmailService emailService, VisitRepository visitRepository) {
+    public VisitService(OtpService otpService, VisitorRepository visitorRepository, NotificationService notificationService, EmailService emailService, VisitRepository visitRepository) {
         this.otpService = otpService;
         this.visitorRepository = visitorRepository;
+        this.notificationService = notificationService;
         this.emailService = emailService;
         this.visitRepository = visitRepository;
     }
 
 
-        // Send OTP
+    // Send OTP
 //        notificationService.sendOtp(visitor.getEmail(), visitor.getOtp());
 //    }
 //
@@ -81,26 +85,22 @@ public class VisitService {
      */
     @Transactional
     public Visit registerVisit(Visitor visitor) {
-        // Save the visitor first to get an ID
-        // Save visitor to database
         Visitor savedVisitor = visitorRepository.save(visitor);
 
-        // Create a new Visit object and associate it with the saved Visitor
         Visit visit = new Visit();
         visit.setVisitor(savedVisitor);
         visit.setVisitDate(LocalDateTime.now());
 
-        // Save the visit to the database
         Visit savedVisit = visitRepository.save(visit);
 
         CompletableFuture.runAsync(() -> {
             try {
-                otpService.sendOtp(savedVisit);
+                otpService.generateOtp(savedVisit); // Updated call
             } catch (Exception e) {
-                logger.error("Async OTP sending failed", e);
+                logger.error("Async OTP generation failed", e);
             }
         }, asyncExecutor);
-        // Return the saved visitor details
+
         return savedVisit;
     }
 
@@ -114,10 +114,23 @@ public class VisitService {
         if (result.success()) {
             visit.setIsApproved(true);
             visitRepository.save(visit);
-        }
 
+            Visitor visitor = visit.getVisitor();
+            Employee host = (visitor != null) ? visitor.getHost() : null;
+
+            CompletableFuture.runAsync(() -> {
+                try {
+                    if (visitor != null) {
+                        notificationService.sendVisitorConfirmationEmail(visitor);
+                    }
+                    if (host != null) {
+                        notificationService.sendHostNotification(visitor, host);
+                    }
+                } catch (Exception e) {
+                    logger.error("Failed to send notifications for visitId: {}", visitId, e);
+                }
+            }, asyncExecutor);
+        }
         return result;
     }
-
-
 }

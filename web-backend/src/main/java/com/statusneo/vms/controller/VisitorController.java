@@ -23,17 +23,15 @@ import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
-import com.statusneo.vms.repository.EmployeeRepository;
 import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.repository.VisitorRepository;
 import com.statusneo.vms.service.*;
 import gg.jte.TemplateEngine;
-import gg.jte.output.StringOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/api/visitors")
 public class VisitorController {
 
@@ -118,30 +116,26 @@ public class VisitorController {
 
 
     @PostMapping("/saveVisitor")
-    public ResponseEntity<String> saveVisitor(@RequestBody Visitor visitor) {
+    public String saveVisitor(@ModelAttribute Visitor visitor, Model model) {
         try {
-            return ResponseEntity.ok("<p class='text-green-600 font-bold'>Visitor registered successfully!</p>");
+            visitService.registerVisit(visitor);
+            model.addAttribute("success", true);
+            model.addAttribute("message", "Visitor registered successfully!");
         } catch (IllegalStateException e) {
-            // Custom message when visitor exists
-            return ResponseEntity.ok("<p class='text-blue-600 font-bold'>Welcome back! Your visit has been recorded.</p>");
+            model.addAttribute("success", true);
+            model.addAttribute("message", "Welcome back! Your visit has been recorded.");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("<p class='text-red-600'>Error: " + e.getMessage() + "</p>");
+            model.addAttribute("success", false);
+            model.addAttribute("message", "Error: " + e.getMessage());
         }
+        return "visitorRegistrationResult";
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerVisitor(@RequestBody Visitor visitor) {
-        try {
-            if (visitor.getEmail() == null || visitor.getEmail().isEmpty()) {
-                return ResponseEntity.badRequest().body("Email is required");
-            }
-            // Register visit and send OTP
-            Visit savedVisit = visitService.registerVisit(visitor);
-            return ResponseEntity.ok("Visitor registered successfully. Visit ID: " + savedVisit.getId());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error registering visitor: " + e.getMessage());
-        }
+    public String registerVisitor(@ModelAttribute Visitor visitor, Model model) {
+        Visit savedVisit = visitService.registerVisit(visitor);
+        model.addAttribute("visitId", savedVisit.getId());
+        return "visitorOtpForm";
     }
 
     @PostMapping("/confirm-visit")
@@ -159,9 +153,9 @@ public class VisitorController {
         Visit visit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
-        VerificationResult resendResult = otpService.resendOtpForVisit(visit);
+        VerificationResult result = otpService.generateOtp(visit);
 
-        model.addAttribute("result", resendResult);
+        model.addAttribute("result", result);
         model.addAttribute("visitId", visitId);
         return "visitConfirmationResult";
     }
