@@ -4,6 +4,12 @@ spring:
   docker:
     compose:
       lifecycle-management: start_only
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    username: myuser
+    password: secret
+    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,11 +26,10 @@ spring:
         provider:
           azure:
             token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
-
-flyway:
-  enabled: true
-  baseline-on-migrate: true
-  locations: classpath:db/migration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
 
 visitor:
   system:
@@ -36,6 +41,7 @@ visitor:
     employee:
       notification:
         subject: YOUR VISITOR IS HERE
+
 gg:
   jte:
     developmentMode: true
@@ -46,3 +52,6 @@ vms:
 
 mail:
   url: http://localhost:${wiremock.server.port}/v1.0/users/%s/sendMail
+
+#mail:
+#  url: http://localhost:${wiremock.server.port:8089}/v1.0/users/%s/sendMail
