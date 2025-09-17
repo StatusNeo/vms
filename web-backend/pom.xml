@@ -38,7 +38,22 @@
         </dependencies>
     </dependencyManagement>
 
+    <repositories>
+        <repository>
+            <id>webjars</id>
+            <url>https://www.webjars.org/m2</url>
+        </repository>
+    </repositories>
+
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>htmx.org</artifactId>
+            <version>1.9.6</version>
+        </dependency>
+
         <dependency>
             <groupId>gg.jte</groupId>
             <artifactId>jte</artifactId>
@@ -195,6 +210,50 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>1.12.1</version>
+
+            <executions>
+            <!-- Step 1: Install Node & npm -->
+            <execution>
+                <id>install node and npm</id>
+                <goals>
+                    <goal>install-node-and-npm</goal>
+                </goals>
+                <configuration>
+                    <nodeVersion>v18.18.0</nodeVersion>
+                    <npmVersion>9.8.1</npmVersion>
+                </configuration>
+            </execution>
+
+                <!-- Step 2: Run npm install -->
+                <execution>
+                    <id>npm install</id>
+                    <goals>
+                        <goal>npm</goal>
+                    </goals>
+                    <configuration>
+                        <arguments>install</arguments>
+                    </configuration>
+                </execution>
+
+                <!-- Step 3: Build Tailwind CSS -->
+                <execution>
+                    <id>npm run build</id>
+                    <goals>
+                        <goal>npm</goal>
+                    </goals>
+                    <phase>generate-resources</phase>
+                    <configuration>
+                        <arguments>run build</arguments>
+                    </configuration>
+                </execution>
+            </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
