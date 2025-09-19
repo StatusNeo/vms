@@ -4,11 +4,6 @@ spring:
   docker:
     compose:
       lifecycle-management: start_only
-  datasource:
-    url: jdbc:postgresql://localhost:5432/mydatabase
-    username: myuser
-    password: secret
-    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
@@ -57,6 +52,3 @@ vms:
 
 mail:
   url: http://localhost:${wiremock.server.port}/v1.0/users/%s/sendMail
-
-#mail:
-#  url: http://localhost:${wiremock.server.port:8089}/v1.0/users/%s/sendMail
