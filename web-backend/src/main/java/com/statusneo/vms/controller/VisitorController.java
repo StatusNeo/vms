@@ -18,27 +18,29 @@
  */
 package com.statusneo.vms.controller;
 
-import com.statusneo.vms.cache.EmployeeNameCache;
-import com.statusneo.vms.dto.VerificationResult;
-import com.statusneo.vms.model.Employee;
-import com.statusneo.vms.model.Visit;
-import com.statusneo.vms.model.Visitor;
-import com.statusneo.vms.repository.VisitRepository;
-import com.statusneo.vms.repository.VisitorRepository;
-import com.statusneo.vms.service.*;
-import gg.jte.TemplateEngine;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.statusneo.vms.cache.EmployeeNameCache;
+import com.statusneo.vms.dto.VerificationResult;
+import com.statusneo.vms.model.Visit;
+import com.statusneo.vms.model.Visitor;
+import com.statusneo.vms.repository.VisitRepository;
+import com.statusneo.vms.service.GraphDirectoryService;
+import com.statusneo.vms.service.OtpService;
+import com.statusneo.vms.service.VisitService;
 
 @Controller
 @RequestMapping("/api/visitors")
@@ -46,8 +48,6 @@ public class VisitorController {
 
     private static final Logger logger = LoggerFactory.getLogger(VisitorController.class);
 
-    @Autowired
-    private VisitorRepository visitorRepository;
     @Autowired
     private VisitRepository visitRepository;
 
@@ -58,22 +58,10 @@ public class VisitorController {
     private VisitService visitService;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private ExcelService excelService;
-
-    @Autowired
-    private TemplateEngine templateEngine;
-
-    @Autowired
     private EmployeeNameCache employeeNameCache;
 
-
-    private final Map<String, Visitor> pendingVisitors = new HashMap<>();
+    @Autowired
+    private GraphDirectoryService graphDirectoryService;
 
 
     @GetMapping("/report")
@@ -103,8 +91,8 @@ public class VisitorController {
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query, Model model) {
         logger.info("Received search request for employee: {}", query);
-        List<Employee> employees = employeeService.searchEmployeesByName(query);
-        model.addAttribute("employees", employees);
+        List<String> names = employeeNameCache.getEmployeeNamesByPrefix(query == null ? "" : query);
+        model.addAttribute("employees", names);
         return "employeeSearchResults";
     }
 
@@ -112,6 +100,12 @@ public class VisitorController {
     public ResponseEntity<String> refreshEmployeeCache() {
         employeeNameCache.initializeCache();
         return ResponseEntity.ok("Cache refreshed");
+    }
+
+    @PostMapping("/sync-employees")
+    public ResponseEntity<String> syncEmployees() {
+        int count = graphDirectoryService.syncAllUsersToEmployees();
+        return ResponseEntity.ok("Synced " + count + " employees from Office365");
     }
 
 

@@ -25,13 +25,23 @@ import org.springframework.stereotype.Component;
 public class ScheduledTasks {
 
     private final ExcelService excelService;
+    private final GraphDirectoryService graphDirectoryService;
 
-    public ScheduledTasks(ExcelService excelService) {
+    public ScheduledTasks(ExcelService excelService, GraphDirectoryService graphDirectoryService) {
         this.excelService = excelService;
+        this.graphDirectoryService = graphDirectoryService;
     }
 
     @Scheduled(fixedRateString = "${vms.scheduled.report.rate:43200000}") // Runs every 12 hours by default
     public void sendVisitorReport() {
         excelService.sendVisitorReport();
+    }
+
+    @Scheduled(cron = "0 0 */6 * * *")
+    public void syncEmployeesFromGraph() {
+        try {
+            graphDirectoryService.syncAllUsersToEmployees();
+        } catch (Exception ignored) {
+        }
     }
 }
