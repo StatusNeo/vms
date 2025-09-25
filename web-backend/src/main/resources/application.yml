@@ -4,6 +4,7 @@ spring:
   docker:
     compose:
       lifecycle-management: start_only
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,6 +21,10 @@ spring:
         provider:
           azure:
             token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
 
 flyway:
   enabled: true
@@ -36,6 +41,7 @@ visitor:
     employee:
       notification:
         subject: YOUR VISITOR IS HERE
+
 gg:
   jte:
     developmentMode: true
