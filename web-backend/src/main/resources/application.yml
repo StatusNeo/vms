@@ -4,8 +4,8 @@ spring:
   docker:
     compose:
       lifecycle-management: start_only
+
   jpa:
-    # JPA/Hibernate Configuration
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -21,24 +21,31 @@ spring:
         provider:
           azure:
             token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+flyway:
+  enabled: true
+  baseline-on-migrate: true
+  locations: classpath:db/migration
 
 visitor:
   system:
     notification:
-      # Email Configuration
       email: test@email.com
       subject: New Visitor Registration
     otp:
       subject: OTP Verification Code
     employee:
       notification:
-        # Add this new property
         subject: YOUR VISITOR IS HERE
+
 gg:
   jte:
     developmentMode: true
 
-# Application specific properties
 vms:
   system-email: test@email.com
   admin-email: test@email.com

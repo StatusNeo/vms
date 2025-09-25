@@ -18,13 +18,15 @@
  */
 package com.statusneo.vms.repository;
 
-import com.statusneo.vms.model.Employee;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.statusneo.vms.model.Employee;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByNameStartingWithIgnoreCase(String name);
+    java.util.Optional<Employee> findByEmail(String email);
 }
