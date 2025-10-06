@@ -35,34 +35,34 @@ public class GlobalExceptionHandler {
     public String handleNoSuchElement(NoSuchElementException ex, Model model) {
         logger.warn("Resource not found", ex);
         model.addAttribute("error", "The requested resource was not found.");
-        return "jte/404.jte";
+        return "404";
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public String handleDataIntegrityViolation(DataIntegrityViolationException ex, Model model) {
         logger.error("Data integrity violation", ex);
         model.addAttribute("error", "A data validation error occurred. Please check your input.");
-        return "jte/400.jte";
+        return "400";
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgument(IllegalArgumentException ex, Model model) {
         logger.warn("Invalid argument", ex);
         model.addAttribute("error", "Invalid input provided.");
-        return "jte/400.jte";
+        return "400";
     }
 
     @ExceptionHandler(TemplateException.class)
     public String handleTemplateException(TemplateException ex, Model model) {
         logger.error("Template rendering failed", ex);
         model.addAttribute("error", "A technical error occurred while rendering the page.");
-        return "jte/500.jte";
+        return "500";
     }
 
     @ExceptionHandler(Exception.class)
     public String handleGeneralException(Exception ex, Model model) {
         logger.error("Unexpected error occurred", ex);
         model.addAttribute("error", "Something went wrong. Please try again later.");
-        return "jte/500.jte";
+        return "500";
     }
 }
