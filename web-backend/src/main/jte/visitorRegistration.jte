@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Visitor Registration</title>
-    <link href="/css/output.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
     <script src="/webjars/htmx.org/1.9.6/dist/htmx.min.js"></script>
     <script src="/webjars/htmx.org/1.9.6/dist/ext/json-enc.js"></script></head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">

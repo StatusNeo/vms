@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Visit Confirmation Result</title>
-    <link href="/css/output.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
