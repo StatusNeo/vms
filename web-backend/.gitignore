@@ -17,6 +17,9 @@ google-services.json
 target
 /src/main/frontend/node_modules/
 
+# Generated CSS from Tailwind build
+/src/main/resources/static/main.css
+
 # SQLite database files
 *.db
 *.db-journal
