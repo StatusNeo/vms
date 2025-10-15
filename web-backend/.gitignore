@@ -16,3 +16,9 @@ local.properties
 google-services.json
 target
 /src/main/frontend/node_modules/
+
+# SQLite database files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
