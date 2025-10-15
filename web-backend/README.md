@@ -29,11 +29,12 @@ Check out the [docs](docs/) and [ADRs](docs/adr/README.md)
 The project uses Spring Boot 3.4.5 with the following key configurations:
 
 1. **Database**: PostgreSQL is used as the primary database
+   - **Optional**: SQLite can be used for development/testing (see [SQLite Persistence](docs/sqlite-persistence.md))
 2. **Template Engine**: JTE (Java Template Engine) is used for HTML templates
 3. **Authentication**: Azure AD integration via Spring Security OAuth2
 4. **File Upload**: Apache POI for Excel file handling
 
-Required environment variables:
+Required environment variables (for PostgreSQL):
 - `SPRING_DATASOURCE_URL`: Database connection URL
 - `SPRING_DATASOURCE_USERNAME`: Database username
 - `SPRING_DATASOURCE_PASSWORD`: Database password
