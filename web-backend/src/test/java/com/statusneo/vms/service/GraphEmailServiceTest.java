@@ -5,17 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,24 +19,23 @@ import com.statusneo.vms.model.Email;
 class GraphEmailServiceTest {
 
     @Mock
-    private OAuth2AuthorizedClientManager authorizedClientManager;
+    private RestClient restClient;
 
     @Mock
-    private RestTemplate restTemplate;
+    private RestClient.RequestBodyUriSpec requestBodyUriSpec;
 
     @Mock
-    private OAuth2AuthorizedClient authorizedClient;
+    private RestClient.RequestBodySpec requestBodySpec;
 
     @Mock
-    private OAuth2AccessToken accessToken;
+    private RestClient.ResponseSpec responseSpec;
 
     @InjectMocks
     private GraphEmailService graphEmailService;
 
-   @BeforeEach
+    @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        graphEmailService = new GraphEmailService(authorizedClientManager, restTemplate);
     }
 
     @Test
@@ -54,22 +45,18 @@ class GraphEmailServiceTest {
         String toEmail = "recipient@example.com";
         String subject = "Test Subject";
         String body = "Test Body";
-        String fakeToken = "fake-access-token";
-
-        when(authorizedClientManager.authorize(any(OAuth2AuthorizeRequest.class))).thenReturn(authorizedClient);
-        when(authorizedClient.getAccessToken()).thenReturn(accessToken);
-        when(accessToken.getTokenValue()).thenReturn(fakeToken);
 
         ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(Void.class)))
-                .thenReturn(responseEntity);
+
+        mockRestClientResponse(responseEntity);
 
         // Act
         boolean result = graphEmailService.sendEmail(Email.of(fromEmail, toEmail, subject, body));
 
         // Assert
         assertTrue(result);
-        verify(restTemplate, times(1)).exchange(contains("graph.microsoft.com"), eq(HttpMethod.POST), any(HttpEntity.class), eq(Void.class));
+        verify(requestBodyUriSpec).uri(contains("graph.microsoft.com"));
+        verify(responseSpec).toBodilessEntity();
     }
 
     @Test
@@ -79,21 +66,26 @@ class GraphEmailServiceTest {
         String toEmail = "recipient@example.com";
         String subject = "Test Subject";
         String body = "Test Body";
-        String fakeToken = "fake-access-token";
-
-        when(authorizedClientManager.authorize(any(OAuth2AuthorizeRequest.class))).thenReturn(authorizedClient);
-        when(authorizedClient.getAccessToken()).thenReturn(accessToken);
-        when(accessToken.getTokenValue()).thenReturn(fakeToken);
 
         ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(Void.class)))
-                .thenReturn(responseEntity);
+
+        mockRestClientResponse(responseEntity);
 
         // Act
         boolean result = graphEmailService.sendEmail(Email.of(fromEmail, toEmail, subject, body));
 
         // Assert
         assertFalse(result);
-        verify(restTemplate, times(1)).exchange(contains("graph.microsoft.com"), eq(HttpMethod.POST), any(HttpEntity.class), eq(Void.class));
+        verify(requestBodyUriSpec).uri(contains("graph.microsoft.com"));
+        verify(responseSpec).toBodilessEntity();
     }
-} 
+
+    private void mockRestClientResponse(ResponseEntity<Void> responseEntity) {
+        when(restClient.post()).thenReturn(requestBodyUriSpec);
+        when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodySpec);
+        when(requestBodySpec.headers(any())).thenReturn(requestBodySpec);
+        when(requestBodySpec.body(any())).thenReturn(requestBodySpec);
+        when(requestBodySpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.toBodilessEntity()).thenReturn(responseEntity);
+    }
+}
