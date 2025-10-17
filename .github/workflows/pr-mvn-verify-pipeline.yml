@@ -12,27 +12,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
           server-id: github
           settings-path: ~/.m2
-      - name: Configure Maven settings.xml
-        run: |
-          mkdir -p ~/.m2
-          cat <<EOF > ~/.m2/settings.xml
-          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-              <servers>
-                  <server>
-                      <id>github</id>
-                      <username>${{ secrets.org_name }}</username>
-                      <password>${{ secrets.token }}</password>
-                  </server>
-              </servers>
-          </settings>
-          EOF
       - name: Build and verify with Maven
         run: mvn clean verify --file web-backend/pom.xml
