@@ -16,3 +16,8 @@ local.properties
 google-services.json
 target
 /src/main/frontend/node_modules/
+### VS Code ###
+.vscode/
+
+### JTE ###
+/jte-classes/

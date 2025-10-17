@@ -49,6 +49,8 @@ gg:
 vms:
   system-email: test@email.com
   admin-email: test@email.com
-
+wiremock:
+  server:
+    port: 8081
 mail:
   url: http://localhost:${wiremock.server.port}/v1.0/users/%s/sendMail

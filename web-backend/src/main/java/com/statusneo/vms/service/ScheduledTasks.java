@@ -18,30 +18,39 @@
  */
 package com.statusneo.vms.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("prod")
 public class ScheduledTasks {
 
     private final ExcelService excelService;
     private final GraphDirectoryService graphDirectoryService;
+
+    private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+
 
     public ScheduledTasks(ExcelService excelService, GraphDirectoryService graphDirectoryService) {
         this.excelService = excelService;
         this.graphDirectoryService = graphDirectoryService;
     }
 
-    @Scheduled(fixedRateString = "${vms.scheduled.report.rate:43200000}") // Runs every 12 hours by default
+    @Scheduled(fixedRateString = "${vms.scheduled.report.rate:43200000}", initialDelayString = "PT2H") // Runs every 12 hours by default
     public void sendVisitorReport() {
         excelService.sendVisitorReport();
     }
 
-    @Scheduled(cron = "0 0 */6 * * *")
+    @Scheduled(cron = "0 0 1 * * *")
     public void syncEmployeesFromGraph() {
         try {
             graphDirectoryService.syncAllUsersToEmployees();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            log.error("Failed to sync users from Graph to employees", e);
+            // consider adding metrics/alerts or retrying with backoff here
         }
     }
 }

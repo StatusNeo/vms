@@ -19,23 +19,20 @@
 package com.statusneo.vms.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import com.statusneo.vms.cache.EmployeeNameCache;
 import com.statusneo.vms.model.Employee;
@@ -47,36 +44,52 @@ public class GraphDirectoryService {
     private static final Logger logger = LoggerFactory.getLogger(GraphDirectoryService.class);
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
     private final EmployeeRepository employeeRepository;
     private final EmployeeNameCache employeeNameCache;
 
-    public GraphDirectoryService(OAuth2AuthorizedClientManager authorizedClientManager,
-                                 RestTemplate restTemplate,
-                                 EmployeeRepository employeeRepository,
-                                 EmployeeNameCache employeeNameCache) {
+    @Autowired
+    public GraphDirectoryService(
+            OAuth2AuthorizedClientManager authorizedClientManager,
+            RestClient restClient,
+            EmployeeRepository employeeRepository,
+            EmployeeNameCache employeeNameCache) {
         this.authorizedClientManager = authorizedClientManager;
-        this.restTemplate = restTemplate;
+        this.restClient = restClient;
         this.employeeRepository = employeeRepository;
         this.employeeNameCache = employeeNameCache;
     }
 
+    public String getAccessToken() {
+        OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest
+                .withClientRegistrationId("azure")
+                .principal("principal")
+                .build();
+
+        OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+        if (authorizedClient != null) {
+            return authorizedClient.getAccessToken().getTokenValue();
+        }
+        throw new RuntimeException("Failed to obtain access token");
+    }
+
     public int syncAllUsersToEmployees() {
         String token = getAccessToken();
-//      String url = "https://graph.microsoft.com/v1.0/users?$select=displayName,mail,userPrincipalName&$top=999";
-        String url = "";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        String url = "https://graph.microsoft.com/v1.0/users?$select=displayName,mail,userPrincipalName&$top=999";
 
         int upserts = 0;
         String nextLink = url;
         List<String> namesForCache = new ArrayList<>();
+        
         while (nextLink != null) {
-
-            ResponseEntity<Map> response = restTemplate.exchange(nextLink, HttpMethod.GET, entity, Map.class);
+            ResponseEntity<Map> response = restClient.get()
+                    .uri(nextLink)
+                    .headers(httpHeaders -> {
+                        httpHeaders.setBearerAuth(token);
+                        httpHeaders.setAccept(List.of(MediaType.APPLICATION_JSON));
+                    })
+                    .retrieve()
+                    .toEntity(Map.class);
 
             if (!response.getStatusCode().is2xxSuccessful()) {
                 break;
@@ -123,6 +136,7 @@ public class GraphDirectoryService {
         return upserts;
     }
 
+    /*
     private String getAccessToken() {
         OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest
                 .withClientRegistrationId("azure")
@@ -134,6 +148,7 @@ public class GraphDirectoryService {
         }
         return client.getAccessToken().getTokenValue();
     }
+    */
 }
 
 

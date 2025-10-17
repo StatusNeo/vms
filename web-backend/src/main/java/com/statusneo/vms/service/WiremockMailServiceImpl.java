@@ -22,10 +22,6 @@ import com.statusneo.vms.model.Email;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Profile({"default", "dev", "test"})
+@Profile({"dev", "test"})
 public class WiremockMailServiceImpl implements EmailService{
 
     private final RestTemplate restTemplate;

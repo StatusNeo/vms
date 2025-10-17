@@ -89,6 +89,11 @@ public class Visitor {
 	private String address;
 
 	/**
+	 * Company of the visitor.
+	 */
+	private String company;
+
+	/**
 	 * Path to the visitor's profile picture stored in the system.
 	 */
 	@Column(name = "picture_path")
@@ -188,6 +193,14 @@ public class Visitor {
 		this.address = address;
 	}
 
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
 	public String getPicturePath() {
 		return picturePath;
 	}
@@ -203,6 +216,7 @@ public class Visitor {
 				", phoneNumber='" + phoneNumber + '\'' +
 				", email='" + email + '\'' +
 				", address='" + address + '\'' +
+				", company='" + company + '\'' +
 				", picturePath='" + picturePath + '\'' +
 				'}';
 	}

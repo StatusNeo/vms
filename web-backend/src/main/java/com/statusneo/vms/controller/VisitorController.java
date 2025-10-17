@@ -30,6 +30,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -43,7 +44,6 @@ import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.VisitService;
 
 @Controller
-@RequestMapping("/api/visitors")
 public class VisitorController {
 
     private static final Logger logger = LoggerFactory.getLogger(VisitorController.class);
@@ -77,7 +77,7 @@ public class VisitorController {
         return ResponseEntity.ok(visit);
     }
 
-    @RequestMapping("/error")
+//    @RequestMapping("/error")
     public String handleError() {
         return "Custom error page!";
     }
@@ -126,20 +126,49 @@ public class VisitorController {
     }
 
     @PostMapping("/register")
-    public String registerVisitor(@ModelAttribute Visitor visitor, Model model) {
+    public String registerVisitor(@ModelAttribute Visitor visitor, 
+                                 @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+                                 Model model) {
         Visit savedVisit = visitService.registerVisit(visitor);
         model.addAttribute("visitId", savedVisit.getId());
-        return "visitorOtpForm";
+        
+        // If it's an HTMX request, just return the modal fragment
+        if (hxRequest != null && hxRequest.equals("true")) {
+            // JTE doesn't use Thymeleaf fragment syntax ("::"). Return the template name
+            // that corresponds to src/main/jte/fragments/otp-modal.jte
+            return "fragments/otp-modal";
+        }
+        
+        // For regular form submission (fallback)
+        return "otp-modal";
     }
 
     @PostMapping("/confirm-visit")
     public String confirmVisit(@RequestParam("visitId") Long visitId,
-                               @RequestParam("otpCode") String otpCode,
-                               Model model) {
+                             @RequestParam("otpCode") String otpCode,
+                             @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+                             Model model) {
         VerificationResult result = visitService.confirmVisit(visitId, otpCode);
         model.addAttribute("result", result);
         model.addAttribute("visitId", visitId);
-        return "visitConfirmationResult";
+        
+        // If it's an HTMX request, return a fragment
+        if (hxRequest != null && hxRequest.equals("true")) {
+            if (result.success()) {
+                // Pass the visit to get visitor details for success message
+                Visit visit = visitRepository.findById(visitId)
+                    .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
+                model.addAttribute("visit", visit);
+                // Return the JTE template for success message (no Thymeleaf fragment syntax)
+                return "fragments/success-message";
+            } else {
+                // Return the otp modal template so HTMX can swap it
+                return "fragments/otp-modal";
+            }
+        }
+        
+        // For regular form submission (fallback)
+        return "confirmation-modal";
     }
 
     @PostMapping("/resend-otp")
@@ -151,6 +180,7 @@ public class VisitorController {
 
         model.addAttribute("result", result);
         model.addAttribute("visitId", visitId);
-        return "visitConfirmationResult";
+        // For HTMX flows this should probably return the otp modal again so the UI is updated.
+        return "fragments/otp-modal";
     }
 }
