@@ -19,14 +19,18 @@
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.model.Email;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.util.Base64;
 import java.util.Collections;
@@ -35,61 +39,40 @@ import java.util.Map;
 
 /**
  * Service responsible for handling all email communications in the Visitor Management System.
- * Manages visitor notifications, OTP delivery, and employee communications.
  */
 @Service
-@Profile("prod")
+@Profile({"prod", "default"})
 public class GraphEmailService implements EmailService {
 
-    private final OAuth2AuthorizedClientManager authorizedClientManager;
-    private final RestTemplate restTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(GraphEmailService.class);
 
-    /**
-     * Constructs a new EmailService with required dependencies.
-     *
-     */
+    private final RestClient restClient;
+    private final OAuth2AuthorizedClientManager authorizedClientManager;
+
     @Autowired
     public GraphEmailService(OAuth2AuthorizedClientManager authorizedClientManager,
-                             RestTemplate restTemplate) {
+                             RestClient restClient) {
         this.authorizedClientManager = authorizedClientManager;
-        this.restTemplate = restTemplate;
+        this.restClient = restClient;
     }
 
-    /**
-     * Gets an access token for Microsoft Graph API.
-     *
-     * @return The access token
-     * @throws RuntimeException if token retrieval fails
-     */
     public String getAccessToken() {
         OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest
                 .withClientRegistrationId("azure")
-                .principal("principal")  // using a string principal for client_credentials flow
+                .principal("principal")
                 .build();
 
         OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
-
         if (authorizedClient != null) {
             return authorizedClient.getAccessToken().getTokenValue();
         }
-
         throw new RuntimeException("Failed to obtain access token");
     }
 
-    /**
-     * Sends an email using the provided Email object.
-     *
-     * @param email Email object containing all necessary fields
-     * @return true if the email was sent successfully, false otherwise
-     */
     @Override
     public boolean sendEmail(Email email) {
         String accessToken = getAccessToken();
-        String endpoint = String.format("https://graph.microsoft.com/v1.0/users/%s/sendMail", email.from());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        String endpointUsers = String.format("https://graph.microsoft.com/v1.0/users/%s/sendMail", email.from());
 
         Map<String, Object> emailData = new HashMap<>();
         Map<String, Object> message = new HashMap<>();
@@ -104,7 +87,6 @@ public class GraphEmailService implements EmailService {
                 .map(addr -> Collections.singletonMap("emailAddress", Collections.singletonMap("address", addr)))
                 .toList());
 
-        // Add attachments if present
         if (email.attachments() != null && !email.attachments().isEmpty()) {
             var attachmentsList = email.attachments().stream().map(att -> {
                 Map<String, Object> attMap = new HashMap<>();
@@ -120,9 +102,22 @@ public class GraphEmailService implements EmailService {
         emailData.put("message", message);
         emailData.put("saveToSentItems", "true");
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(emailData, headers);
-        ResponseEntity<Void> response = restTemplate.exchange(endpoint, HttpMethod.POST, request, Void.class);
+        // Do not swallow HTTP errors (especially 404 for invalid system sender). Let them propagate so the caller
+        // (VisitService / controller) can handle them as system errors.
+        ResponseEntity<Void> response = restClient.post()
+                .uri(endpointUsers)
+                .headers(httpHeaders -> {
+                    httpHeaders.setBearerAuth(accessToken);
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                })
+                .body(emailData)
+                .retrieve()
+                .toBodilessEntity();
 
-        return response.getStatusCode().equals(HttpStatus.ACCEPTED);
+        boolean accepted = response.getStatusCode().equals(HttpStatus.ACCEPTED);
+        if (!accepted) {
+            logger.warn("Graph Email API returned {} for sender {} to {}", response.getStatusCode(), email.from(), email.to());
+        }
+        return accepted;
     }
 }
