@@ -30,6 +30,9 @@ import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visitor;
 import gg.jte.TemplateEngine;
 import gg.jte.output.StringOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -39,8 +42,14 @@ import java.util.Map;
 @Service
 public class NotificationService {
 
+    private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
+
     private final EmailService emailService;
     private final TemplateEngine templateEngine;
+
+    // Use the env-backed VMS_SYSTEM_EMAIL (fallback to vms.system-email or default noreply)
+    @Value("${VMS_SYSTEM_EMAIL:${vms.system-email:noreply@company.com}}")
+    private String systemFrom;
 
     public NotificationService(EmailService emailService, TemplateEngine templateEngine) {
         this.emailService = emailService;
@@ -56,13 +65,16 @@ public class NotificationService {
         templateEngine.render("visitorConfirmation.jte", params, output);
 
         Email email = Email.of(
-                "noreply@company.com",
+                systemFrom,
                 List.of(visitor.getEmail()),
                 "Registration Successful",
                 output.toString()
         );
 
-        emailService.sendEmail(email);
+        boolean ok = emailService.sendEmail(email);
+        if (!ok) {
+            logger.warn("Failed to send visitor confirmation email to {} (from={})", visitor.getEmail(), systemFrom);
+        }
     }
 
     public void sendHostNotification(Visitor visitor, Employee host) {
@@ -75,12 +87,15 @@ public class NotificationService {
         templateEngine.render("hostNotification.jte", params, output);
 
         Email email = Email.of(
-                "noreply@company.com",
+                systemFrom,
                 List.of(host.getEmail()),
                 "Visitor Alert",
                 output.toString()
         );
 
-        emailService.sendEmail(email);
+        boolean ok = emailService.sendEmail(email);
+        if (!ok) {
+            logger.warn("Failed to send host notification email to {} (from={})", host.getEmail(), systemFrom);
+        }
     }
 }

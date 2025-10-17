@@ -1,5 +1,4 @@
-
- /*
+/*
  * Copyright [2025] StatusNeo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,23 +44,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
  @Service
  public class OtpService {
 
+     private static final Logger logger = LoggerFactory.getLogger(OtpService.class);
+
      private final OtpRepository otpRepository;
      private final EmailService emailService;
      private final String otpSubject;
+     private final String systemFrom;
 
      public OtpService(OtpRepository otpRepository, EmailService emailService,
-                       @Value("${app.otp.subject:Your OTP}") String otpSubject) {
+                      @Value("${VMS_SYSTEM_EMAIL:${vms.system-email:noreply@company.com}}") String systemFrom,
+                      @Value("${app.otp.subject:Your OTP}") String otpSubject) {
          this.otpRepository = otpRepository;
          this.emailService = emailService;
          this.otpSubject = otpSubject;
+         this.systemFrom = systemFrom;
      }
 
      private static final int OTP_EXPIRATION_MINUTES = 10;
@@ -111,8 +118,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
          // Send email
          String visitorEmail = visit.getVisitor().getEmail();
-         emailService.sendEmail(Email.of(visitorEmail, visitorEmail, otpSubject,
-                 "Your OTP for visit to " + visit.getHost() + " is: " + otp));
+         // Resolve host name safely: prefer visit.host (string), fall back to visitor.host.name if present
+         String hostName = visit.getHost();
+         if ((hostName == null || hostName.isBlank()) && visit.getVisitor() != null && visit.getVisitor().getHost() != null) {
+             hostName = visit.getVisitor().getHost().getName();
+         }
+         if (hostName == null) {
+             hostName = "your host"; // sensible default to avoid 'null' in emails
+         }
+
+         String otpBody = "Your OTP for visit to " + hostName + " is: " + otp;
+         boolean sent = emailService.sendEmail(Email.of(systemFrom, List.of(visitorEmail), otpSubject, otpBody));
+         if (!sent) {
+             logger.warn("Failed to send OTP email to {} from {}", visitorEmail, systemFrom);
+         }
 
          return new VerificationResult(true, true, "OTP sent successfully.");
      }

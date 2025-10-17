@@ -89,6 +89,10 @@ public class VisitService {
 
         Visit visit = new Visit();
         visit.setVisitor(savedVisitor);
+        // Populate host (string) from the saved Visitor's host (Employee) if present
+        if (savedVisitor.getHost() != null) {
+            visit.setHost(savedVisitor.getHost().getName());
+        }
         visit.setVisitDate(LocalDateTime.now());
 
         Visit savedVisit = visitRepository.save(visit);
@@ -127,6 +131,7 @@ public class VisitService {
                         notificationService.sendHostNotification(visitor, host);
                     }
                 } catch (Exception e) {
+                    // Log system error but do not propagate to the caller/UI
                     logger.error("Failed to send notifications for visitId: {}", visitId, e);
                 }
             }, asyncExecutor);
