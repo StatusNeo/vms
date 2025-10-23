@@ -6,7 +6,6 @@
     <title>Visitor Registration</title>
     <link href="/main.css" rel="stylesheet">
     <script src="/webjars/htmx.org/1.9.6/dist/htmx.min.js"></script>
-    <script src="/webjars/htmx.org/1.9.6/dist/ext/json-enc.js"></script>
     <style>
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -35,10 +34,6 @@
     <!-- Combined Registration Form -->
     <form
             id="visitorForm"
-            hx-post="/api/visitors/saveVisitor"
-            hx-target="#responseMessage"
-            hx-swap="innerHTML"
-            hx-ext="json-enc"
             class="grid grid-cols-1 gap-6 mt-6"
     >
         <!-- Visitor Details -->

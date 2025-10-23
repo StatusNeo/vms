@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visitor Check-in</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-<%--    <link href="/main.css" rel="stylesheet">--%>
-<%--    <script src="/webjars/htmx.org/1.9.6/dist/htmx.min.js"></script>--%>
+    <link href="/main.css" rel="stylesheet">
+    <script src="/webjars/htmx.org/2.0.7/dist/htmx.min.js"></script>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
 
