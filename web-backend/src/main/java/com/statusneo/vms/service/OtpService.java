@@ -82,13 +82,30 @@ import org.slf4j.LoggerFactory;
       * Public Method 1: Generate or resend OTP for a visit
       */
      public VerificationResult generateOtp(Visit visit) {
+         return generateOtp(visit, true, false);
+     }
+
+     /**
+      * Generate OTP with control over whether to reset in-memory attempt counters.
+      * If resetAttempts is true the per-visit attempt counter is removed when a new OTP is generated.
+      */
+     public VerificationResult generateOtp(Visit visit, boolean resetAttempts) {
+         return generateOtp(visit, resetAttempts, false);
+     }
+
+     /**
+      * Generate OTP with control over whether to reset in-memory attempt counters and whether to bypass cooldown.
+      * If resetAttempts is true the per-visit attempt counter is removed when a new OTP is generated.
+      * If bypassCooldown is true the cooldown check is skipped (useful for automatic resends after failed validation).
+      */
+     public VerificationResult generateOtp(Visit visit, boolean resetAttempts, boolean bypassCooldown) {
          Optional<Otp> latestOtpOpt = getLatestOtpByVisit(visit);
 
          if (latestOtpOpt.isPresent()) {
              Otp latestOtp = latestOtpOpt.get();
 
-             // Check cooldown
-             if (latestOtp.getCreatedAt().plusMinutes(RESEND_COOLDOWN_MINUTES).isAfter(LocalDateTime.now())) {
+             // Check cooldown (skip if bypassCooldown requested)
+             if (!bypassCooldown && latestOtp.getCreatedAt().plusMinutes(RESEND_COOLDOWN_MINUTES).isAfter(LocalDateTime.now())) {
                  return new VerificationResult(false, true,
                          "Please wait before requesting a new OTP.");
              }
@@ -110,11 +127,14 @@ import org.slf4j.LoggerFactory;
          otpEntity.setExpirationTime(expirationTime);
          otpEntity.setVisit(visit);
 
-         if (latestOtpOpt.isPresent()) {
-             otpEntity.setResendCount(latestOtpOpt.get().getResendCount() + 1);
-         }
+         latestOtpOpt.ifPresent(value -> otpEntity.setResendCount(value.getResendCount() + 1));
 
          otpRepository.save(otpEntity);
+
+         // Reset attempt counter for this visit when a new OTP is generated only if requested
+         if (resetAttempts && visit.getId() != null) {
+             otpAttempts.remove(visit.getId());
+         }
 
          // Send email
          String visitorEmail = visit.getVisitor().getEmail();

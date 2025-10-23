@@ -19,12 +19,13 @@ public class EmployeeConverter implements Converter<String, Employee> {
         if (source == null || source.isBlank()) {
             return null;
         }
+        String trimmed = source.trim();
         try {
-            Long id = Long.valueOf(source);
+            Long id = Long.valueOf(trimmed);
             return employeeRepository.findById(id).orElse(null);
         } catch (NumberFormatException e) {
-            return null;
+            // Try to resolve by exact case-insensitive name as a fallback
+            return employeeRepository.findByNameIgnoreCase(trimmed).orElse(null);
         }
     }
 }
-

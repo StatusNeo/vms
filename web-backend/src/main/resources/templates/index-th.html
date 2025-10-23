@@ -1,41 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visitor Check-in</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-<%--    <link href="/main.css" rel="stylesheet">--%>
-<%--    <script src="/webjars/htmx.org/1.9.6/dist/htmx.min.js"></script>--%>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-
-    <!-- Top-level modal container so HTMX swaps can render full-screen overlays without being clipped -->
-    <div id="modal-container"></div>
-
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <!-- Header -->
     <div class="text-center mb-8">
-        <div class="flex justify-center mb-4">
-            <img id="site-logo" src="/images/StatusNeo-Logo.png" alt="StatusNeo Logo" style="height:36px !important; max-height:36px !important; width:auto !important;" class="mx-auto">
-        </div>
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Visitor Check-in</h1>
         <p class="text-gray-600">Please fill in your details to register your visit</p>
     </div>
 
     <!-- Main Form -->
     <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-        <!-- Modal Container -->
-        <div id="modal-container"></div>
-
         <form id="visitor-form"
-              hx-post="/register"
-              hx-target="#modal-container"
-              hx-swap="innerHTML"
-              hx-trigger="submit"
+              hx-post="/api/visitor/send-otp"
+              hx-target="#form-content"
+              hx-swap="outerHTML"
               class="space-y-6">
-            <input type="hidden" name="_csrf" value="">
 
             <div id="form-content">
                 <!-- Two Column Grid for Tablet/Desktop -->
@@ -53,6 +39,7 @@
                                id="name"
                                name="name"
                                required
+                               th:value="${visitor?.name}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your full name">
                     </div>
@@ -69,6 +56,7 @@
                                id="email"
                                name="email"
                                required
+                               th:value="${visitor?.email}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your email address">
                     </div>
@@ -85,6 +73,7 @@
                                id="phone"
                                name="phoneNumber"
                                required
+                               th:value="${visitor?.phoneNumber}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your phone number">
                     </div>
@@ -101,6 +90,7 @@
                                id="company"
                                name="company"
                                required
+                               th:value="${visitor?.company}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your company name">
                     </div>
@@ -118,13 +108,13 @@
                                    id="host-search"
                                    name="hostSearch"
                                    autocomplete="off"
-                                   hx-get="/search-employees"
+                                   hx-get="/api/hosts/search"
                                    hx-trigger="keyup changed delay:300ms"
                                    hx-target="#host-results"
                                    hx-indicator="#search-spinner"
                                    class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                    placeholder="Search by name or email...">
-                            <input type="hidden" id="host" name="host">
+                            <input type="hidden" id="host" name="host" th:value="${visitor?.hostId}">
                             <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
@@ -147,7 +137,6 @@
                 <!-- Submit Button -->
                 <div class="flex justify-center pt-4">
                     <button type="submit"
-                            id="send-otp-btn"
                             class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg">
                         <span class="htmx-indicator:hidden">Send OTP</span>
                         <span class="htmx-indicator">
@@ -169,160 +158,56 @@
     </div>
 </div>
 
-<!-- Removed a small duplicate autocomplete handler here in favor of the more complete handlers below -->
-
 <script>
-    // Form validation (host optional)
-    function validateForm() {
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const company = document.getElementById('company').value;
-        // host is optional, do not require hostId to enable send
-
-        const isValid = name && email && phone && company;
-        document.getElementById('send-otp-btn').disabled = !isValid;
-    }
-
-    // Attach validation to all inputs that are required
-    document.querySelectorAll('input[required]').forEach(input => {
-        input.addEventListener('input', validateForm);
-    });
-</script>
-
-<script>
-    // Add keyboard selection and HTMX guards for host autocomplete
-    // Prevent HTMX requests on Enter and prevent empty searches
-    document.addEventListener("htmx:configRequest", (event) => {
-        const keyEvent = event.detail.triggeringEvent;
-        if (keyEvent?.type === "keyup" && keyEvent.key === "Enter") {
-            event.preventDefault();
-        }
-    });
-
-    document.body.addEventListener('htmx:beforeRequest', function(event) {
-        const source = event.detail?.elt;
-        if (!source || source.id !== 'host-search') return;
-        const input = document.getElementById('host-search');
-        const results = document.getElementById('host-results');
-        if (!input || input.value.trim() === '') {
-            event.preventDefault();
-            if (results) results.style.display = 'none';
-        }
-    });
-
-    // When HTMX swaps in host results, show the dropdown and (re)attach handlers
+    // Handle host selection from dropdown
     document.body.addEventListener('htmx:afterSwap', function(event) {
-        // If the swap targeted host-results, ensure it's visible and attach click handlers
-        try {
-            if (event.detail.target.id === 'host-results') {
-                const box = document.getElementById('host-results');
-                if (box) {
-                    box.classList.remove('hidden');
-                    box.style.display = 'block';
-                    const items = box.querySelectorAll('li');
-                    items.forEach(item => {
-                        // If server didn't attach onclick, attach a safe handler
-                        if (!item.onclick) {
-                            item.addEventListener('click', function() {
-                                const name = this.dataset.name || this.textContent.trim();
-                                const id = this.dataset.id || this.getAttribute('data-id');
-                                selectEmployee(name, id);
-                            });
-                        }
-                    });
-                }
-            }
-        } catch (e) {
-            // swallow any errors to avoid breaking other htmx swaps
-            console.error(e);
+        if (event.detail.target.id === 'host-results') {
+            // Show dropdown after results load
+            document.getElementById('host-results').classList.remove('hidden');
         }
     });
 
-    // Hide dropdown immediately on click swaps to avoid flicker
-    document.body.addEventListener('htmx:beforeSwap', function(event) {
-        const targetId = event.target.getAttribute('id');
-        if (targetId === 'host-results') {
-            const triggering = event.detail.requestConfig && event.detail.requestConfig.triggeringEvent;
-            if (triggering && triggering.type === 'click') {
-                const box = document.getElementById('host-results');
-                if (box) box.style.display = 'none';
-            }
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const hostSearch = document.getElementById('host-search');
+        const hostResults = document.getElementById('host-results');
+        if (hostSearch && hostResults && !hostSearch.contains(event.target) && !hostResults.contains(event.target)) {
+            hostResults.classList.add('hidden');
         }
     });
 
-    // Make clicking a suggestion populate the input and hidden field
-    function selectEmployee(name, id) {
-        const input = document.getElementById('host-search');
-        const hidden = document.getElementById('host');
-        if (input) input.value = name || '';
-        if (hidden) hidden.value = id || '';
-        const box = document.getElementById('host-results');
-        if (box) {
-            box.classList.add('hidden');
-            box.style.display = 'none';
-        }
+    // Handle host selection
+    function selectHost(hostId, hostName, hostEmail) {
+        document.getElementById('host-search').value = hostName + ' (' + hostEmail + ')';
+        document.getElementById('host').value = hostId;
+        document.getElementById('host-results').classList.add('hidden');
     }
-
-    // Keyboard navigation for host-search (arrow keys + enter + escape)
-    const hostSearch = document.getElementById('host-search');
-    if (hostSearch) {
-        hostSearch.addEventListener('keydown', (event) => {
-            const suggestionBox = document.getElementById('host-results');
-            if (!suggestionBox || suggestionBox.children.length === 0) return;
-
-            const suggestions = suggestionBox.querySelectorAll('li');
-            let current = suggestionBox.querySelector('.highlight');
-
-            switch (event.key) {
-                case 'ArrowDown':
-                    event.preventDefault();
-                    if (!current) {
-                        suggestions[0].classList.add('highlight');
-                    } else {
-                        current.classList.remove('highlight');
-                        (current.nextElementSibling || suggestions[0]).classList.add('highlight');
-                    }
-                    break;
-
-                case 'ArrowUp':
-                    event.preventDefault();
-                    if (!current) {
-                        suggestions[suggestions.length - 1].classList.add('highlight');
-                    } else {
-                        current.classList.remove('highlight');
-                        (current.previousElementSibling || suggestions[suggestions.length - 1]).classList.add('highlight');
-                    }
-                    break;
-
-                case 'Enter':
-                    event.preventDefault();
-                    if (current) {
-                        const name = current.dataset.name || current.textContent.trim();
-                        const id = current.dataset.id || current.getAttribute('data-id');
-                        selectEmployee(name, id);
-                    }
-                    break;
-
-                case 'Escape':
-                    event.preventDefault();
-                    suggestionBox.innerHTML = '';
-                    suggestionBox.style.display = 'none';
-                    break;
-            }
-        });
-    }
-
-    // Add minimal highlight style if not present (ensures keyboard nav is visible)
-    (function ensureHighlightStyle(){
-        const id = 'host-highlight-style';
-        if (!document.getElementById(id)) {
-            const style = document.createElement('style');
-            style.id = id;
-            style.innerHTML = '.highlight{background-color:#f3f4f6;font-weight:600}';
-            document.head.appendChild(style);
-        }
-    })();
 </script>
 </body>
 </html>
+
+<!--
+    SEPARATE FILE: host-search-results.html (Fragment for HTMX response)
+    Endpoint: GET /api/hosts/search?hostSearch={query}
+-->
+<!--
+
+-->
+
+<!--
+    SEPARATE FILE: otp-verification-form.html (Fragment for HTMX response after Send OTP)
+    Endpoint: POST /api/visitor/send-otp
+    Response: Returns this fragment to replace #form-content
+-->
+<!--
+
+-->
+
+<!--
+    SEPARATE FILE: success-message.html (Fragment for HTMX response after verification)
+    Endpoint: POST /api/visitor/verify-otp
+    Response: Returns this fragment to replace entire form
+-->
+<!--
+
+-->

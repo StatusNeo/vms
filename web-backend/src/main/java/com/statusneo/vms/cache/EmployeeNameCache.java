@@ -3,10 +3,11 @@ package com.statusneo.vms.cache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.statusneo.vms.model.Employee;
@@ -18,10 +19,14 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class EmployeeNameCache {
 
-    private final TrieNode root = new TrieNode();
+    private static final int MAX_SUGGESTIONS = 10;
 
-    @Autowired
-    public EmployeeRepository employeeRepository;
+    private final TrieNode root = new TrieNode();
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeNameCache(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
 
     @PostConstruct
     public void initializeCache() {
@@ -35,33 +40,48 @@ public class EmployeeNameCache {
     }
 
     public void insert(String name) {
+        if (name == null || name.isBlank()) return;
         TrieNode node = root;
         for (char c : name.toLowerCase().toCharArray()) {
             node = node.getChildren().computeIfAbsent(c, k -> new TrieNode());
         }
         node.setEndOfWord(true);
+        node.addOriginal(name);
     }
 
     public List<String> getEmployeeNamesByPrefix(String prefix) {
+        if (prefix == null) prefix = "";
         TrieNode node = root;
         for (char c : prefix.toLowerCase().toCharArray()) {
             node = node.getChildren().get(c);
             if (node == null) return Collections.emptyList();
         }
 
-        List<String> results = new ArrayList<>();
-        collectNames(node, new StringBuilder(prefix.toLowerCase()), results);
-        return results;
+        // Use LinkedHashSet to preserve insertion order and avoid duplicates
+        Set<String> results = new LinkedHashSet<>();
+        collectNames(node, results);
+
+        // If prefix is empty, we may have many results - limit to MAX_SUGGESTIONS
+        List<String> list = new ArrayList<>(results);
+        if (list.size() > MAX_SUGGESTIONS) {
+            return list.subList(0, MAX_SUGGESTIONS);
+        }
+        return list;
     }
 
-    private void collectNames(TrieNode node, StringBuilder prefix, List<String> results) {
+    private void collectNames(TrieNode node, Set<String> results) {
+        if (results.size() >= MAX_SUGGESTIONS) return;
         if (node.isEndOfWord()) {
-            results.add(prefix.toString());
+            // add originals for this terminal node
+            for (String orig : node.getOriginals()) {
+                if (results.size() >= MAX_SUGGESTIONS) break;
+                results.add(orig);
+            }
         }
 
         for (Map.Entry<Character, TrieNode> entry : node.getChildren().entrySet()) {
-            collectNames(entry.getValue(), prefix.append(entry.getKey()), results);
-            prefix.setLength(prefix.length() - 1);
+            if (results.size() >= MAX_SUGGESTIONS) break;
+            collectNames(entry.getValue(), results);
         }
     }
 

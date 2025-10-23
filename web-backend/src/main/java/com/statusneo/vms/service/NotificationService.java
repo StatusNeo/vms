@@ -62,7 +62,7 @@ public class NotificationService {
         params.put("visitorEmail", visitor.getEmail());
 
         StringOutput output = new StringOutput();
-        templateEngine.render("visitorConfirmation.jte", params, output);
+        templateEngine.render("email/visitorConfirmation.jte", params, output);
 
         Email email = Email.of(
                 systemFrom,
@@ -84,7 +84,7 @@ public class NotificationService {
         params.put("visitorEmail", visitor.getEmail());
 
         StringOutput output = new StringOutput();
-        templateEngine.render("hostNotification.jte", params, output);
+        templateEngine.render("email/hostNotification.jte", params, output);
 
         Email email = Email.of(
                 systemFrom,
