@@ -27,28 +27,27 @@ class EmployeeNameCacheTest {
         );
         when(employeeRepository.findAll()).thenReturn(testEmployees);
 
-        cache = new EmployeeNameCache();
-        cache.employeeRepository = employeeRepository;
+        cache = new EmployeeNameCache(employeeRepository);
         cache.initializeCache();
     }
 
     @Test
     void testGetEmployeeNamesByPrefix_A() {
         List<String> result = cache.getEmployeeNamesByPrefix("a");
-        assertTrue(result.contains("anurag"));
-        assertTrue(result.contains("amit"));
-        assertTrue(result.contains("anas"));
+        assertTrue(result.contains("Anurag"));
+        assertTrue(result.contains("Amit"));
+        assertTrue(result.contains("Anas"));
         assertEquals(3, result.size());
     }
 
     @Test
     void testEmptyPrefixReturnsAllNames() {
         List<String> result = cache.getEmployeeNamesByPrefix("");
-        assertTrue(result.contains("anurag"));
-        assertTrue(result.contains("amit"));
-        assertTrue(result.contains("tarun"));
-        assertTrue(result.contains("anas"));
-        assertTrue(result.contains("disha"));
+        assertTrue(result.contains("Anurag"));
+        assertTrue(result.contains("Amit"));
+        assertTrue(result.contains("Tarun"));
+        assertTrue(result.contains("Anas"));
+        assertTrue(result.contains("Disha"));
         assertEquals(5, result.size());
     }
 

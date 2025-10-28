@@ -9,7 +9,7 @@
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
+ * Unless required by applicable law or agreed in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
@@ -18,38 +18,38 @@
  */
 package com.statusneo.vms.controller;
 
+import com.statusneo.vms.model.Employee;
+import com.statusneo.vms.service.EmployeeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
 public class HomeController {
+    private final EmployeeService employeeService;
 
-    @GetMapping("/")
-    public String home() {
-        return "index"; // This assumes index.html is in the static directory
+    public HomeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
     @GetMapping("/search-employees")
-    public String employees(@RequestParam(value = "query", required = false) String query, Model model) {
-        if (query == null || query.isEmpty()) {
-            // Do not add anything to the model and return the view
+    public String employees(@RequestParam(value = "hostSearch", required = false) String hostSearch,
+                            @RequestParam(value = "employee", required = false) String employee,
+                            @RequestParam(value = "query", required = false) String query,
+                            Model model) {
+        // Prefer hostSearch (used by index.jte), then employee, then query
+        String q = (hostSearch != null && !hostSearch.isBlank()) ? hostSearch :
+                ((employee != null && !employee.isBlank()) ? employee : (query == null ? "" : query));
+
+        if (q.isBlank()) {
             return "employees";
         }
 
-        List<String> employees = Arrays.asList("Alice", "Bob", "Charlie", "Diana", "Edward");
-
-        // Filter employees if query is not null or empty
-        employees = employees.stream()
-                .filter(name -> name.toLowerCase().contains(query.toLowerCase()))
-                .toList();
-        // Add the filtered list to the model
+        List<Employee> employees = employeeService.searchEmployeesByName(q);
         model.addAttribute("employees", employees);
-
         return "employees";
     }
 }

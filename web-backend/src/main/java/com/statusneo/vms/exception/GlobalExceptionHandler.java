@@ -42,27 +42,27 @@ public class GlobalExceptionHandler {
     public String handleDataIntegrityViolation(DataIntegrityViolationException ex, Model model) {
         logger.error("Data integrity violation", ex);
         model.addAttribute("error", "A data validation error occurred. Please check your input.");
-        return "400";
+        return "error/400";
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgument(IllegalArgumentException ex, Model model) {
         logger.warn("Invalid argument", ex);
         model.addAttribute("error", "Invalid input provided.");
-        return "400";
+        return "error/400";
     }
 
     @ExceptionHandler(TemplateException.class)
     public String handleTemplateException(TemplateException ex, Model model) {
         logger.error("Template rendering failed", ex);
         model.addAttribute("error", "A technical error occurred while rendering the page.");
-        return "500";
+        return "error/500";
     }
 
     @ExceptionHandler(Exception.class)
     public String handleGeneralException(Exception ex, Model model) {
         logger.error("Unexpected error occurred", ex);
         model.addAttribute("error", "Something went wrong. Please try again later.");
-        return "500";
+        return "error/500";
     }
 }

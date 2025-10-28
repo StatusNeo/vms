@@ -18,16 +18,30 @@
  */
 package com.statusneo.vms.config;
 
+import com.statusneo.vms.web.EmployeeConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.format.FormatterRegistry;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    private final EmployeeConverter employeeConverter;
+
+    public WebConfig(EmployeeConverter employeeConverter) {
+        this.employeeConverter = employeeConverter;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:uploads/");
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        // Register converter so Spring can bind the 'host' form field (String) to Employee
+        registry.addConverter(employeeConverter);
     }
 }

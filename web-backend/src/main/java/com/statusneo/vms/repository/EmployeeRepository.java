@@ -18,7 +18,9 @@
  */
 package com.statusneo.vms.repository;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -28,5 +30,7 @@ import com.statusneo.vms.model.Employee;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByNameStartingWithIgnoreCase(String name);
-    java.util.Optional<Employee> findByEmail(String email);
+    Optional<Employee> findByEmail(String email);
+    List<Employee> findByEmailIn(Collection<String> emails);
+    java.util.Optional<Employee> findByNameIgnoreCase(String name);
 }

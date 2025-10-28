@@ -25,3 +25,10 @@ target
 *.db-journal
 *.db-wal
 *.db-shm
+
+### VS Code ###
+.vscode/
+
+### JTE ###
+/jte-classes/
+

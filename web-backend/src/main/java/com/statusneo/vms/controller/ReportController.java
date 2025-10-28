@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 class ReportController {
 
-    @GetMapping("/report")
+//    @GetMapping("/report")
     public ResponseEntity<?> getReport(@RequestParam String period) {
         List<Visit> visit;
         if (period.equals("daily")) {

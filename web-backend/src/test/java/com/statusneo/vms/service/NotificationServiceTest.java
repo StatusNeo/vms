@@ -49,7 +49,7 @@ public class NotificationServiceTest {
             StringOutput output = invocation.getArgument(2);
             output.writeContent(renderedBody);
             return null;
-        }).when(templateEngine).render(eq("visitorConfirmation.jte"), any(Map.class), any(StringOutput.class));
+        }).when(templateEngine).render(eq("email/visitorConfirmation.jte"), any(Map.class), any(StringOutput.class));
 
         when(emailService.sendEmail(any(Email.class))).thenReturn(true);
         ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
@@ -89,7 +89,7 @@ public class NotificationServiceTest {
             StringOutput output = invocation.getArgument(2);
             output.writeContent(renderedBody);
             return null;
-        }).when(templateEngine).render(eq("hostNotification.jte"), any(Map.class), any(StringOutput.class));
+        }).when(templateEngine).render(eq("email/hostNotification.jte"), any(Map.class), any(StringOutput.class));
 
         when(emailService.sendEmail(any(Email.class))).thenReturn(true);
         ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);

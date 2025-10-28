@@ -1,5 +1,4 @@
-
- /*
+/*
  * Copyright [2025] StatusNeo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,23 +44,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
  @Service
  public class OtpService {
 
+     private static final Logger logger = LoggerFactory.getLogger(OtpService.class);
+
      private final OtpRepository otpRepository;
      private final EmailService emailService;
      private final String otpSubject;
+     private final String systemFrom;
 
      public OtpService(OtpRepository otpRepository, EmailService emailService,
-                       @Value("${app.otp.subject:Your OTP}") String otpSubject) {
+                      @Value("${VMS_SYSTEM_EMAIL:${vms.system-email:noreply@company.com}}") String systemFrom,
+                      @Value("${app.otp.subject:Your OTP}") String otpSubject) {
          this.otpRepository = otpRepository;
          this.emailService = emailService;
          this.otpSubject = otpSubject;
+         this.systemFrom = systemFrom;
      }
 
      private static final int OTP_EXPIRATION_MINUTES = 10;
@@ -75,13 +82,30 @@ import java.util.concurrent.ConcurrentHashMap;
       * Public Method 1: Generate or resend OTP for a visit
       */
      public VerificationResult generateOtp(Visit visit) {
+         return generateOtp(visit, true, false);
+     }
+
+     /**
+      * Generate OTP with control over whether to reset in-memory attempt counters.
+      * If resetAttempts is true the per-visit attempt counter is removed when a new OTP is generated.
+      */
+     public VerificationResult generateOtp(Visit visit, boolean resetAttempts) {
+         return generateOtp(visit, resetAttempts, false);
+     }
+
+     /**
+      * Generate OTP with control over whether to reset in-memory attempt counters and whether to bypass cooldown.
+      * If resetAttempts is true the per-visit attempt counter is removed when a new OTP is generated.
+      * If bypassCooldown is true the cooldown check is skipped (useful for automatic resends after failed validation).
+      */
+     public VerificationResult generateOtp(Visit visit, boolean resetAttempts, boolean bypassCooldown) {
          Optional<Otp> latestOtpOpt = getLatestOtpByVisit(visit);
 
          if (latestOtpOpt.isPresent()) {
              Otp latestOtp = latestOtpOpt.get();
 
-             // Check cooldown
-             if (latestOtp.getCreatedAt().plusMinutes(RESEND_COOLDOWN_MINUTES).isAfter(LocalDateTime.now())) {
+             // Check cooldown (skip if bypassCooldown requested)
+             if (!bypassCooldown && latestOtp.getCreatedAt().plusMinutes(RESEND_COOLDOWN_MINUTES).isAfter(LocalDateTime.now())) {
                  return new VerificationResult(false, true,
                          "Please wait before requesting a new OTP.");
              }
@@ -103,16 +127,31 @@ import java.util.concurrent.ConcurrentHashMap;
          otpEntity.setExpirationTime(expirationTime);
          otpEntity.setVisit(visit);
 
-         if (latestOtpOpt.isPresent()) {
-             otpEntity.setResendCount(latestOtpOpt.get().getResendCount() + 1);
-         }
+         latestOtpOpt.ifPresent(value -> otpEntity.setResendCount(value.getResendCount() + 1));
 
          otpRepository.save(otpEntity);
 
+         // Reset attempt counter for this visit when a new OTP is generated only if requested
+         if (resetAttempts && visit.getId() != null) {
+             otpAttempts.remove(visit.getId());
+         }
+
          // Send email
          String visitorEmail = visit.getVisitor().getEmail();
-         emailService.sendEmail(Email.of(visitorEmail, visitorEmail, otpSubject,
-                 "Your OTP for visit to " + visit.getHost() + " is: " + otp));
+         // Resolve host name safely: prefer visit.host (string), fall back to visitor.host.name if present
+         String hostName = visit.getHost();
+         if ((hostName == null || hostName.isBlank()) && visit.getVisitor() != null && visit.getVisitor().getHost() != null) {
+             hostName = visit.getVisitor().getHost().getName();
+         }
+         if (hostName == null) {
+             hostName = "your host"; // sensible default to avoid 'null' in emails
+         }
+
+         String otpBody = "Your OTP for visit to " + hostName + " is: " + otp;
+         boolean sent = emailService.sendEmail(Email.of(systemFrom, List.of(visitorEmail), otpSubject, otpBody));
+         if (!sent) {
+             logger.warn("Failed to send OTP email to {} from {}", visitorEmail, systemFrom);
+         }
 
          return new VerificationResult(true, true, "OTP sent successfully.");
      }

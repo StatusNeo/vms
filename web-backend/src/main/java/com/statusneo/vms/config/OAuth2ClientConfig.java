@@ -27,7 +27,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 class OAuth2ClientConfig {
 
-    @Bean
+   @Bean
     public OAuth2AuthorizedClientManager authorizedClientManager(
             ClientRegistrationRepository clientRegistrationRepository,
             OAuth2AuthorizedClientService authorizedClientService) {
@@ -45,8 +45,4 @@ class OAuth2ClientConfig {
         return authorizedClientManager;
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 }

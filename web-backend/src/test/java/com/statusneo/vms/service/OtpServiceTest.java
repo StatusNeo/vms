@@ -59,7 +59,8 @@ class OtpServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        otpService = new OtpService(otpRepository, emailService, "Your OTP");
+        // Pass a systemFrom address for the new constructor signature
+        otpService = new OtpService(otpRepository, emailService, "noreply@company.com", "Your OTP");
 
         testVisitor = new Visitor();
         testVisitor.setId(1L);

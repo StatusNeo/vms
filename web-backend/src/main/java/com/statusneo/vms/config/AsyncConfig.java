@@ -22,8 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.util.concurrent.Executor;
+import org.springframework.core.task.TaskExecutor;
 
 /**
  * Configuration class for asynchronous operations in the Visitor Management System.
@@ -44,7 +43,7 @@ public class AsyncConfig {
      * @return Configured thread pool executor for email tasks
      */
     @Bean(name = "emailTaskExecutor")
-    public Executor emailTaskExecutor() {
+    public TaskExecutor emailTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // Set minimum number of threads that will be maintained
         executor.setCorePoolSize(2);
@@ -55,6 +54,25 @@ public class AsyncConfig {
         // Set thread name prefix for logging purposes
         executor.setThreadNamePrefix("EmailAsync-");
         // Initialize the executor
+        executor.initialize();
+        return executor;
+    }
+
+    /**
+     * Creates a general-purpose application TaskExecutor named "applicationTaskExecutor".
+     * This is intended for background/CPU-bound tasks such as the startup full user sync.
+     * Tuned with a larger queue and max pool size than the email executor.
+     *
+     * @return Configured thread pool executor for application background tasks
+     */
+    @Bean(name = "applicationTaskExecutor")
+    public TaskExecutor applicationTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        // Reasonable defaults for background sync tasks
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(8);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("AppAsync-");
         executor.initialize();
         return executor;
     }

@@ -1,0 +1,12 @@
+<div th:fragment="successMessage" class="text-center py-12" xmlns:th="http://www.w3.org/1999/xhtml">
+    <svg class="inline w-20 h-20 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <h2 class="text-2xl font-bold text-gray-800 mb-2">Check-in Successful!</h2>
+    <p class="text-gray-600 mb-6">Welcome, <span th:text="${visitorName}">John Doe</span></p>
+    <p class="text-gray-600 mb-8">Your host <span th:text="${hostName}">Sarah Johnson</span> has been notified.</p>
+    <button onclick="window.location.reload()"
+            class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+        Check in Another Visitor
+    </button>
+</div>
