@@ -1,5 +1,7 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.dto.DirectorySyncResult;
+import com.statusneo.vms.exception.DirectorySyncException;
 import com.statusneo.vms.model.SyncAudit;
 import com.statusneo.vms.repository.SyncAuditRepository;
 import org.slf4j.Logger;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-@Profile({"prod", "default"})
+@Profile({"prod", "default", "sqlite"})
 public class StartupTasks {
 
     private static final Logger log = LoggerFactory.getLogger(StartupTasks.class);
@@ -66,16 +68,18 @@ public class StartupTasks {
 
             int upserts = 0; // track progress and ensure available in catch
             try {
-                upserts = graphDirectoryService.syncAllUsersToEmployees();
+                DirectorySyncResult result = graphDirectoryService.syncAllUsersToEmployees();
+                upserts = result.upserts();
 
                 audit.setEndTime(LocalDateTime.now());
                 audit.setRecordsProcessed(upserts);
                 audit.setStatus(STATUS_SUCCESS);
                 audit.setErrorMessage(null);
-                log.info("Successfully synced {} employees from Graph", upserts);
+                audit.setDeltaLink(result.deltaLink());
+                log.info("Successfully synced {} employees from Graph. Delta link: {}", upserts, result.deltaLink() != null ? "received" : "not available");
 
                 syncAuditRepository.save(audit);
-            } catch (Exception e) {
+            } catch (DirectorySyncException e) {
                 audit.setEndTime(LocalDateTime.now());
                 audit.setRecordsProcessed(upserts);
                 audit.setStatus(STATUS_FAILED);

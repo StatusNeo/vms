@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:vms.db
+    driver-class-name: org.sqlite.JDBC
+    username: 
+    password: 
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+# SQLite does not require Flyway migrations since schema is managed by Hibernate
+  flyway:
+    enabled: false
+  docker:
+    compose:
+      enabled: false
+vms:
+  sync:
+    onstartup:
+      enabled: true

@@ -16,8 +16,19 @@ local.properties
 google-services.json
 target
 /src/main/frontend/node_modules/
+
+# Generated CSS from Tailwind build
+/src/main/resources/static/main.css
+
+# SQLite database files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
 ### VS Code ###
 .vscode/
 
 ### JTE ###
 /jte-classes/
+

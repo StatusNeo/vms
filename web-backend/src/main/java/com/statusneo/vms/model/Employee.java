@@ -32,7 +32,10 @@ public class Employee {
     private Long id;
 
     private String name;
-    private String email;  // Add this field
+    private String email;
+    private String guid;  // Microsoft Graph user ID
+    private String userPrincipalName;
+    private Boolean accountEnabled;
 
     public String getEmail() {
         return email;
@@ -51,6 +54,30 @@ public class Employee {
 
     public Long getId() {
         return id;
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+    public String getUserPrincipalName() {
+        return userPrincipalName;
+    }
+
+    public void setUserPrincipalName(String userPrincipalName) {
+        this.userPrincipalName = userPrincipalName;
+    }
+
+    public Boolean getAccountEnabled() {
+        return accountEnabled;
+    }
+
+    public void setAccountEnabled(Boolean accountEnabled) {
+        this.accountEnabled = accountEnabled;
     }
 
     public Employee(String name) {

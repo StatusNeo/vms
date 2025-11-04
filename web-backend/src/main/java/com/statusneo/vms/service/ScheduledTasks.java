@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.dto.DirectorySyncResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -44,10 +45,12 @@ public class ScheduledTasks {
         excelService.sendVisitorReport();
     }
 
-    @Scheduled(cron = "0 0 1 * * *")
+    // @Scheduled(cron = "0 0 1 * * *")
     public void syncEmployeesFromGraph() {
         try {
-            graphDirectoryService.syncAllUsersToEmployees();
+            DirectorySyncResult result = graphDirectoryService.syncAllUsersToEmployees();
+            log.info("Scheduled sync completed. Upserts: {}, Delta link: {}", 
+                    result.upserts(), result.deltaLink() != null ? "received" : "not available");
         } catch (Exception e) {
             log.error("Failed to sync users from Graph to employees", e);
             // consider adding metrics/alerts or retrying with backoff here
