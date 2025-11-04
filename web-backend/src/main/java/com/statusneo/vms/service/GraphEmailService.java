@@ -41,7 +41,7 @@ import java.util.Map;
  * Service responsible for handling all email communications in the Visitor Management System.
  */
 @Service
-@Profile({"prod", "default"})
+@Profile({"prod", "default", "sqlite"})
 public class GraphEmailService implements EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(GraphEmailService.class);

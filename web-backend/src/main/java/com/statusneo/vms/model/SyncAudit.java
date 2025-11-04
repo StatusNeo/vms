@@ -29,6 +29,9 @@ public class SyncAudit {
     @Column(name = "error_message", length = 2000)
     private String errorMessage;
     
+    @Column(name = "delta_link", length = 2000)
+    private String deltaLink;
+    
     // Getters and Setters
     public Long getId() {
         return id;
@@ -84,5 +87,13 @@ public class SyncAudit {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getDeltaLink() {
+        return deltaLink;
+    }
+
+    public void setDeltaLink(String deltaLink) {
+        this.deltaLink = deltaLink;
     }
 }

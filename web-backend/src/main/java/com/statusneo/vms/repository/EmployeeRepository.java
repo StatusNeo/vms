@@ -32,5 +32,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByNameStartingWithIgnoreCase(String name);
     Optional<Employee> findByEmail(String email);
     List<Employee> findByEmailIn(Collection<String> emails);
+    List<Employee> findByGuidIn(Collection<String> guids);
     java.util.Optional<Employee> findByNameIgnoreCase(String name);
 }

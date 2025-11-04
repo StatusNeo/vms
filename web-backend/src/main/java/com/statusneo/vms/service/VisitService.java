@@ -45,8 +45,6 @@ public class VisitService {
 
     private final NotificationService notificationService;
 
-    private final EmailService emailService;
-
     private final VisitRepository visitRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(VisitService.class);
@@ -55,7 +53,6 @@ public class VisitService {
         this.otpService = otpService;
         this.visitorRepository = visitorRepository;
         this.notificationService = notificationService;
-        this.emailService = emailService;
         this.visitRepository = visitRepository;
     }
 

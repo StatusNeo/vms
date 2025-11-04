@@ -100,12 +100,6 @@ public class VisitorController {
         return ResponseEntity.ok("Cache refreshed");
     }
 
-    @PostMapping("/sync-employees")
-    public ResponseEntity<String> syncEmployees() {
-        int count = graphDirectoryService.syncAllUsersToEmployees();
-        return ResponseEntity.ok("Synced " + count + " employees from Office365");
-    }
-
     @PostMapping("/register")
     public String registerVisitor(@ModelAttribute Visitor visitor,
                                  @RequestParam(value = "host", required = false) String host,

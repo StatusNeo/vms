@@ -12,9 +12,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+# SQLite does not require Flyway migrations since schema is managed by Hibernate
   flyway:
     enabled: false
-    
-# SQLite does not require Flyway migrations since schema is managed by Hibernate
-flyway:
-  enabled: false
+  docker:
+    compose:
+      enabled: false
+vms:
+  sync:
+    onstartup:
+      enabled: true
