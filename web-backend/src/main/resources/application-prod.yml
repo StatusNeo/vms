@@ -1,18 +1,46 @@
 spring:
-#  datasource:
-#    # Database Configuration (PostgreSQL)
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    username: postgres
-#    password: password
-
+  # In prod we default to SQLite for single-node deployments. You can override by setting SPRING_DATASOURCE_URL
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:sqlite:vms.db}
+    driver-class-name: org.sqlite.JDBC
+    username: ${SPRING_DATASOURCE_USERNAME:}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    hikari:
+      maximum-pool-size: 4
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  flyway:
+    enabled: false
 server:
-  # Server Configuration
-  port: "443"
+  # HTTPS (TLS) port. Running on 8443 by default to avoid requiring root; change to 443 if you run as root or via capability.
+  port: ${SERVER_PORT:8443}
+  # Additional HTTP port (Tomcat connector added by HttpConnectorConfig if set > 0)
+#  http:
+#    port: ${SERVER_HTTP_PORT:8080}
   ssl:
-    key-store: classpath:keystore.p12
-    key-store-password: ${PASSWORD}
-    key-store-type: PKCS12
-    key-alias: myalias
-    # SSL/TLS Configuration (commented examples)
-    #enabled-protocols: TLSv1.2
-    #ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    enabled: true
+    # Provide the keystore path via env var (recommended: mount keystore into container and set SERVER_SSL_KEY_STORE)
+    key-store: ${SERVER_SSL_KEY_STORE:}
+    # Store the keystore password in an env var or secret (SERVER_SSL_KEY_STORE_PASSWORD)
+    key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD}
+    key-store-type: ${SERVER_SSL_KEY_STORE_TYPE:PKCS12}
+    key-alias: ${SERVER_SSL_KEY_ALIAS}
+
+# JTE production settings: use precompiled templates packaged in the jar and disable dev reload
+gg:
+  jte:
+    developmentMode: false
+    usePrecompiledTemplates: true
+
+logging:
+  level:
+    gg.jte: INFO
+    org.springframework.web: INFO
+
+vms:
+  sync:
+    onstartup:
+      enabled: true

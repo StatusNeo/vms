@@ -18,6 +18,17 @@ spring:
   docker:
     compose:
       enabled: false
+
+# Run JTE in production mode for sqlite profile (use precompiled templates packaged in the jar)
+gg:
+  jte:
+    developmentMode: false
+    usePrecompiledTemplates: true
+
+logging:
+  level:
+    gg.jte: INFO
+
 vms:
   sync:
     onstartup:
