@@ -16,7 +16,7 @@
     <!-- Header -->
     <div class="text-center mb-8">
         <div class="flex justify-center mb-4">
-            <img id="site-logo" src="/images/StatusNeo-Logo.png" alt="StatusNeo Logo" style="height:36px !important; max-height:36px !important; width:auto !important;" class="mx-auto">
+            <img id="site-logo" src="/images/StatusNeo-logo.png" alt="StatusNeo Logo" style="height:36px !important; max-height:36px !important; width:auto !important;" class="mx-auto">
         </div>
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Visitor Check-in</h1>
         <p class="text-gray-600">Please fill in your details to register your visit</p>
