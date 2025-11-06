@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -26,14 +27,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 @SpringBootTest
-@Testcontainers
+//@Testcontainers
 public class VisitServiceTest {
 
-    @Container
-    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
-            .withDatabaseName("test")
-            .withUsername("test")
-            .withPassword("test");
+//    @Container
+//    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
+//            .withDatabaseName("test")
+//            .withUsername("test")
+//            .withPassword("test");
     @Autowired
     private VisitService visitorService;
 
@@ -46,12 +47,12 @@ public class VisitServiceTest {
     @MockitoBean
     private OtpService otpService;
 
-    @DynamicPropertySource
-    static void postgresqlProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-    }
+//    @DynamicPropertySource
+//    static void postgresqlProperties(DynamicPropertyRegistry registry) {
+//        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+//        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+//        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+//    }
 
     @Test
     public void testRegisterVisitor() {

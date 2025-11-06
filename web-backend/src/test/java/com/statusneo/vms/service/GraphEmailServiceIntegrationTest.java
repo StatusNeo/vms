@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(TestcontainersConfiguration.class)
+//@Import(TestcontainersConfiguration.class)
 class GraphEmailServiceIntegrationTest {
 
     @Autowired

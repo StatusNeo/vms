@@ -4,6 +4,8 @@ spring:
   docker:
     compose:
       lifecycle-management: start_only
+  profiles:
+    active: sqlite
 
   jpa:
     hibernate:
@@ -20,7 +22,11 @@ spring:
             scope: https://graph.microsoft.com/.default
         provider:
           azure:
-            token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+             tenant-id: test.onmicrosoft.com
+             token-uri: https://login.microsoftonline.com/${TENANT_ID:test.onmicrosoft.com}/oauth2/v2.0/token
+#             token-uri: https://login.microsoftonline.com/${TENANT_ID:dummy-tenant}/oauth2/v2.0/token
+#            token-uri: https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token
+
   flyway:
     enabled: true
     baseline-on-migrate: true

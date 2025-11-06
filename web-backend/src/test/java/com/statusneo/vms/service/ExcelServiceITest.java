@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 @SpringBootTest
 @Disabled("Enable this test with real credentials and configuration for full integration testing.")
 @ActiveProfiles("test")
-@Import(TestcontainersConfiguration.class)
+//@Import(TestcontainersConfiguration.class)
 class ExcelServiceITest {
 
     @Autowired

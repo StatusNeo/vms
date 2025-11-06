@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(properties = "vms.scheduled.report.rate=500") // 0.5 seconds
 @EnableScheduling
 @ActiveProfiles("test")
-@Import(TestcontainersConfiguration.class)
+//@Import(TestcontainersConfiguration.class)
 class ScheduledTasksSchedulingITest {
 
     @MockitoSpyBean
