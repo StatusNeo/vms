@@ -22,12 +22,12 @@ public class NotificationServiceTest {
     private TemplateEngine templateEngine;
     private NotificationService notificationService;
 
-    @BeforeEach
-    void setUp() {
-        emailService = mock(EmailService.class);
-        templateEngine = mock(TemplateEngine.class);
-        notificationService = new NotificationService(emailService, templateEngine);
-    }
+     @BeforeEach
+     void setUp() {
+          emailService = mock(EmailService.class);
+          templateEngine = mock(TemplateEngine.class);
+          notificationService = new NotificationService(emailService, templateEngine, "noreply@company.com");
+}
 
     @Test
     void testSendVisitorConfirmationEmail() {

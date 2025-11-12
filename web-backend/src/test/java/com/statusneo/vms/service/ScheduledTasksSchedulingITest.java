@@ -1,24 +1,39 @@
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.TestcontainersConfiguration;
+import com.statusneo.vms.VmsApplication;
+import com.statusneo.vms.config.TestRestTemplateConfig;
 import org.awaitility.Awaitility;
+import org.hibernate.cfg.Environment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(properties = "vms.scheduled.report.rate=500") // 0.5 seconds
+
+@SpringBootTest(
+        classes = {VmsApplication.class, TestRestTemplateConfig.class},
+        properties = {
+                "vms.scheduled.report.rate=500", // 0.5 seconds
+                "vms.scheduled.report.initialDelay=PT0S" // no delay
+        }
+)
 @EnableScheduling
-@ActiveProfiles("test")
-//@Import(TestcontainersConfiguration.class)
-class ScheduledTasksSchedulingITest {
+@ActiveProfiles({"test", "prod"})
+@TestConfiguration
+class ScheduledTasksSchedulingITest
+{
 
     @MockitoSpyBean
     private ScheduledTasks scheduledTasks;

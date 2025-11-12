@@ -3,11 +3,13 @@ package com.statusneo.vms.service;
 import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
+import com.statusneo.vms.repository.EmployeeRepository;
 import com.statusneo.vms.repository.VisitRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -35,8 +37,6 @@ public class VisitServiceTest {
 //            .withDatabaseName("test")
 //            .withUsername("test")
 //            .withPassword("test");
-    @Autowired
-    private VisitService visitorService;
 
     @Autowired
     private VisitService visitService;
@@ -71,7 +71,7 @@ public class VisitServiceTest {
     }
 
     @Test
-    public void testConfirmVisit_Success() {
+    public void testConfirmVisit_Success() throws InterruptedException {
         Visitor visitor = new Visitor();
         visitor.setName("Anurag Sharma");
         visitor.setEmail("anurag@gmail.com");

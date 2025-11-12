@@ -1,26 +1,87 @@
 package com.statusneo.vms.service;
 
 import com.statusneo.vms.TestcontainersConfiguration;
+import com.statusneo.vms.config.TestRestTemplateConfig;
+import com.statusneo.vms.controller.VisitorController;
 import com.statusneo.vms.model.Email;
 import com.statusneo.vms.model.Attachment;
+import com.statusneo.vms.repository.EmployeeRepository;
+import com.statusneo.vms.repository.OtpRepository;
+import com.statusneo.vms.repository.VisitRepository;
+import com.statusneo.vms.repository.VisitorRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+//@SpringBootTest
+//@ActiveProfiles("test")
+//@Import(GraphEmailServiceTest.class)
+//@EnableAutoConfiguration(exclude = {
+//        DataSourceAutoConfiguration.class,
+//        HibernateJpaAutoConfiguration.class,
+//        FlywayAutoConfiguration.class
+//})
+
 @SpringBootTest
 @ActiveProfiles("test")
-//@Import(TestcontainersConfiguration.class)
+@Import(GraphEmailServiceTest.class)
+@EnableAutoConfiguration(exclude = {
+        DataSourceAutoConfiguration.class,
+        HibernateJpaAutoConfiguration.class,
+        FlywayAutoConfiguration.class
+})
 class GraphEmailServiceIntegrationTest {
 
+    @MockitoBean
+    private EmployeeRepository employeeRepository;
+
+    @MockitoBean
+    private OAuth2AuthorizedClientManager authorizedClientManager;
+
+    @MockitoBean
+    private VisitRepository visitRepository;
+
+    @MockitoBean
+    private VisitorController visitorController;
+
+    @MockitoBean
+    private OtpRepository otpRepository;
+
+    @MockitoBean
+    private VisitorRepository visitorRepository;
+
     @Autowired
+    private RestClient restClient;
+
+    @Autowired
+    @Qualifier("emailService")
     private EmailService graphEmailService;
+
+    @BeforeEach
+    void setUp() {
+        graphEmailService = new GraphEmailService(authorizedClientManager, restClient);
+    }
+
+
 
     /**
      * This test will attempt to send a real email using the configuration in your test profile.

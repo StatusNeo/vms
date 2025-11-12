@@ -40,6 +40,13 @@ public class ScheduledTasks {
         this.graphDirectoryService = graphDirectoryService;
     }
 
+
+    @Scheduled(
+            fixedRateString = "${vms.scheduled.report.rate:43200000}",
+            initialDelayString = "${vms.scheduled.report.initialDelay:PT2H}"
+    )
+
+
     @Scheduled(fixedRateString = "${vms.scheduled.report.rate:43200000}", initialDelayString = "PT2H") // Runs every 12 hours by default
     public void sendVisitorReport() {
         excelService.sendVisitorReport();

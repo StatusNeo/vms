@@ -117,12 +117,9 @@
 
                     <!-- Submit Button -->
                     <div class="flex justify-center pt-4">
-                        <button type="button" 
-                                id="send-otp-btn"
-                                onclick="handleSendOTP()"
-                                disabled
-                                class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg">
-                            Send OTP
+                        <button type="submit"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline
+               flex items-center justify-center"> Send OTP
                         </button>
                     </div>
                 </div>
@@ -195,7 +192,7 @@
 
         function renderHostResults(hosts) {
             if (hosts.length === 0) {
-                hostResults.innerHTML = '<div class="px-4 py-3 text-gray-500 text-center">No employees found</div>';
+                hostResults.innerHTML = '<div class="px-4 py-3 text-gray-500 text-center">No employee found</div>';
             } else {
                 hostResults.innerHTML = hosts.map(host => `
                     <div onclick="selectHost(${host.id}, '${host.name}', '${host.email}')" 

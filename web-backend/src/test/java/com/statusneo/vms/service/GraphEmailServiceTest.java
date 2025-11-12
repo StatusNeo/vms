@@ -2,11 +2,16 @@ package com.statusneo.vms.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.web.client.RestClient;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,6 +21,11 @@ import static org.mockito.Mockito.*;
 
 import com.statusneo.vms.model.Email;
 
+import java.time.Instant;
+import java.util.Map;
+
+
+@ExtendWith(MockitoExtension.class)
 class GraphEmailServiceTest {
 
     @Mock
@@ -30,13 +40,33 @@ class GraphEmailServiceTest {
     @Mock
     private RestClient.ResponseSpec responseSpec;
 
+
+    @Mock
+    private OAuth2AuthorizedClientManager authorizedClientManager;
+
+
     @InjectMocks
     private GraphEmailService graphEmailService;
 
+//    @BeforeEach
+//    void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//    }
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        OAuth2AccessToken accessToken = new OAuth2AccessToken(
+                OAuth2AccessToken.TokenType.BEARER,
+                "dummy-token",
+                Instant.now(),
+                Instant.now().plusSeconds(3600)
+        );
+
+        OAuth2AuthorizedClient authorizedClient = mock(OAuth2AuthorizedClient.class);
+        when(authorizedClient.getAccessToken()).thenReturn(accessToken);
+        when(authorizedClientManager.authorize(any())).thenReturn(authorizedClient);
     }
+
 
     @Test
     void testSendEmail_Success() {
@@ -84,7 +114,8 @@ class GraphEmailServiceTest {
         when(restClient.post()).thenReturn(requestBodyUriSpec);
         when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodySpec);
         when(requestBodySpec.headers(any())).thenReturn(requestBodySpec);
-        when(requestBodySpec.body(any())).thenReturn(requestBodySpec);
+//        when(requestBodySpec.body(any())).thenReturn(requestBodySpec);
+        when(requestBodySpec.body(any(Map.class))).thenReturn(requestBodySpec);
         when(requestBodySpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.toBodilessEntity()).thenReturn(responseEntity);
     }
