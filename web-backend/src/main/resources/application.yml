@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    default: sqlite
   application:
     name: VMS
   docker:
@@ -47,8 +49,3 @@ vms:
   sync:
     onstartup:
       enabled: false
-wiremock:
-  server:
-    port: 8081
-mail:
-  url: http://localhost:${wiremock.server.port}/v1.0/users/%s/sendMail

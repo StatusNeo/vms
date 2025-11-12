@@ -15,7 +15,8 @@ Check out the [docs](docs/) and [ADRs](docs/adr/README.md)
 - Maven
 - Docker and Docker Compose (for running tests with TestContainers) — check https://java.testcontainers.org/supported_docker_environment/#overview 
   for appropriate Testcontainers settings in case using alternate Docker runtime. Follow exactly to avoid DB issues.
-- PostgreSQL (for local development)
+- SQLite (bundled `vms.db` for the default dev profile)
+- PostgreSQL (required only when running the prod profile locally or executing Postgres-specific integration tests)
 
 ### Build Instructions
 1. Clone the repository
@@ -28,17 +29,50 @@ Check out the [docs](docs/) and [ADRs](docs/adr/README.md)
 ### Configuration
 The project uses Spring Boot 3.4.5 with the following key configurations:
 
-1. **Database**: PostgreSQL is used as the primary database
-   - **Optional**: SQLite can be used for development/testing (see [SQLite Persistence](docs/sqlite-persistence.md))
+1. **Database**:
+   - **Dev profile (`sqlite`, the default)**: Uses the bundled SQLite database (`vms.db`)
+   - **Prod profile (`prod`)**: Uses PostgreSQL
 2. **Template Engine**: JTE (Java Template Engine) is used for HTML templates
 3. **Authentication**: Azure AD integration via Spring Security OAuth2
 4. **File Upload**: Apache POI for Excel file handling
 
-Required environment variables (for PostgreSQL):
+Required environment variables (when running with PostgreSQL):
 - `SPRING_DATASOURCE_URL`: Database connection URL
 - `SPRING_DATASOURCE_USERNAME`: Database username
 - `SPRING_DATASOURCE_PASSWORD`: Database password
 - Azure AD configuration (see Azure AD section)
+
+For the default `sqlite` dev profile, no environment variables are required—everything is auto-configured.
+
+### Running Locally (SQLite dev profile)
+From the project root (`web-backend`):
+
+1. **Start WireMock on port 8081** (simulates Microsoft Graph email):
+   ```bash
+   docker run --rm -p 8081:8080 wiremock/wiremock:3 --port 8081
+   ```
+   Add a stub that accepts outgoing mail:
+   ```bash
+   curl -X POST http://localhost:8081/__admin/mappings \
+     -H 'Content-Type: application/json' \
+     -d '{
+       "request": { "method": "POST", "urlPattern": "/v1.0/users/.*/sendMail" },
+       "response": { "status": 202, "jsonBody": { "result": "accepted" } }
+     }'
+   ```
+
+2. **Run the Spring Boot application** (defaults to `sqlite` profile):
+   ```bash
+   ./mvnw -q -DskipTests spring-boot:run
+   ```
+
+3. **Test the OTP flow**:
+   - Visit `http://localhost:8080`, fill out the visitor form, and select a host.
+   - Retrieve the generated OTP for verification:
+     ```bash
+     sqlite3 vms.db "SELECT otp FROM otp ORDER BY created_at DESC LIMIT 1;"
+     ```
+   - Enter the OTP in the modal to confirm the visit.
 
 ## Testing
 

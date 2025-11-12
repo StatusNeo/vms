@@ -2,8 +2,8 @@ spring:
   datasource:
     url: jdbc:sqlite:vms.db
     driver-class-name: org.sqlite.JDBC
-    username: 
-    password: 
+    username:
+    password:
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
@@ -12,24 +12,34 @@ spring:
     properties:
       hibernate:
         format_sql: true
-# SQLite does not require Flyway migrations since schema is managed by Hibernate
   flyway:
     enabled: false
   docker:
     compose:
       enabled: false
 
-# Run JTE in production mode for sqlite profile (use precompiled templates packaged in the jar)
+# Dev-friendly template settings (hot reload via classpath rendering)
 gg:
   jte:
-    developmentMode: false
-    usePrecompiledTemplates: true
+    developmentMode: true
+    usePrecompiledTemplates: false
 
 logging:
   level:
     gg.jte: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: INFO
 
 vms:
+  system-email: dev-system@local.test
+  admin-email: admin@local.test
   sync:
     onstartup:
-      enabled: true
+      enabled: false
+
+# Local WireMock email transport (used by WiremockMailServiceImpl for the sqlite/dev profile)
+wiremock:
+  server:
+    port: 8081
+mail:
+  url: http://localhost:${wiremock.server.port}/v1.0/users/%s/sendMail
