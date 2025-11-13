@@ -1,22 +1,16 @@
 package com.statusneo.vms.service;
 
-import com.statusneo.vms.TestcontainersConfiguration;
 import com.statusneo.vms.VmsApplication;
 import com.statusneo.vms.config.TestRestTemplateConfig;
 import org.awaitility.Awaitility;
-import org.hibernate.cfg.Environment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;

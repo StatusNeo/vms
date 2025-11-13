@@ -3,20 +3,12 @@ package com.statusneo.vms.service;
 import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
-import com.statusneo.vms.repository.EmployeeRepository;
 import com.statusneo.vms.repository.VisitRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,15 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 @SpringBootTest
-//@Testcontainers
 public class VisitServiceTest {
-
-//    @Container
-//    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
-//            .withDatabaseName("test")
-//            .withUsername("test")
-//            .withPassword("test");
-
     @Autowired
     private VisitService visitService;
 
@@ -46,13 +30,6 @@ public class VisitServiceTest {
 
     @MockitoBean
     private OtpService otpService;
-
-//    @DynamicPropertySource
-//    static void postgresqlProperties(DynamicPropertyRegistry registry) {
-//        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-//        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-//        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-//    }
 
     @Test
     public void testRegisterVisitor() {

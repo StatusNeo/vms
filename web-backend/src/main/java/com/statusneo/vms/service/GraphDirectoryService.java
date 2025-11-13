@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public abstract class GraphDirectoryService {
+public  class GraphDirectoryService {
 
     private static final Logger logger = LoggerFactory.getLogger(GraphDirectoryService.class);
 

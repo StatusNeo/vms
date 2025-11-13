@@ -2,16 +2,13 @@ package com.statusneo.vms.service;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.statusneo.vms.TestcontainersConfiguration;
 import com.statusneo.vms.VmsApplication;
 import com.statusneo.vms.config.TestRestTemplateConfig;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.VisitorRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
