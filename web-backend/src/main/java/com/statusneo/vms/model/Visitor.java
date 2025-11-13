@@ -34,6 +34,8 @@
  */
 package com.statusneo.vms.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,10 +45,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-
-import java.time.LocalDateTime;
 
 /**
  * Represents a visitor in the Visitor Management System.
@@ -69,6 +71,7 @@ public class Visitor {
 	/**
 	 * Full name of the visitor.
 	 */
+	@NotBlank(message = "Name is required")
 	private String name;
 
 	/**
@@ -81,6 +84,8 @@ public class Visitor {
 	/**
 	 * Email address of the visitor, used for communication and OTP verification.
 	 */
+	@NotBlank(message = "Email is required")
+	@Email(message = "Please enter a valid email")
 	private String email;
 
 	/**
@@ -91,6 +96,7 @@ public class Visitor {
 	/**
 	 * Company of the visitor.
 	 */
+	@NotBlank(message = "Company is required")
 	private String company;
 
 	/**
@@ -101,6 +107,7 @@ public class Visitor {
 
 	@ManyToOne
 	@JoinColumn(name = "host_id", referencedColumnName = "id")
+	@NotNull(message = "Please select who you are visiting")
 	private Employee host;
 
 	// getters & setters

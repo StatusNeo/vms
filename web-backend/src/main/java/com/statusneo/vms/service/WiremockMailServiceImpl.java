@@ -18,59 +18,74 @@
  */
 package com.statusneo.vms.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import com.statusneo.vms.model.Email;
 
 @Service
-@Profile({"dev", "test"})
-public class WiremockMailServiceImpl implements EmailService{
+@Profile({"dev", "test", "sqlite"})
+public class WiremockMailServiceImpl implements EmailService {
 
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
 
     @Value("${mail.url}")
     private String wiremockMailUrl;
 
-    public WiremockMailServiceImpl(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public WiremockMailServiceImpl(RestClient restClient) {
+        this.restClient = restClient;
     }
     /**
      * Sends a simple email for local/dev testing.
-     *
-     * */
+     */
+    @Override
     public boolean sendEmail(Email email) {
-        String endpoint = String.format(wiremockMailUrl, email.from());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        String template = Objects.requireNonNull(wiremockMailUrl, "mail.url must be configured");
+        String endpoint = String.format(template, email.from());
+        List<Map<String, Object>> recipients = email.to().stream()
+                .map(addr -> {
+                    Map<String, Object> address = new HashMap<>();
+                    address.put("address", addr);
 
-        headers.setBearerAuth("dummy-token");
-        Map<String, Object> payload = Map.of(
-                "message", Map.of(
-                        "subject", email.subject(),
-                        "body", Map.of(
-                                "contentType", "Text",
-                                "content", email.body()
-                        ),
-                        "toRecipients", List.of(
-                                Map.of("emailAddress", Map.of("address", email.to()))
-                        )
+                    Map<String, Object> recipient = new HashMap<>();
+                    recipient.put("emailAddress", address);
+                    return recipient;
+                })
+                .toList();
+
+        Map<String, Object> message = Map.of(
+                "subject", email.subject(),
+                "body", Map.of(
+                        "contentType", "Text",
+                        "content", email.body()
                 ),
+                "toRecipients", recipients
+        );
+
+        Map<String, Object> payload = Map.of(
+                "message", message,
                 "saveToSentItems", true
         );
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(endpoint, request, String.class);
+        ResponseEntity<Void> response = restClient.post()
+                .uri(Objects.requireNonNull(endpoint, "endpoint must not be null"))
+                .headers(headers -> {
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    headers.setBearerAuth("dummy-token");
+                })
+                .body(Objects.requireNonNull(payload, "payload must not be null"))
+                .retrieve()
+                .toBodilessEntity();
         return response.getStatusCode().equals(HttpStatus.ACCEPTED);
     }
 }

@@ -42,7 +42,7 @@ import com.statusneo.vms.model.Email;
  * Service responsible for handling all email communications in the Visitor Management System.
  */
 @Service
-@Profile({"prod", "default", "sqlite"})
+@Profile({"prod", "default"})
 public class GraphEmailService implements EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(GraphEmailService.class);

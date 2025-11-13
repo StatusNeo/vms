@@ -18,6 +18,21 @@
  */
 package com.statusneo.vms.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.statusneo.vms.cache.EmployeeNameCache;
 import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
@@ -27,16 +42,6 @@ import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.service.GraphDirectoryService;
 import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.VisitService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Controller
 public class VisitorController {
@@ -101,13 +106,23 @@ public class VisitorController {
     }
 
     @PostMapping("/register")
-    public String registerVisitor(@ModelAttribute Visitor visitor,
+    public String registerVisitor(@ModelAttribute @jakarta.validation.Valid Visitor visitor,
+                                 org.springframework.validation.BindingResult bindingResult,
                                  @RequestParam(value = "host", required = false) String host,
                                  @RequestParam(value = "employee", required = false) String employee,
                                  @RequestHeader(value = "HX-Request", required = false) String hxRequest,
                                  Model model) {
         // prefer explicit host id, fall back to name
         resolveAndSetHost(visitor, host, employee);
+
+        // Server-side validation: require host selection
+        if (visitor.getHost() == null) {
+            bindingResult.rejectValue("host", "host.required", "Please select who you are visiting.");
+        }
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "index";
+        }
         Visit savedVisit = visitService.registerVisit(visitor);
         model.addAttribute("visitId", savedVisit.getId());
         

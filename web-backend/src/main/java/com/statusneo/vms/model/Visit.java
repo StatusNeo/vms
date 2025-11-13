@@ -63,6 +63,9 @@ public class Visit {
     @JoinColumn(name = "visitor_id")
     private Visitor visitor;
 
+    @Column(name = "laptop")
+    private String laptop;
+
     /**
      * The host employee that the visitor is meeting.
      */
@@ -148,9 +151,19 @@ public class Visit {
         this.visitDate = visitDate;
     }
 
+    // Add getter/setter for laptop
+    public String getLaptop() {
+        return laptop;
+    }
+
+    public void setLaptop(String laptop) {
+        this.laptop = laptop;
+    }
+
+
     @Override
     public String toString() {
         return "VisitingInfo [id=" + id + ", visitor=" + visitor + ", host=" + host + ", otp=" + otp +
-                ", isApproved=" + isApproved + ", visitDate=" + visitDate + "]";
+                ", isApproved=" + isApproved + ", visitDate=" + visitDate + ", laptop=" + laptop + "]";
     }
 }
