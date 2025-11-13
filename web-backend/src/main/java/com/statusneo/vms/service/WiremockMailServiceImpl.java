@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Profile({"dev", "test"})
+@Profile({"dev", "local"})
 public class WiremockMailServiceImpl implements EmailService{
 
     private final RestTemplate restTemplate;

@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
         }
 )
 @EnableScheduling
-@ActiveProfiles({"test", "prod"})
+@ActiveProfiles({"local", "prod"})
 @TestConfiguration
 class ScheduledTasksSchedulingITest
 {

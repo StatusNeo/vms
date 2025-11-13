@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @TestPropertySource(properties = {
         "spring.datasource.url=jdbc:sqlite::memory:",
         "spring.datasource.driver-class-name=org.sqlite.JDBC",

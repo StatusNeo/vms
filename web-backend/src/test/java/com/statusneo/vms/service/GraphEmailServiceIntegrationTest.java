@@ -28,7 +28,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @Import(GraphEmailServiceTest.class)
 @EnableAutoConfiguration(exclude = {
         DataSourceAutoConfiguration.class,

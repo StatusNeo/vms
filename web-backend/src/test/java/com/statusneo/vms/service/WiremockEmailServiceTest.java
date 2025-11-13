@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = {WiremockMailServiceImpl.class, TestRestTemplateConfig.class})
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @TestPropertySource(properties = {
         "spring.flyway.enabled=false",
         "spring.jpa.hibernate.ddl-auto=none",

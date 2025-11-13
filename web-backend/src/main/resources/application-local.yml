@@ -1,0 +1,28 @@
+spring:
+#  profiles:
+#    active: sqlite
+  security:
+    oauth2:
+      client:
+        provider:
+          azure:
+            tenant-id: test.onmicrosoft.com
+            token-uri: https://login.microsoftonline.com/test.onmicrosoft.com/oauth2/v2.0/token
+
+  # SQLite configuration for tests
+
+  datasource:
+    url: "jdbc:sqlite::memory:"
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: create-drop
+
+  # Disable flyway for tests
+  flyway:
+    enabled: false
+
+# Test-specific mail configuration
+mail:
+  url: http://localhost:8081/v1.0/users/%s/sendMail

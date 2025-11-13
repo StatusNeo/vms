@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 
 @SpringBootTest(classes = {VmsApplication.class, TestRestTemplateConfig.class})
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @TestPropertySource(properties = {
         "spring.flyway.enabled=false",
         "spring.jpa.hibernate.ddl-auto=create-drop",
