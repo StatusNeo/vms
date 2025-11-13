@@ -9,7 +9,6 @@ spring:
             tenant-id: test.onmicrosoft.com
             token-uri: https://login.microsoftonline.com/test.onmicrosoft.com/oauth2/v2.0/token
 
-  # SQLite configuration for tests
 
   datasource:
     url: "jdbc:sqlite::memory:"
@@ -19,7 +18,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
-  # Disable flyway for tests
   flyway:
     enabled: false
 
