@@ -46,14 +46,17 @@ public class NotificationService {
 
     private final EmailService emailService;
     private final TemplateEngine templateEngine;
+    private final String systemFrom;
 
     // Use the env-backed VMS_SYSTEM_EMAIL (fallback to vms.system-email or default noreply)
-    @Value("${VMS_SYSTEM_EMAIL:${vms.system-email:noreply@company.com}}")
-    private String systemFrom;
-
-    public NotificationService(EmailService emailService, TemplateEngine templateEngine) {
+    public NotificationService(
+            EmailService emailService,
+            TemplateEngine templateEngine,
+            @Value("${VMS_SYSTEM_EMAIL:${vms.system-email:noreply@company.com}}") String systemFrom
+    ) {
         this.emailService = emailService;
         this.templateEngine = templateEngine;
+        this.systemFrom = systemFrom;
     }
 
     public void sendVisitorConfirmationEmail(Visitor visitor) {

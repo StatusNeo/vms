@@ -1,5 +1,6 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.config.TestConfig;
 import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
@@ -8,12 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,16 +24,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 @SpringBootTest
-@Testcontainers
+@Import(TestConfig.class)
+@ActiveProfiles("test")
 public class VisitServiceTest {
-
-    @Container
-    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
-            .withDatabaseName("test")
-            .withUsername("test")
-            .withPassword("test");
-    @Autowired
-    private VisitService visitorService;
 
     @Autowired
     private VisitService visitService;
@@ -46,12 +37,9 @@ public class VisitServiceTest {
     @MockitoBean
     private OtpService otpService;
 
-    @DynamicPropertySource
-    static void postgresqlProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-    }
+    @MockitoBean
+    private NotificationService notificationService;
+
 
     @Test
     public void testRegisterVisitor() {
@@ -63,14 +51,10 @@ public class VisitServiceTest {
         visit.setHost("Host Name");
         visitor.setAddress("123 Street, City, Country");
         visit.setVisitDate(LocalDateTime.parse("2022-01-01T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-
-//        Visit registeredVisitor = visitorService.registerVisit(visit);
-
-//        assertNotNull(registeredVisitor);
     }
 
     @Test
-    public void testConfirmVisit_Success() {
+    public void testConfirmVisit_Success() throws InterruptedException {
         Visitor visitor = new Visitor();
         visitor.setName("Anurag Sharma");
         visitor.setEmail("anurag@gmail.com");

@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:memory:testdb?cache=shared
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  flyway:
+    enabled: false
