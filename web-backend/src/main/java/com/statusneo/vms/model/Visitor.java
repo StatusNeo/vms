@@ -56,169 +56,183 @@ import java.time.LocalDateTime;
 @Table(name = "visitor")
 public class Visitor {
 
-	private static final String PHONE_NUMBER_REGEX = "^\\d{10}$";
+    private static final String PHONE_NUMBER_REGEX = "^\\d{10}$";
 
 
-	/**
-	 * Unique identifier for the visitor.
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    /**
+     * Unique identifier for the visitor.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	/**
-	 * Full name of the visitor.
-	 */
-	private String name;
+    /**
+     * Full name of the visitor.
+     */
+    private String name;
 
-	/**
-	 * Contact phone number of the visitor.
-	 */
-	@NotNull(message = "Phone number cannot be null")
-	@Pattern(regexp = "^\\d{10}$", message = "Phone number must be exactly 10 digits")
-	private String phoneNumber;
+    /**
+     * Contact phone number of the visitor.
+     */
+    @NotNull(message = "Phone number cannot be null")
+    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be exactly 10 digits")
+    private String phoneNumber;
 
-	/**
-	 * Email address of the visitor, used for communication and OTP verification.
-	 */
-	private String email;
+    /**
+     * Email address of the visitor, used for communication and OTP verification.
+     */
+    private String email;
 
-	/**
-	 * Physical address of the visitor.
-	 */
-	private String address;
+    /**
+     * Physical address of the visitor.
+     */
+    private String address;
 
-	/**
-	 * Company of the visitor.
-	 */
-	private String company;
+    /**
+     * Company of the visitor.
+     */
+    private String company;
 
-	/**
-	 * Path to the visitor's profile picture stored in the system.
-	 */
-	@Column(name = "picture_path")
-	private String picturePath;
+    /**
+     * Path to the visitor's profile picture stored in the system.
+     */
+    @Column(name = "picture_path")
+    private String picturePath;
 
-	@ManyToOne
-	@JoinColumn(name = "host_id", referencedColumnName = "id")
-	private Employee host;
 
-	// getters & setters
-	public Employee getHost() {
-		return host;
-	}
+    @Column(name = "laptop_number")
+    private String laptop;
 
-	public void setHost(Employee host) {
-		this.host = host;
-	}
+    @ManyToOne
+    @JoinColumn(name = "host_id", referencedColumnName = "id")
+    private Employee host;
 
-	/**
-	 * Default constructor required by JPA.
-	 */
-	public Visitor() {
-	}
+    // getters & setters
+    public Employee getHost() {
+        return host;
+    }
 
-	/**
-	 * Constructs a new Visitor with the specified details.
-	 *
-	 * @param id The unique identifier
-	 * @param name The visitor's full name
-	 * @param phoneNumber The visitor's phone number
-	 * @param email The visitor's email address
-	 * @param address The visitor's physical address
-	 */
-	public Visitor(Long id, String name, String phoneNumber, String email, String address) {
-		this.id = id;
-		this.name = name;
-		this.phoneNumber = phoneNumber;
-		this.email = email;
-		this.address = address;
-	}
+    public void setHost(Employee host) {
+        this.host = host;
+    }
 
-	/**
-	 * Timestamp when the visitor record was created.
-	 * Automatically set when the record is persisted.
-	 */
-	@Column(nullable = false, updatable = false)
-	private LocalDateTime createdAt;
+    /**
+     * Default constructor required by JPA.
+     */
+    public Visitor() {
+    }
 
-	/**
-	 * Sets the creation timestamp before persisting the entity.
-	 */
-	@PrePersist
-	protected void onCreate() {
-		this.createdAt = LocalDateTime.now();
-	}
+    /**
+     * Constructs a new Visitor with the specified details.
+     *
+     * @param id The unique identifier
+     * @param name The visitor's full name
+     * @param phoneNumber The visitor's phone number
+     * @param email The visitor's email address
+     * @param address The visitor's physical address
+     */
+    public Visitor(Long id, String name, String phoneNumber, String email, String address) {
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+    }
 
-	public LocalDateTime getCreatedAt(){
-		return createdAt;
-	}
+    /**
+     * Timestamp when the visitor record was created.
+     * Automatically set when the record is persisted.
+     */
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-	public Long getId() {
-		return id;
-	}
+    /**
+     * Sets the creation timestamp before persisting the entity.
+     */
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public LocalDateTime getCreatedAt(){
+        return createdAt;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-	public String getEmail() {
-		return email;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+    public String getEmail() {
+        return email;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getCompany() {
-		return company;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setCompany(String company) {
-		this.company = company;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public String getPicturePath() {
-		return picturePath;
-	}
-	public void setPicturePath(String picturePath) {
-		this.picturePath = picturePath;
-	}
+    public String getCompany() {
+        return company;
+    }
 
-	@Override
-	public String toString() {
-		return "Visitor{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", phoneNumber='" + phoneNumber + '\'' +
-				", email='" + email + '\'' +
-				", address='" + address + '\'' +
-				", company='" + company + '\'' +
-				", picturePath='" + picturePath + '\'' +
-				'}';
-	}
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getPicturePath() {
+        return picturePath;
+    }
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
+    }
+
+    public String getLaptop() {
+        return laptop;
+    }
+
+    public void setLaptop(String laptop) {
+        this.laptop = laptop;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Visitor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", company='" + company + '\'' +
+                ", picturePath='" + picturePath + '\'' +
+                ", laptop_number='" + laptop + '\'' +
+                '}';
+    }
 
 }

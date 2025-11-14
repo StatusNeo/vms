@@ -9,8 +9,8 @@
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
 
-    <!-- Top-level modal container so HTMX swaps can render full-screen overlays without being clipped -->
-    <div id="modal-container"></div>
+<!-- Top-level modal container so HTMX swaps can render full-screen overlays without being clipped -->
+<div id="modal-container"></div>
 
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <!-- Header -->
@@ -103,6 +103,21 @@
                                placeholder="Enter your company name">
                     </div>
 
+                    <!-- Laptop Number Field -->
+                    <div class="space-y-2">
+                        <label for="laptop" class="block text-sm font-medium text-gray-700">
+                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            Laptop Number
+                        </label>
+                        <input type="text"
+                               id="laptop"
+                               name="laptop"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                               placeholder="Enter your laptop number (optional)">
+                    </div>
+
                     <!-- Host Dropdown - Full Width -->
                     <div class="md:col-span-2 space-y-2">
                         <label for="host-search" class="block text-sm font-medium text-gray-700">
@@ -146,14 +161,15 @@
                 <div class="flex justify-center pt-4">
                     <button type="submit"
                             id="send-otp-btn"
-                            class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg--%>
-                                   relative flex items-center justify-center"> <span class="htmx-indicator:hidden">Send OTP</span>
-                        <span class="htmx-indicator absolute inset-0 flex items-center justify-center"> <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                     </svg>
-            Sending...
-        </span>
+                            class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">
+                        <span class="htmx-indicator:hidden">Send OTP</span>
+                        <span class="htmx-indicator absolute inset-0 flex items-center justify-center">
+                            <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Sending...
+                        </span>
                     </button>
                 </div>
             </div>
