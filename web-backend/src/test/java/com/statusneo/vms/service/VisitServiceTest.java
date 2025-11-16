@@ -52,31 +52,32 @@ public class VisitServiceTest {
         visitor.setAddress("123 Street, City, Country");
         visit.setVisitDate(LocalDateTime.parse("2022-01-01T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
+@Test
+public void testConfirmVisit_Success() {
+    Visitor visitor = new Visitor();
+    visitor.setName("Anurag Sharma");
+    visitor.setEmail("anurag@gmail.com");
+    visitor.setPhoneNumber("9999999999");
+    visitor.setAddress("123 Delhi Address");
 
-    @Test
-    public void testConfirmVisit_Success() throws InterruptedException {
-        Visitor visitor = new Visitor();
-        visitor.setName("Anurag Sharma");
-        visitor.setEmail("anurag@gmail.com");
-        visitor.setPhoneNumber("9999999999");
-        visitor.setAddress("123 Delhi Address");
+    Visit visit = visitService.registerVisit(visitor);
 
-        Visit visit = visitService.registerVisit(visitor);
-        String dummyOtp = "123456";
+    String dummyOtp = "123456";
+    visit.setOtp(dummyOtp);
+    visitRepository.save(visit);
 
-        VerificationResult verificationResult = new VerificationResult(true, false, "OTP verified successfully");
+    VerificationResult verificationResult = new VerificationResult(true, false, "OTP verified successfully");
+    Mockito.when(otpService.validateOtp(any(Visit.class), eq(dummyOtp)))
+            .thenReturn(verificationResult);
 
-        Mockito.when(otpService.validateOtp(any(Visit.class), eq(dummyOtp)))
-                .thenReturn(verificationResult);
+    VerificationResult result = visitService.confirmVisit(visit.getId(), dummyOtp);
 
-        VerificationResult result = visitService.confirmVisit(visit.getId(), dummyOtp);
+    assertNotNull(result);
+    assertTrue(result.success(), "OTP verification should be successful");
+    assertFalse(result.reattempt(), "Reattempt should be false on success");
+    assertEquals("OTP verified successfully", result.message());
 
-        assertNotNull(result);
-        assertTrue(result.success(), "OTP verification should be successful");
-        assertFalse(result.reattempt(), "Reattempt should be false on success");
-        assertEquals("OTP verified successfully", result.message());
-
-        Visit updatedVisit = visitRepository.findById(visit.getId()).orElseThrow();
-        assertTrue(updatedVisit.getIsApproved(), "Visit should be approved after successful OTP verification");
-    }
+    Visit updatedVisit = visitRepository.findById(visit.getId()).orElseThrow();
+    assertTrue(updatedVisit.getIsApproved(), "Visit should be approved after successful OTP verification");
+}
 }
