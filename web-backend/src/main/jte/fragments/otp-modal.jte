@@ -6,7 +6,7 @@
     <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">OTP Verification</h1>
 
-        <p class="text-center text-gray-600 mb-6">Enter the 6-digit OTP sent to your phone</p>
+        <p class="text-center text-gray-600 mb-6">Enter the 6-digit OTP sent to your email address</p>
 
         @if(serverMessage != null)
             <div id="otp-error-message" class="text-red-600 font-bold mb-4 text-center">${serverMessage}</div>
