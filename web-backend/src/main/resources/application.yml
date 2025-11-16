@@ -47,8 +47,7 @@ vms:
   sync:
     onstartup:
       enabled: false
-wiremock:
-  server:
-    port: 8081
-mail:
-  url: http://localhost:${wiremock.server.port}/v1.0/users/%s/sendMail
+
+graph:
+  api:
+    base-url: https://graph.microsoft.com/v1.0

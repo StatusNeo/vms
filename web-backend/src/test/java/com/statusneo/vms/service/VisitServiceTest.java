@@ -1,5 +1,6 @@
 package com.statusneo.vms.service;
 
+import com.statusneo.vms.config.TestConfig;
 import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
@@ -8,12 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,16 +24,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 @SpringBootTest
-@Testcontainers
+@Import(TestConfig.class)
+@ActiveProfiles("test")
 public class VisitServiceTest {
-
-    @Container
-    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
-            .withDatabaseName("test")
-            .withUsername("test")
-            .withPassword("test");
-    @Autowired
-    private VisitService visitorService;
 
     @Autowired
     private VisitService visitService;
@@ -46,12 +37,9 @@ public class VisitServiceTest {
     @MockitoBean
     private OtpService otpService;
 
-    @DynamicPropertySource
-    static void postgresqlProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-    }
+    @MockitoBean
+    private NotificationService notificationService;
+
 
     @Test
     public void testRegisterVisitor() {
@@ -63,36 +51,33 @@ public class VisitServiceTest {
         visit.setHost("Host Name");
         visitor.setAddress("123 Street, City, Country");
         visit.setVisitDate(LocalDateTime.parse("2022-01-01T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-
-//        Visit registeredVisitor = visitorService.registerVisit(visit);
-
-//        assertNotNull(registeredVisitor);
     }
+@Test
+public void testConfirmVisit_Success() {
+    Visitor visitor = new Visitor();
+    visitor.setName("Anurag Sharma");
+    visitor.setEmail("anurag@gmail.com");
+    visitor.setPhoneNumber("9999999999");
+    visitor.setAddress("123 Delhi Address");
 
-    @Test
-    public void testConfirmVisit_Success() {
-        Visitor visitor = new Visitor();
-        visitor.setName("Anurag Sharma");
-        visitor.setEmail("anurag@gmail.com");
-        visitor.setPhoneNumber("9999999999");
-        visitor.setAddress("123 Delhi Address");
+    Visit visit = visitService.registerVisit(visitor);
 
-        Visit visit = visitService.registerVisit(visitor);
-        String dummyOtp = "123456";
+    String dummyOtp = "123456";
+    visit.setOtp(dummyOtp);
+    visitRepository.save(visit);
 
-        VerificationResult verificationResult = new VerificationResult(true, false, "OTP verified successfully");
+    VerificationResult verificationResult = new VerificationResult(true, false, "OTP verified successfully");
+    Mockito.when(otpService.validateOtp(any(Visit.class), eq(dummyOtp)))
+            .thenReturn(verificationResult);
 
-        Mockito.when(otpService.validateOtp(any(Visit.class), eq(dummyOtp)))
-                .thenReturn(verificationResult);
+    VerificationResult result = visitService.confirmVisit(visit.getId(), dummyOtp);
 
-        VerificationResult result = visitService.confirmVisit(visit.getId(), dummyOtp);
+    assertNotNull(result);
+    assertTrue(result.success(), "OTP verification should be successful");
+    assertFalse(result.reattempt(), "Reattempt should be false on success");
+    assertEquals("OTP verified successfully", result.message());
 
-        assertNotNull(result);
-        assertTrue(result.success(), "OTP verification should be successful");
-        assertFalse(result.reattempt(), "Reattempt should be false on success");
-        assertEquals("OTP verified successfully", result.message());
-
-        Visit updatedVisit = visitRepository.findById(visit.getId()).orElseThrow();
-        assertTrue(updatedVisit.getIsApproved(), "Visit should be approved after successful OTP verification");
-    }
+    Visit updatedVisit = visitRepository.findById(visit.getId()).orElseThrow();
+    assertTrue(updatedVisit.getIsApproved(), "Visit should be approved after successful OTP verification");
+}
 }

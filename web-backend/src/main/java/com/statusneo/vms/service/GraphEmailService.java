@@ -22,6 +22,7 @@ import com.statusneo.vms.model.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,13 +42,16 @@ import java.util.Map;
  * Service responsible for handling all email communications in the Visitor Management System.
  */
 @Service
-@Profile({"prod", "default", "sqlite"})
+@Profile({"prod", "default", "sqlite", "test"})
 public class GraphEmailService implements EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(GraphEmailService.class);
 
     private final RestClient restClient;
     private final OAuth2AuthorizedClientManager authorizedClientManager;
+
+    @Value("${graph.api.base-url}")
+    private String graphApiBaseUrl;
 
     @Autowired
     public GraphEmailService(OAuth2AuthorizedClientManager authorizedClientManager,
@@ -72,7 +76,7 @@ public class GraphEmailService implements EmailService {
     @Override
     public boolean sendEmail(Email email) {
         String accessToken = getAccessToken();
-        String endpointUsers = String.format("https://graph.microsoft.com/v1.0/users/%s/sendMail", email.from());
+        String endpointUsers = String.format("%s/users/%s/sendMail", graphApiBaseUrl, email.from());
 
         Map<String, Object> emailData = new HashMap<>();
         Map<String, Object> message = new HashMap<>();

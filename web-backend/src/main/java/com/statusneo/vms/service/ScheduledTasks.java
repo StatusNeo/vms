@@ -26,7 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("prod")
+@Profile({"prod","test"})
 public class ScheduledTasks {
 
     private final ExcelService excelService;
@@ -34,12 +34,15 @@ public class ScheduledTasks {
 
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
-
     public ScheduledTasks(ExcelService excelService, GraphDirectoryService graphDirectoryService) {
         this.excelService = excelService;
         this.graphDirectoryService = graphDirectoryService;
     }
 
+    @Scheduled(
+            fixedRateString = "${vms.scheduled.report.rate:43200000}",
+            initialDelayString = "${vms.scheduled.report.initialDelay:PT2H}"
+    )
     @Scheduled(fixedRateString = "${vms.scheduled.report.rate:43200000}", initialDelayString = "PT2H") // Runs every 12 hours by default
     public void sendVisitorReport() {
         excelService.sendVisitorReport();

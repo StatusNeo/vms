@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
          this.systemFrom = systemFrom;
      }
 
-     private static final int OTP_EXPIRATION_MINUTES = 10;
+     private static final int OTP_EXPIRATION_MINUTES = 3;
      private static final int MAX_OTP_ATTEMPTS = 2;
      private static final int MAX_RESEND_COUNT = 2;
      private static final int RESEND_COOLDOWN_MINUTES = 2;

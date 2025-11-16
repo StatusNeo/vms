@@ -26,7 +26,7 @@ public class NotificationServiceTest {
     void setUp() {
         emailService = mock(EmailService.class);
         templateEngine = mock(TemplateEngine.class);
-        notificationService = new NotificationService(emailService, templateEngine);
+        notificationService = new NotificationService(emailService, templateEngine, "noreply@company.com");
     }
 
     @Test
