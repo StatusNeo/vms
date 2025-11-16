@@ -1,14 +1,15 @@
 <div th:fragment="hostResults" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div th:if="${hosts != null and !hosts.isEmpty()}">
-        <div th:each="host : ${hosts}"
-             th:attr="onclick='selectHost(' + ${host.id} + ', \'' + ${host.name} + '\', \'' + ${host.email} + '\')'"
-             class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
-            <div class="font-medium text-gray-900" th:text="${host.name}">John Smith</div>
-            <div class="text-sm text-gray-500" th:text="${host.email}">john.smith@company.com</div>
+    <!-- fragment returned for HTMX host-search; must contain element with id="host-results" -->
+    <div th:fragment="results">
+        <div id="host-results" class="bg-white border rounded-md mt-1 shadow-lg max-h-72 overflow-auto">
+            <ul class="divide-y">
+                <li th:each="emp : ${hosts}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    th:onclick="'selectHost(' + ${emp.id} + ', \'' + ${emp.name} + '\', \'' + ${emp.email} + '\')'">
+                    <div class="text-sm font-medium" th:text="${emp.name}">Employee Name</div>
+                    <div class="text-xs text-gray-500" th:text="${emp.email}">email@example.com</div>
+                </li>
+                <li th:if="${#lists.isEmpty(hosts)}" class="px-4 py-2 text-sm text-gray-500">No results</li>
+            </ul>
         </div>
-    </div>
-    <div th:if="${hosts == null or hosts.isEmpty()}"
-         class="px-4 py-3 text-gray-500 text-center">
-        No employee found
     </div>
 </div>
