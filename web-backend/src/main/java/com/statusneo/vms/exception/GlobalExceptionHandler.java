@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -37,7 +36,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNoSuchElement(NoSuchElementException ex) {
         logger.warn("Resource not found: {}", ex.getMessage());
-        // Spring Boot will automatically serve static/error/404.html
         return "error/404";
     }
 
@@ -52,7 +50,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleTemplateException(TemplateException ex) {
         logger.error("Template rendering failed: {}", ex.getMessage());
-        // CRITICAL: Use static page, NOT another template
         return "error/500";
     }
 
@@ -60,7 +57,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleGeneralException(Exception ex) {
         logger.error("Unexpected error occurred: {}", ex.getMessage());
-        // CRITICAL: Use static page, NOT JTE template
         return "error/500";
     }
 }
