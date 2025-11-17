@@ -137,8 +137,8 @@
                 <!-- Submit Button -->
                 <div class="flex justify-center pt-4">
                     <button type="submit"
-                            class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg
-           flex items-center justify-center"> <span class="htmx-indicator:hidden">Send OTP</span>
+                            id="send-otp-btn" disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg
+       flex items-center justify-center"> <span class="htmx-indicator:hidden">Send OTP</span>
                         <span class="htmx-indicator">
         </span>
                     </button>
@@ -178,6 +178,27 @@
         document.getElementById('host-results').classList.add('hidden');
     }
 </script>
+<script>
+    // Form validation (host is not mandatory)
+    function validateForm() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const company = document.getElementById('company').value;
+
+        const isValid = name && email && phone && company;
+        document.getElementById('send-otp-btn').disabled = !isValid;
+    }
+
+    document.querySelectorAll('input[required]').forEach(input => {
+        input.addEventListener('input', validateForm);
+    });
+
+    validateForm();
+</script>
+
+</body>
+</html>
 </body>
 </html>
 
