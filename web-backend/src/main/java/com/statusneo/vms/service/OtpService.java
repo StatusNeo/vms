@@ -107,7 +107,7 @@ import org.slf4j.LoggerFactory;
              // Check cooldown (skip if bypassCooldown requested)
              if (!bypassCooldown && latestOtp.getCreatedAt().plusMinutes(RESEND_COOLDOWN_MINUTES).isAfter(LocalDateTime.now())) {
                  return new VerificationResult(false, true,
-                         "Please wait before requesting a new OTP.");
+                         "Incorrect OTP Check and try again");
              }
 
              // Check resend limit
