@@ -35,7 +35,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -62,29 +61,10 @@ public class VisitorController {
     private EmployeeRepository employeeRepository;
 
 
-    @GetMapping("/report")
-    public ResponseEntity<?> getReport(@RequestParam String period) {
-        List<Visit> visit;
-        if (period.equals("daily")) {
-            visit = visitRepository.findAllByVisitDateBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), LocalDateTime.now());
-        } else if (period.equals("monthly")) {
-            visit = visitRepository.findAllByVisitDateBetween(LocalDateTime.now().minusMonths(1), LocalDateTime.now());
-        } else {
-            return ResponseEntity.badRequest().body("Invalid period");
-        }
-        return ResponseEntity.ok(visit);
-    }
-
-//    @RequestMapping("/error")
-    public String handleError() {
-        return "Custom error page!";
-    }
-
     @GetMapping("/")
     public String home() {
-        return "index";  // Looks for src/main/resources/templates/simple.html
+        return "index";
     }
-
 
     @GetMapping("/search")
     public String searchEmployees(@RequestParam("employee") String query, Model model) {
@@ -94,27 +74,34 @@ public class VisitorController {
         return "employeeSearchResults";
     }
 
-    @GetMapping("/refresh-employee-cache")
-    public ResponseEntity<String> refreshEmployeeCache() {
-        employeeNameCache.initializeCache();
-        return ResponseEntity.ok("Cache refreshed");
+    // Optional: Add MVC version of report page if you want a web UI for reports
+    @GetMapping("/report-page")
+    public String showReportPage(@RequestParam(defaultValue = "daily") String period, Model model) {
+        logger.info("Displaying report page for period: {}", period);
+        model.addAttribute("period", period);
+        return "report"; // You'll need to create report.jte template
+    }
+
+    // Optional: Add MVC version of cache refresh status
+    @GetMapping("/cache-status")
+    public String showCacheStatus(Model model) {
+        model.addAttribute("cacheStatus", "Employee cache is active");
+        return "cache-status"; // You'll need to create cache-status.jte template
     }
 
     @PostMapping("/register")
     public String registerVisitor(@ModelAttribute Visitor visitor,
-                                 @RequestParam(value = "host", required = false) String host,
-                                 @RequestParam(value = "employee", required = false) String employee,
-                                 @RequestHeader(value = "HX-Request", required = false) String hxRequest,
-                                 Model model) {
+                                  @RequestParam(value = "host", required = false) String host,
+                                  @RequestParam(value = "employee", required = false) String employee,
+                                  @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+                                  Model model) {
         // prefer explicit host id, fall back to name
         resolveAndSetHost(visitor, host, employee);
         Visit savedVisit = visitService.registerVisit(visitor);
         model.addAttribute("visitId", savedVisit.getId());
-        
+
         // If it's an HTMX request, just return the modal fragment
         if (hxRequest != null && hxRequest.equals("true")) {
-            // JTE doesn't use Thymeleaf fragment syntax ("::"). Return the template name
-            // that corresponds to src/main/jte/fragments/otp-modal.jte
             return "fragments/otp-modal";
         }
 
@@ -122,24 +109,20 @@ public class VisitorController {
         return "otp-modal";
     }
 
-    // Updated to return Object so we can return ResponseEntity for HTMX redirects
     @PostMapping("/confirm-visit")
     public Object confirmVisit(@RequestParam("visitId") Long visitId,
-                             @RequestParam("otpCode") String otpCode,
-                             @RequestHeader(value = "HX-Request", required = false) String hxRequest,
-                             Model model) {
+                               @RequestParam("otpCode") String otpCode,
+                               @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+                               Model model) {
         VerificationResult result = visitService.confirmVisit(visitId, otpCode);
         model.addAttribute("result", result);
         model.addAttribute("visitId", visitId);
 
-        // If it's an HTMX request, return a fragment or an HX-Redirect when attempts exhausted
         if (hxRequest != null && hxRequest.equals("true")) {
             if (result.success()) {
-                // Pass the visit to get visitor details for success message
                 Visit visit = visitRepository.findById(visitId)
-                    .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
+                        .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
                 model.addAttribute("visit", visit);
-                // Return the JTE template for success message
                 return "fragments/success-message";
             } else {
                 // If no more reattempts allowed, tell HTMX to redirect to the entry page
@@ -149,31 +132,26 @@ public class VisitorController {
 
                 // Auto-resend OTP when a failed attempt occurred and reattempts remain
                 Visit visit = visitRepository.findById(visitId)
-                    .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
+                        .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
-                VerificationResult resendResult = otpService.generateOtp(visit, false); // don't reset attempt counter
+                VerificationResult resendResult = otpService.generateOtp(visit, false);
 
-                // Decide the message to show in the modal: prefer an explicit resend message when OTP re-sent successfully
                 if (resendResult.success()) {
                     model.addAttribute("serverMessage", "Invalid OTP. A new OTP has been sent to your email.");
                 } else {
-                    // If resend failed (cooldown or limit), show that message instead
                     model.addAttribute("serverMessage", resendResult.message());
                 }
 
-                // Re-show the otp modal with an error message so HTMX swaps it in place
                 return "fragments/otp-modal";
             }
         }
-        
+
         // For regular form submission (fallback):
         if (result.success()) {
             return "confirmation-modal";
         } else if (!result.reattempt()) {
-            // Attempts exhausted: redirect to blank visitor entry form
             return "redirect:/";
         } else {
-            // Auto-resend for non-HTMX fallback as well
             Visit visit = visitRepository.findById(visitId)
                     .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
@@ -184,7 +162,6 @@ public class VisitorController {
                 model.addAttribute("serverMessage", resendResult.message());
             }
 
-            // Re-show otp page with message for non-HTMX fallback
             model.addAttribute("visitId", visitId);
             return "otp-modal";
         }
@@ -200,7 +177,6 @@ public class VisitorController {
         model.addAttribute("result", result);
         model.addAttribute("visitId", visitId);
         model.addAttribute("serverMessage", result.message());
-        // For HTMX flows this should probably return the otp modal again so the UI is updated.
         return "fragments/otp-modal";
     }
 
