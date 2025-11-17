@@ -109,7 +109,7 @@ class OtpServiceTest {
         VerificationResult result = otpService.generateOtp(testVisit);
 
         assertFalse(result.success());
-        assertEquals("Please wait before requesting a new OTP.", result.message());
+        assertEquals("Incorrect OTP Check and try again", result.message());
         verify(emailService, never()).sendEmail(any());
     }
 
