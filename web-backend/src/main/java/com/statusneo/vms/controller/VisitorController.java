@@ -20,7 +20,6 @@ package com.statusneo.vms.controller;
 
 import com.statusneo.vms.cache.EmployeeNameCache;
 import com.statusneo.vms.dto.VerificationResult;
-import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.model.Visit;
 import com.statusneo.vms.model.Visitor;
 import com.statusneo.vms.repository.EmployeeRepository;
@@ -86,14 +85,6 @@ public class VisitorController {
         return "index";  // Looks for src/main/resources/templates/simple.html
     }
 
-
-    @GetMapping("/search")
-    public String searchEmployees(@RequestParam("employee") String query, Model model) {
-        logger.info("Received search request for employee: {}", query);
-        List<Employee> employees = employeeNameCache.getEmployeesByPrefix(query == null ? "" : query);
-        model.addAttribute("employees", employees);
-        return "employeeSearchResults";
-    }
 
     @GetMapping("/refresh-employee-cache")
     public ResponseEntity<String> refreshEmployeeCache() {
