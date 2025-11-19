@@ -27,14 +27,17 @@ import com.statusneo.vms.repository.VisitRepository;
 import com.statusneo.vms.service.GraphDirectoryService;
 import com.statusneo.vms.service.OtpService;
 import com.statusneo.vms.service.VisitService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -60,53 +63,62 @@ public class VisitorController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("visitor", new Visitor());
         return "index";
     }
 
-    @GetMapping("/search")
-    public String searchEmployees(@RequestParam("employee") String query, Model model) {
-        logger.info("Received search request for employee: {}", query);
-        List<String> names = employeeNameCache.getEmployeeNamesByPrefix(query == null ? "" : query);
-        model.addAttribute("employees", names);
-        return "employeeSearchResults";
-    }
-
-    // Optional: Add MVC version of report page if you want a web UI for reports
-    @GetMapping("/report-page")
-    public String showReportPage(@RequestParam(defaultValue = "daily") String period, Model model) {
-        logger.info("Displaying report page for period: {}", period);
-        model.addAttribute("period", period);
-        return "report"; // You'll need to create report.jte template
-    }
-
-    // Optional: Add MVC version of cache refresh status
-    @GetMapping("/cache-status")
-    public String showCacheStatus(Model model) {
-        model.addAttribute("cacheStatus", "Employee cache is active");
-        return "cache-status"; // You'll need to create cache-status.jte template
-    }
-
     @PostMapping("/register")
-    public String registerVisitor(@ModelAttribute Visitor visitor,
-                                  @RequestParam(value = "host", required = false) String host,
-                                  @RequestParam(value = "employee", required = false) String employee,
-                                  @RequestHeader(value = "HX-Request", required = false) String hxRequest,
-                                  Model model) {
-        // prefer explicit host id, fall back to name
+    public String registerVisitor(
+            @Valid @ModelAttribute("visitor") Visitor visitor,
+            BindingResult bindingResult,
+            @RequestParam(value = "host", required = false) String host,
+            @RequestParam(value = "employee", required = false) String employee,
+            @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+            Model model) {
+
+        logger.info("Processing visitor registration for: {}", visitor.getEmail());
+
+        // Check for validation errors - Spring validation pattern
+        if (bindingResult.hasErrors()) {
+            logger.warn("Form validation failed with {} errors", bindingResult.getErrorCount());
+
+            // Add field errors to model for display in template
+            model.addAttribute("fieldErrors", bindingResult.getFieldErrors());
+
+            if (hxRequest != null && hxRequest.equals("true")) {
+                return "fragments/validation-errors"; // HTMX error fragment
+            }
+            return "index";
+        }
+
         resolveAndSetHost(visitor, host, employee);
+
         Visit savedVisit = visitService.registerVisit(visitor);
         model.addAttribute("visitId", savedVisit.getId());
 
-        // If it's an HTMX request, just return the modal fragment
         if (hxRequest != null && hxRequest.equals("true")) {
             return "fragments/otp-modal";
         }
 
-        // For regular form submission (fallback)
+        // Regular form submission
         return "otp-modal";
+    }
+
+
+    @GetMapping("/report")
+    public String getReport(@RequestParam String period, Model model) {
+        List<Visit> visits;
+        if (period.equals("daily")) {
+            visits = visitRepository.findAllByVisitDateBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), LocalDateTime.now());
+        } else if (period.equals("monthly")) {
+            visits = visitRepository.findAllByVisitDateBetween(LocalDateTime.now().minusMonths(1), LocalDateTime.now());
+        } else {
+            return "error/400";
+        }
+        model.addAttribute("visits", visits);
+        return "report";
     }
 
     @PostMapping("/confirm-visit")
@@ -125,12 +137,10 @@ public class VisitorController {
                 model.addAttribute("visit", visit);
                 return "fragments/success-message";
             } else {
-                // If no more reattempts allowed, tell HTMX to redirect to the entry page
                 if (!result.reattempt()) {
                     return ResponseEntity.ok().header("HX-Redirect", "/").build();
                 }
 
-                // Auto-resend OTP when a failed attempt occurred and reattempts remain
                 Visit visit = visitRepository.findById(visitId)
                         .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
@@ -146,7 +156,6 @@ public class VisitorController {
             }
         }
 
-        // For regular form submission (fallback):
         if (result.success()) {
             return "confirmation-modal";
         } else if (!result.reattempt()) {

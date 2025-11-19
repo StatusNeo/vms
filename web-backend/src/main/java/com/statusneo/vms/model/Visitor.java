@@ -69,19 +69,19 @@ public class Visitor {
     /**
      * Full name of the visitor.
      */
-    private String name;
+    public String name;
 
     /**
      * Contact phone number of the visitor.
      */
     @NotNull(message = "Phone number cannot be null")
     @Pattern(regexp = "^\\d{10}$", message = "Phone number must be exactly 10 digits")
-    private String phoneNumber;
+    public String phoneNumber;
 
     /**
      * Email address of the visitor, used for communication and OTP verification.
      */
-    private String email;
+    public String email;
 
     /**
      * Physical address of the visitor.
@@ -91,7 +91,7 @@ public class Visitor {
     /**
      * Company of the visitor.
      */
-    private String company;
+    public String company;
 
     /**
      * Path to the visitor's profile picture stored in the system.
@@ -101,7 +101,7 @@ public class Visitor {
 
 
     @Column(name = "laptop_number")
-    private String laptop;
+    public String laptop;
 
     @ManyToOne
     @JoinColumn(name = "host_id", referencedColumnName = "id")
