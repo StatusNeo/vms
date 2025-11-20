@@ -103,6 +103,10 @@ public class Visitor {
     @Column(name = "laptop_number")
     private String laptop;
 
+    @Column(name = "valid_govt_id")
+    @Pattern(regexp = "^[0-9]{12}$|^[A-Z]{5}[0-9]{4}[A-Z]{1}$", message = "Invalid Aadhar or PAN format")
+    private String validGovtId;
+
     @ManyToOne
     @JoinColumn(name = "host_id", referencedColumnName = "id")
     private Employee host;

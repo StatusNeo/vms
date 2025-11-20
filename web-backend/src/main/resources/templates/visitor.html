@@ -83,6 +83,35 @@
                                    placeholder="Enter your company name">
                         </div>
 
+                        <div class="space-y-2">
+                            <label for="laptop" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="align-middle">Laptop Number</span>
+                            </label>
+                            <input type="text"
+                                   id="laptop"
+                                   name="laptop"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter your laptop number (optional)">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="govtId" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-7 0V4a2 2 0 012-2h4a2 2 0 012 2v2M7 12h10m-10 4h10"/>
+                                </svg>
+                                <span class="align-middle">Valid Govt ID *</span>
+                            </label>
+                            <input type="text"
+                                   id="govtId"
+                                   name="govtId"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter your government ID number">
+                        </div>
+
                         <div class="md:col-span-2 space-y-2">
                             <label for="host-search" class="block text-sm font-medium text-gray-700 flex items-center">
                                 <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,8 +180,9 @@
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
             const company = document.getElementById('company').value;
+            const govtId = document.getElementById('govtId').value;
             // host is optional for Send OTP
-            const isValid = name && email && phone && company;
+            const isValid = name && email && phone && company && govtId;
             document.getElementById('send-otp-btn').disabled = !isValid;
         }
 
