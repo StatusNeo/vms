@@ -224,6 +224,10 @@ public class Visitor {
         this.laptop = laptop;
     }
 
+    public String getValidGovtId() { return validGovtId; }
+
+    public void setValidGovtId(String validGovtId) { this.validGovtId = validGovtId; }
+
 
     @Override
     public String toString() {
@@ -236,6 +240,7 @@ public class Visitor {
                 ", company='" + company + '\'' +
                 ", picturePath='" + picturePath + '\'' +
                 ", laptop_number='" + laptop + '\'' +
+                ", valid_govt_id='" + validGovtId + '\'' +
                 '}';
     }
 
