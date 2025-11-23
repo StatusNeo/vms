@@ -128,7 +128,7 @@
                                placeholder="Enter your government ID number">
                     </div>
 
-                    <div class="md:col-span-2 space-y-2">
+                    <div class="space-y-2">
                         <label for="host-search" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -157,16 +157,28 @@
                                 </svg>
                             </div>
 
-                            <!-- Dropdown Results -->
                             <div id="host-results"
                                  class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto hidden">
-                                <!-- Results will be populated by HTMX -->
                             </div>
                         </div>
                     </div>
+
+                    <div class="space-y-2">
+                        <label for="visitPurpose" class="block text-sm font-medium text-gray-700 flex items-center">
+                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span class="align-middle">Visit Purpose *</span>
+                        </label>
+                        <input type="text"
+                               id="visitPurpose"
+                               name="visitPurpose"
+                               required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                               placeholder="e.g., Interview, Meeting, Delivery, etc.">
+                    </div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="flex justify-center pt-4">
                     <button type="submit"
                             id="send-otp-btn"
@@ -200,7 +212,8 @@
         const phone = document.getElementById('phone').value;
         const company = document.getElementById('company').value;
         const govtId = document.getElementById('govtId').value;
-        const isValid = name && email && phone && company && govtId;
+        const visitPurpose = document.getElementById('visitPurpose').value;
+        const isValid = name && email && phone && company && govtId && visitPurpose;
         document.getElementById('send-otp-btn').disabled = !isValid;
     }
 

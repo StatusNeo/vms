@@ -107,6 +107,10 @@ public class Visitor {
     @Pattern(regexp = "^[0-9]{12}$|^[A-Z]{5}[0-9]{4}[A-Z]{1}$", message = "Invalid Aadhar or PAN format")
     private String validGovtId;
 
+
+    @Column(name = "visit_purpose")
+    private String visitPurpose;
+
     @ManyToOne
     @JoinColumn(name = "host_id", referencedColumnName = "id")
     private Employee host;
@@ -228,6 +232,10 @@ public class Visitor {
 
     public void setValidGovtId(String validGovtId) { this.validGovtId = validGovtId; }
 
+    public String getVisitPurpose() { return visitPurpose; }
+
+    public void setVisitPurpose(String visitPurpose) { this.visitPurpose = visitPurpose; }
+
 
     @Override
     public String toString() {
@@ -241,6 +249,7 @@ public class Visitor {
                 ", picturePath='" + picturePath + '\'' +
                 ", laptop_number='" + laptop + '\'' +
                 ", valid_govt_id='" + validGovtId + '\'' +
+                ", visit_purpose='" + visitPurpose + '\'' +
                 '}';
     }
 
