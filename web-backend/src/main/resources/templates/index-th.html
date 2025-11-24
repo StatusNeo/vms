@@ -6,28 +6,25 @@
     <title>Visitor Check-in</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        html { height: 100%; **overflow: hidden;** }
+        body { height: 100vh; **overflow: hidden;** }
+    </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-    <!-- Header -->
-    <div class="text-center mb-8">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 h-screen w-screen overflow-hidden">
+<div class="container mx-auto px-4 py-8 max-w-4xl h-full flex flex-col justify-center">
+    <div class="text-center mb-8 flex-shrink-0">
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Visitor Check-in</h1>
         <p class="text-gray-600">Please fill in your details to register your visit</p>
     </div>
-
-    <!-- Main Form -->
     <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
         <form id="visitor-form"
               hx-post="/api/visitor/send-otp"
               hx-target="#form-content"
               hx-swap="outerHTML"
-              class="space-y-6">
-
+              class="space-y-6 h-full flex flex-col">
             <div id="form-content">
-                <!-- Two Column Grid for Tablet/Desktop -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                    <!-- Name Field -->
                     <div class="space-y-2">
                         <label for="name" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,8 +40,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your full name">
                     </div>
-
-                    <!-- Email Field -->
                     <div class="space-y-2">
                         <label for="email" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +56,6 @@
                                placeholder="Enter your email address">
                     </div>
 
-                    <!-- Phone Field -->
                     <div class="space-y-2">
                         <label for="phone" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,8 +71,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your phone number">
                     </div>
-
-                    <!-- Company Field -->
                     <div class="space-y-2">
                         <label for="company" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +86,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your company name">
                     </div>
-
                     <div class="space-y-2">
                         <label for="laptop" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +100,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your laptop number (optional)">
                     </div>
-
                     <div class="space-y-2">
                         <label for="govtId" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,8 +115,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your government ID number">
                     </div>
-
-                    <!-- Dropdown Field -->
                     <div class="space-y-2">
                         <label for="host-search" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,13 +143,11 @@
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                             </div>
-
                             <div id="host-results"
                                  class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto hidden">
                             </div>
                         </div>
                     </div>
-
                     <div class="space-y-2">
                         <label for="visitPurpose" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,11 +164,10 @@
                                placeholder="e.g., Interview, Meeting, Delivery, etc.">
                     </div>
                 </div>
-
                 <div class="flex justify-center pt-4">
                     <button type="submit"
-                            id="send-otp-btn" disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg
-       relative flex items-center justify-center">
+                            id="send-otp-btn"
+                            disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">
                         <span class="htmx-indicator:hidden">Send OTP</span>
                         <span class="htmx-indicator absolute inset-0 flex items-center justify-center">
                             <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -194,12 +179,10 @@
                     </button>
                 </div>
             </div>
+            <div class="mt-6 text-center text-sm text-gray-500">
+                By checking in, you agree to our visitor policies and terms of service.
+            </div>
         </form>
-
-        <!-- Footer -->
-        <div class="mt-6 text-center text-sm text-gray-500">
-            By checking in, you agree to our visitor policies and terms of service.
-        </div>
     </div>
 </div>
 

@@ -6,15 +6,15 @@
     <title>Visitor Check-in</title>
     <link href="/main.css" rel="stylesheet">
     <script src="/webjars/htmx.org/2.0.7/dist/htmx.min.js"></script>
+    <style>
+        html { height: 100%; **overflow: hidden;** }
+        body { height: 100vh; **overflow: hidden;** }
+    </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-
-<!-- Top-level modal container so HTMX swaps can render full-screen overlays without being clipped -->
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 h-screen w-screen overflow-hidden">
 <div id="modal-container"></div>
-
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-    <!-- Header -->
-    <div class="text-center mb-8">
+<div class="container mx-auto px-4 py-8 max-w-3xl h-full flex flex-col justify-center">
+    <div class="text-center mb-6 flex-shrink-0">
         <div class="flex justify-center mb-4">
             <img id="site-logo" src="/images/StatusNeo-logo.png" alt="StatusNeo Logo" style="height:36px !important; max-height:36px !important; width:auto !important;" class="mx-auto">
         </div>
@@ -22,23 +22,17 @@
         <p class="text-gray-600">Please fill in your details to register your visit</p>
     </div>
 
-    <!-- Main Form -->
     <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-        <!-- Modal Container -->
-        <div id="modal-container"></div>
 
         <form id="visitor-form"
               hx-post="/register"
               hx-target="#modal-container"
               hx-swap="innerHTML"
               hx-trigger="submit"
-              class="space-y-6">
+              class="space-y-6 h-full flex flex-col">
             <input type="hidden" name="_csrf" value="">
-
             <div id="form-content">
-                <!-- Two Column Grid for Tablet/Desktop -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
                     <div class="space-y-2">
                         <label for="name" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +62,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your email address">
                     </div>
-
                     <div class="space-y-2">
                         <label for="phone" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +76,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your phone number">
                     </div>
-
                     <div class="space-y-2">
                         <label for="company" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,7 +90,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your company name">
                     </div>
-
                     <div class="space-y-2">
                         <label for="laptop" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +103,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your laptop number (optional)">
                     </div>
-
                     <div class="space-y-2">
                         <label for="govtId" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +117,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your government ID number">
                     </div>
-
                     <div class="space-y-2">
                         <label for="host-search" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,7 +171,8 @@
                 <div class="flex justify-center pt-4">
                     <button type="submit"
                             id="send-otp-btn"
-                            disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">                        <span class="htmx-indicator:hidden">Send OTP</span>
+                            disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">
+                        <span class="htmx-indicator:hidden">Send OTP</span>
                         <span class="htmx-indicator absolute inset-0 flex items-center justify-center">
                             <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -192,17 +182,13 @@
                         </span>
                     </button>
                 </div>
+                <div class="mt-6 text-center text-sm text-gray-500">
+                    By checking in, you agree to our visitor policies and terms of service.
+                </div>
             </div>
         </form>
-
-        <!-- Footer -->
-        <div class="mt-6 text-center text-sm text-gray-500">
-            By checking in, you agree to our visitor policies and terms of service.
-        </div>
     </div>
 </div>
-
-<!-- Removed a small duplicate autocomplete handler here in favor of the more complete handlers below -->
 
 <script>
     // Form validation (host is not mandatory)
@@ -216,11 +202,9 @@
         const isValid = name && email && phone && company && govtId && visitPurpose;
         document.getElementById('send-otp-btn').disabled = !isValid;
     }
-
     document.querySelectorAll('input[required]').forEach(input => {
         input.addEventListener('input', validateForm);
     });
-
     validateForm();
 </script>
 
