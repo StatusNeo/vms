@@ -75,7 +75,7 @@ public class VisitorController {
         return ResponseEntity.ok(visit);
     }
 
-//    @RequestMapping("/error")
+    //    @RequestMapping("/error")
     public String handleError() {
         return "Custom error page!";
     }
@@ -86,14 +86,6 @@ public class VisitorController {
     }
 
 
-    @GetMapping("/search")
-    public String searchEmployees(@RequestParam("employee") String query, Model model) {
-        logger.info("Received search request for employee: {}", query);
-        List<String> names = employeeNameCache.getEmployeeNamesByPrefix(query == null ? "" : query);
-        model.addAttribute("employees", names);
-        return "employeeSearchResults";
-    }
-
     @GetMapping("/refresh-employee-cache")
     public ResponseEntity<String> refreshEmployeeCache() {
         employeeNameCache.initializeCache();
@@ -102,15 +94,15 @@ public class VisitorController {
 
     @PostMapping("/register")
     public String registerVisitor(@ModelAttribute Visitor visitor,
-                                 @RequestParam(value = "host", required = false) String host,
-                                 @RequestParam(value = "employee", required = false) String employee,
-                                 @RequestHeader(value = "HX-Request", required = false) String hxRequest,
-                                 Model model) {
+                                  @RequestParam(value = "host", required = false) String host,
+                                  @RequestParam(value = "employee", required = false) String employee,
+                                  @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+                                  Model model) {
         // prefer explicit host id, fall back to name
         resolveAndSetHost(visitor, host, employee);
         Visit savedVisit = visitService.registerVisit(visitor);
         model.addAttribute("visitId", savedVisit.getId());
-        
+
         // If it's an HTMX request, just return the modal fragment
         if (hxRequest != null && hxRequest.equals("true")) {
             // JTE doesn't use Thymeleaf fragment syntax ("::"). Return the template name
@@ -125,9 +117,9 @@ public class VisitorController {
     // Updated to return Object so we can return ResponseEntity for HTMX redirects
     @PostMapping("/confirm-visit")
     public Object confirmVisit(@RequestParam("visitId") Long visitId,
-                             @RequestParam("otpCode") String otpCode,
-                             @RequestHeader(value = "HX-Request", required = false) String hxRequest,
-                             Model model) {
+                               @RequestParam("otpCode") String otpCode,
+                               @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+                               Model model) {
         VerificationResult result = visitService.confirmVisit(visitId, otpCode);
         model.addAttribute("result", result);
         model.addAttribute("visitId", visitId);
@@ -137,7 +129,7 @@ public class VisitorController {
             if (result.success()) {
                 // Pass the visit to get visitor details for success message
                 Visit visit = visitRepository.findById(visitId)
-                    .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
+                        .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
                 model.addAttribute("visit", visit);
                 // Return the JTE template for success message
                 return "fragments/success-message";
@@ -149,7 +141,7 @@ public class VisitorController {
 
                 // Auto-resend OTP when a failed attempt occurred and reattempts remain
                 Visit visit = visitRepository.findById(visitId)
-                    .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
+                        .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
                 VerificationResult resendResult = otpService.generateOtp(visit, false); // don't reset attempt counter
 
@@ -165,7 +157,7 @@ public class VisitorController {
                 return "fragments/otp-modal";
             }
         }
-        
+
         // For regular form submission (fallback):
         if (result.success()) {
             return "confirmation-modal";

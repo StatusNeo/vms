@@ -18,6 +18,7 @@
  */
 package com.statusneo.vms.controller;
 
+import com.statusneo.vms.cache.EmployeeNameCache;
 import com.statusneo.vms.model.Employee;
 import com.statusneo.vms.service.EmployeeService;
 import org.springframework.stereotype.Controller;
@@ -28,11 +29,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-public class HomeController {
+public class  HomeController {
     private final EmployeeService employeeService;
+    private final EmployeeNameCache employeeNameCache;
 
-    public HomeController(EmployeeService employeeService) {
+    public HomeController(EmployeeService employeeService, EmployeeNameCache employeeNameCache) {
         this.employeeService = employeeService;
+        this.employeeNameCache = employeeNameCache;
     }
 
     @GetMapping("/search-employees")
@@ -40,7 +43,6 @@ public class HomeController {
                             @RequestParam(value = "employee", required = false) String employee,
                             @RequestParam(value = "query", required = false) String query,
                             Model model) {
-        // Prefer hostSearch (used by index.jte), then employee, then query
         String q = (hostSearch != null && !hostSearch.isBlank()) ? hostSearch :
                 ((employee != null && !employee.isBlank()) ? employee : (query == null ? "" : query));
 
@@ -48,8 +50,10 @@ public class HomeController {
             return "employees";
         }
 
-        List<Employee> employees = employeeService.searchEmployeesByName(q);
-        model.addAttribute("employees", employees);
+        List<Employee> employees = employeeNameCache.getEmployeesByPrefix(q);
+        model.addAttribute("hosts", employees);
         return "employees";
     }
+
 }
+
