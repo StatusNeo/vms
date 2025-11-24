@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:dev_visitors.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.community.dialect.SQLiteDialect
+        format_sql: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:dev-schema.sql
+      data-locations: classpath:dev-data.sql
+
+app:
+  graph-api:
+    mock-mode: true
+
+logging:
+  level:
+    com.yourcompany.visitor: DEBUG
