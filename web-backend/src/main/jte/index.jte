@@ -155,8 +155,7 @@
                 <div class="flex justify-center pt-4">
                     <button type="submit"
                             id="send-otp-btn"
-                            class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">
-                        <span class="htmx-indicator:hidden">Send OTP</span>
+                            disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">                        <span class="htmx-indicator:hidden">Send OTP</span>
                         <span class="htmx-indicator absolute inset-0 flex items-center justify-center">
                             <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -179,22 +178,22 @@
 <!-- Removed a small duplicate autocomplete handler here in favor of the more complete handlers below -->
 
 <script>
-    // Form validation (host optional)
+    // Form validation (host is not mandatory)
     function validateForm() {
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
         const company = document.getElementById('company').value;
-        // host is optional, do not require hostId to enable send
 
         const isValid = name && email && phone && company;
         document.getElementById('send-otp-btn').disabled = !isValid;
     }
 
-    // Attach validation to all inputs that are required
     document.querySelectorAll('input[required]').forEach(input => {
         input.addEventListener('input', validateForm);
     });
+
+    validateForm();
 </script>
 
 <script>
