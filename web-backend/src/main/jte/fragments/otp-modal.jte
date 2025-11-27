@@ -2,7 +2,7 @@
 @param String serverMessage
 
 <!-- OTP Verification Modal Fragment -->
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="otp-modal">
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" id="otp-modal">
     <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">OTP Verification</h1>
 
