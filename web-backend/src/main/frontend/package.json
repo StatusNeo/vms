@@ -4,12 +4,13 @@
   "description": "",
   "scripts": {
     "build": "tailwindcss -i ./styles.css -o ../resources/static/main.css",
-    "watch": "tailwindcss --watch -i ./styles.css -o ../resources/static/main.css"
+    "watch": "tailwindcss -i ./styles.css -o ../resources/static/main.css --watch"
   },
   "author": "",
   "license": "ISC",
   "private": true,
   "devDependencies": {
-    "tailwindcss": "^3.4.18"
+    "@tailwindcss/cli": "^4.1.17",
+    "tailwindcss": "^4.1.17"
   }
 }
