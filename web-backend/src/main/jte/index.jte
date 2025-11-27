@@ -1,3 +1,4 @@
+@import com.statusneo.vms.enums.VisitPurpose
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +7,15 @@
     <title>Visitor Check-in</title>
     <link href="/main.css" rel="stylesheet">
     <script src="/webjars/htmx.org/2.0.7/dist/htmx.min.js"></script>
+    <style>
+        html { height: 100%; **overflow: hidden;** }
+        body { height: 100vh; **overflow: hidden;** }
+    </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-
-<!-- Top-level modal container so HTMX swaps can render full-screen overlays without being clipped -->
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 h-screen w-screen overflow-hidden">
 <div id="modal-container"></div>
-
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-    <!-- Header -->
-    <div class="text-center mb-8">
+<div class="container mx-auto px-4 py-8 max-w-3xl h-full flex flex-col justify-center">
+    <div class="text-center mb-6 flex-shrink-0">
         <div class="flex justify-center mb-4">
             <img id="site-logo" src="/images/StatusNeo-logo.png" alt="StatusNeo Logo" style="height:36px !important; max-height:36px !important; width:auto !important;" class="mx-auto">
         </div>
@@ -22,23 +23,17 @@
         <p class="text-gray-600">Please fill in your details to register your visit</p>
     </div>
 
-    <!-- Main Form -->
     <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-        <!-- Modal Container -->
-        <div id="modal-container"></div>
 
         <form id="visitor-form"
               hx-post="/register"
               hx-target="#modal-container"
               hx-swap="innerHTML"
               hx-trigger="submit"
-              class="space-y-6">
+              class="space-y-6 h-full flex flex-col">
             <input type="hidden" name="_csrf" value="">
-
             <div id="form-content">
-                <!-- Two Column Grid for Tablet/Desktop -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
                     <div class="space-y-2">
                         <label for="name" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +63,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your email address">
                     </div>
-
                     <div class="space-y-2">
                         <label for="phone" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +77,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your phone number">
                     </div>
-
                     <div class="space-y-2">
                         <label for="company" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,7 +91,6 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your company name">
                     </div>
-
                     <div class="space-y-2">
                         <label for="laptop" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,8 +104,21 @@
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                placeholder="Enter your laptop number (optional)">
                     </div>
-
-                    <div class="md:col-span-2 space-y-2">
+                    <div class="space-y-2">
+                        <label for="govtId" class="block text-sm font-medium text-gray-700 flex items-center">
+                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-7 0V4a2 2 0 012-2h4a2 2 0 012 2v2M7 12h10m-10 4h10"/>
+                            </svg>
+                            <span class="align-middle">Valid Govt ID (DL / PAN / Aadhaar) *</span>
+                        </label>
+                        <input type="text"
+                               id="govtId"
+                               name="govtId"
+                               required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                               placeholder="Enter your government ID number">
+                    </div>
+                    <div class="space-y-2">
                         <label for="host-search" class="block text-sm font-medium text-gray-700 flex items-center">
                             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -142,20 +147,37 @@
                                 </svg>
                             </div>
 
-                            <!-- Dropdown Results -->
                             <div id="host-results"
                                  class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto hidden">
-                                <!-- Results will be populated by HTMX -->
                             </div>
                         </div>
                     </div>
+
+                    <div class="space-y-2">
+                        <label for="visit-purpose" class="block text-sm font-medium text-gray-700">
+                            <svg class="inline w-4 h-4 mr-1 text-gray-500 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span class="align-middle">Visit Purpose <span class="text-gray-700">*</span></span>
+                        </label>
+
+                        <select id="visit-purpose" name="visit-purpose"
+                                required
+                                class="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm transition-colors">
+                            <option value="">-- Select purpose --</option>
+
+                            @for (VisitPurpose purpose : VisitPurpose.values())
+                                <option value="${purpose.getFormValue()}">${purpose.getDisplayName()}</option>
+                            @endfor
+                        </select>
+                    </div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="flex justify-center pt-4">
                     <button type="submit"
                             id="send-otp-btn"
-                            disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">                        <span class="htmx-indicator:hidden">Send OTP</span>
+                            disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">
+                        <span class="htmx-indicator:hidden">Send OTP</span>
                         <span class="htmx-indicator absolute inset-0 flex items-center justify-center">
                             <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -166,16 +188,12 @@
                     </button>
                 </div>
             </div>
+            <div class="mt-6 text-center text-sm text-gray-500">
+                By checking in, you agree to our visitor policies and terms of service.
+            </div>
         </form>
-
-        <!-- Footer -->
-        <div class="mt-6 text-center text-sm text-gray-500">
-            By checking in, you agree to our visitor policies and terms of service.
-        </div>
     </div>
 </div>
-
-<!-- Removed a small duplicate autocomplete handler here in favor of the more complete handlers below -->
 
 <script>
     // Form validation (host is not mandatory)
@@ -184,15 +202,17 @@
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
         const company = document.getElementById('company').value;
+        const govtId = document.getElementById('govtId').value;
+        const visitPurpose = document.getElementById('visit-purpose').value;
 
-        const isValid = name && email && phone && company;
+        const isValid = name && email && phone && company && govtId && visitPurpose;
         document.getElementById('send-otp-btn').disabled = !isValid;
     }
 
     document.querySelectorAll('input[required]').forEach(input => {
         input.addEventListener('input', validateForm);
     });
-
+    document.getElementById('visit-purpose').addEventListener('change', validateForm);
     validateForm();
 </script>
 
