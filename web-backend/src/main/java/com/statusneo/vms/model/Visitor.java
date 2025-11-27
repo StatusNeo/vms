@@ -103,6 +103,13 @@ public class Visitor {
     @Column(name = "laptop_number")
     private String laptop;
 
+    @Column(name = "valid_govt_id")
+    private String validGovtId;
+
+
+    @Column(name = "visit_purpose")
+    private String visitPurpose;
+
     @ManyToOne
     @JoinColumn(name = "host_id", referencedColumnName = "id")
     private Employee host;
@@ -220,6 +227,14 @@ public class Visitor {
         this.laptop = laptop;
     }
 
+    public String getValidGovtId() { return validGovtId; }
+
+    public void setValidGovtId(String validGovtId) { this.validGovtId = validGovtId; }
+
+    public String getVisitPurpose() { return visitPurpose; }
+
+    public void setVisitPurpose(String visitPurpose) { this.visitPurpose = visitPurpose; }
+
 
     @Override
     public String toString() {
@@ -232,6 +247,8 @@ public class Visitor {
                 ", company='" + company + '\'' +
                 ", picturePath='" + picturePath + '\'' +
                 ", laptop_number='" + laptop + '\'' +
+                ", valid_govt_id='" + validGovtId + '\'' +
+                ", visit_purpose='" + visitPurpose + '\'' +
                 '}';
     }
 
