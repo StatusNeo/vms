@@ -75,7 +75,14 @@
                                required
                                th:value="${visitor?.phoneNumber}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                               placeholder="Enter your phone number">
+                               placeholder="Enter your phone number"
+                               oninput="validatePhoneNumber(this)"
+                               onkeypress="return isNumberKey(event)">
+
+                        <!-- Real-time error message -->
+                        <div id="phone-error" class="text-sm text-red-600 mt-1 hidden">
+                            Please enter numeric value only
+                        </div>
                     </div>
 
                     <!-- Company Field -->
@@ -154,6 +161,100 @@
 </div>
 
 <script>
+    // Phone number validation functions
+    function isNumberKey(evt) {
+        const charCode = (evt.which) ? evt.which : evt.keyCode;
+
+        // Allow: backspace, delete, tab, escape, enter
+        if (charCode == 8 || charCode == 46 || charCode == 9 || charCode == 27 || charCode == 13) {
+            return true;
+        }
+
+        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        if ((charCode == 65 || charCode == 67 || charCode == 86 || charCode == 88) && (evt.ctrlKey || evt.metaKey)) {
+            return true;
+        }
+
+        // Allow: home, end, left, right
+        if (charCode >= 35 && charCode <= 39) {
+            return true;
+        }
+
+        // Disallow: non-numeric characters
+        if (charCode < 48 || charCode > 57) {
+            showPhoneError();
+            return false;
+        }
+
+        hidePhoneError();
+        return true;
+    }
+
+    function validatePhoneNumber(input) {
+        const phoneError = document.getElementById('phone-error');
+        const value = input.value;
+
+        // Remove any non-numeric characters that might have been pasted
+        const numericValue = value.replace(/[^0-9]/g, '');
+        if (value !== numericValue) {
+            input.value = numericValue;
+        }
+
+        // Show error if we had to remove non-numeric characters
+        if (value !== numericValue) {
+            showPhoneError();
+        } else {
+            hidePhoneError();
+        }
+
+        // Update form validation
+        validateForm();
+    }
+
+    function showPhoneError() {
+        const phoneError = document.getElementById('phone-error');
+        const phoneInput = document.getElementById('phone');
+
+        if (phoneError && phoneInput) {
+            phoneError.classList.remove('hidden');
+            phoneInput.classList.add('border-red-500');
+            phoneInput.classList.remove('border-gray-300');
+        }
+    }
+
+    function hidePhoneError() {
+        const phoneError = document.getElementById('phone-error');
+        const phoneInput = document.getElementById('phone');
+
+        if (phoneError && phoneInput) {
+            phoneError.classList.add('hidden');
+            phoneInput.classList.remove('border-red-500');
+            phoneInput.classList.add('border-gray-300');
+        }
+    }
+
+    // Form validation (host is not mandatory)
+    function validateForm() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const company = document.getElementById('company').value;
+
+        // Check if phone contains only numbers
+        const isPhoneValid = /^\d*$/.test(phone);
+
+        const isValid = name && email && phone && company && isPhoneValid;
+        document.getElementById('send-otp-btn').disabled = !isValid;
+    }
+
+    document.querySelectorAll('input[required]').forEach(input => {
+        input.addEventListener('input', validateForm);
+    });
+
+    validateForm();
+</script>
+
+<script>
     // Handle host selection from dropdown
     document.body.addEventListener('htmx:afterSwap', function(event) {
         if (event.detail.target.id === 'host-results') {
@@ -178,52 +279,6 @@
         document.getElementById('host-results').classList.add('hidden');
     }
 </script>
-<script>
-    // Form validation (host is not mandatory)
-    function validateForm() {
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const company = document.getElementById('company').value;
-
-        const isValid = name && email && phone && company;
-        document.getElementById('send-otp-btn').disabled = !isValid;
-    }
-
-    document.querySelectorAll('input[required]').forEach(input => {
-        input.addEventListener('input', validateForm);
-    });
-
-    validateForm();
-</script>
 
 </body>
 </html>
-</body>
-</html>
-
-<!--
-    SEPARATE FILE: host-search-results.html (Fragment for HTMX response)
-    Endpoint: GET /api/hosts/search?hostSearch={query}
--->
-<!--
-
--->
-
-<!--
-    SEPARATE FILE: otp-verification-form.html (Fragment for HTMX response after Send OTP)
-    Endpoint: POST /api/visitor/send-otp
-    Response: Returns this fragment to replace #form-content
--->
-<!--
-
--->
-
-<!--
-    SEPARATE FILE: success-message.html (Fragment for HTMX response after verification)
-    Endpoint: POST /api/visitor/verify-otp
-    Response: Returns this fragment to replace entire form
--->
-<!--
-
--->

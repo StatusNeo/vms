@@ -34,6 +34,8 @@
  */
 package com.statusneo.vms.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,10 +45,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-
-import java.time.LocalDateTime;
 
 /**
  * Represents a visitor in the Visitor Management System.
@@ -55,9 +55,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "visitor")
 public class Visitor {
-
-    private static final String PHONE_NUMBER_REGEX = "^\\d{10}$";
-
 
     /**
      * Unique identifier for the visitor.
@@ -71,11 +68,9 @@ public class Visitor {
      */
     public String name;
 
-    /**
-     * Contact phone number of the visitor.
-     */
-    @NotNull(message = "Phone number cannot be null")
-    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be exactly 10 digits")
+    @Column(name = "phone_number")
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^[0-9]+$", message = "Phone number must contain only digits")
     public String phoneNumber;
 
     /**
@@ -86,7 +81,7 @@ public class Visitor {
     /**
      * Physical address of the visitor.
      */
-    private String address;
+    public String address;
 
     /**
      * Company of the visitor.
@@ -98,7 +93,6 @@ public class Visitor {
      */
     @Column(name = "picture_path")
     private String picturePath;
-
 
     @Column(name = "laptop_number")
     public String laptop;
@@ -125,11 +119,11 @@ public class Visitor {
     /**
      * Constructs a new Visitor with the specified details.
      *
-     * @param id The unique identifier
-     * @param name The visitor's full name
+     * @param id          The unique identifier
+     * @param name        The visitor's full name
      * @param phoneNumber The visitor's phone number
-     * @param email The visitor's email address
-     * @param address The visitor's physical address
+     * @param email       The visitor's email address
+     * @param address     The visitor's physical address
      */
     public Visitor(Long id, String name, String phoneNumber, String email, String address) {
         this.id = id;
@@ -154,7 +148,7 @@ public class Visitor {
         this.createdAt = LocalDateTime.now();
     }
 
-    public LocalDateTime getCreatedAt(){
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
@@ -181,6 +175,7 @@ public class Visitor {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
     public String getEmail() {
         return email;
     }
@@ -208,6 +203,7 @@ public class Visitor {
     public String getPicturePath() {
         return picturePath;
     }
+
     public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
@@ -219,7 +215,6 @@ public class Visitor {
     public void setLaptop(String laptop) {
         this.laptop = laptop;
     }
-
 
     @Override
     public String toString() {

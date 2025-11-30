@@ -109,7 +109,16 @@
                                required
                                pattern="^\d{10}$"
                                class="w-full px-4 py-3 border ${fieldErrors != null && fieldErrors.stream().anyMatch(e -> e.getField().equals("phoneNumber")) ? "border-red-500" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                               placeholder="Enter your 10-digit phone number">
+                               placeholder="Enter your 10-digit phone number"
+                               oninput="validatePhoneNumber(this)"
+                               onkeypress="return isNumberKey(event)">
+
+                        <!-- Real-time error message -->
+                        <div id="phone-error" class="text-sm text-red-600 mt-1 hidden">
+                            Please enter numeric value only
+                        </div>
+
+                        <!-- Backend validation errors (keep existing) -->
                         @if(fieldErrors != null)
                             @for(FieldError error : fieldErrors)
                                 @if(error.getField().equals("phoneNumber"))
@@ -174,23 +183,23 @@
                             </svg>
                             <!-- hidden by default so it doesn't take up space; HTMX will toggle via hx-indicator -->
                             <div id="search-spinner" class="hidden absolute right-10 top-1/2 transform -translate-y-1/2 h-5 w-5">
-                                 <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                 </svg>
-                             </div>
+                                <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
 
-                             <!-- Dropdown Results -->
-                             <div id="host-results"
-                                  class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto hidden">
-                                 <!-- Results will be populated by HTMX -->
-                             </div>
-                         </div>
-                     </div>
-                 </div>
+                            <!-- Dropdown Results -->
+                            <div id="host-results"
+                                 class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto hidden">
+                                <!-- Results will be populated by HTMX -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                 <!-- Submit Button -->
-                 <div class="flex justify-center pt-4">
+                <!-- Submit Button -->
+                <div class="flex justify-center pt-4">
                     <button type="submit"
                             id="send-otp-btn"
                             disabled
@@ -206,18 +215,18 @@
                             <span class="text-white font-semibold">Sending...</span>
                         </span>
                     </button>
-                 </div>
-             </div>
-         </form>
+                </div>
+            </div>
+        </form>
 
-         <!-- Footer -->
-         <div class="mt-6 text-center text-sm text-gray-500">
-             By checking in, you agree to our visitor policies and terms of service.
-         </div>
-     </div>
- </div>
+        <!-- Footer -->
+        <div class="mt-6 text-center text-sm text-gray-500">
+            By checking in, you agree to our visitor policies and terms of service.
+        </div>
+    </div>
+</div>
 
- <script>
+<script>
     // Form validation (host is not mandatory)
     function validateForm() {
         const name = document.getElementById('name').value;
@@ -225,7 +234,10 @@
         const phone = document.getElementById('phone').value;
         const company = document.getElementById('company').value;
 
-        const isValid = name && email && phone && company;
+        // Check if phone contains only numbers
+        const isPhoneValid = /^\d*$/.test(phone);
+
+        const isValid = name && email && phone && company && isPhoneValid;
         document.getElementById('send-otp-btn').disabled = !isValid;
     }
 
@@ -237,6 +249,78 @@
 </script>
 
 <script>
+    // Phone number validation functions
+    function isNumberKey(evt) {
+        const charCode = (evt.which) ? evt.which : evt.keyCode;
+
+        // Allow: backspace, delete, tab, escape, enter
+        if (charCode == 8 || charCode == 46 || charCode == 9 || charCode == 27 || charCode == 13) {
+            return true;
+        }
+
+        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        if ((charCode == 65 || charCode == 67 || charCode == 86 || charCode == 88) && (evt.ctrlKey || evt.metaKey)) {
+            return true;
+        }
+
+        // Allow: home, end, left, right
+        if (charCode >= 35 && charCode <= 39) {
+            return true;
+        }
+
+        // Disallow: non-numeric characters
+        if (charCode < 48 || charCode > 57) {
+            showPhoneError();
+            return false;
+        }
+
+        hidePhoneError();
+        return true;
+    }
+
+    function validatePhoneNumber(input) {
+        const phoneError = document.getElementById('phone-error');
+        const value = input.value;
+
+        // Remove any non-numeric characters that might have been pasted
+        const numericValue = value.replace(/[^0-9]/g, '');
+        if (value !== numericValue) {
+            input.value = numericValue;
+        }
+
+        // Show error if we had to remove non-numeric characters
+        if (value !== numericValue) {
+            showPhoneError();
+        } else {
+            hidePhoneError();
+        }
+
+        // Update form validation
+        validateForm();
+    }
+
+    function showPhoneError() {
+        const phoneError = document.getElementById('phone-error');
+        const phoneInput = document.getElementById('phone');
+
+        if (phoneError && phoneInput) {
+            phoneError.classList.remove('hidden');
+            phoneInput.classList.add('border-red-500');
+            phoneInput.classList.remove('border-gray-300');
+        }
+    }
+
+    function hidePhoneError() {
+        const phoneError = document.getElementById('phone-error');
+        const phoneInput = document.getElementById('phone');
+
+        if (phoneError && phoneInput) {
+            phoneError.classList.add('hidden');
+            phoneInput.classList.remove('border-red-500');
+            phoneInput.classList.add('border-gray-300');
+        }
+    }
+
     // Add keyboard selection and HTMX guards for host autocomplete
     // Prevent HTMX requests on Enter and prevent empty searches
     document.addEventListener("htmx:configRequest", (event) => {

@@ -17,7 +17,7 @@
  * under the License.
  */
 package com.statusneo.vms.controller;
-
+import org.springframework.validation.FieldError;
 import com.statusneo.vms.cache.EmployeeNameCache;
 import com.statusneo.vms.dto.VerificationResult;
 import com.statusneo.vms.model.Visit;
@@ -69,6 +69,14 @@ public class VisitorController {
         return "index";
     }
 
+    // Add this method to serve the registration form
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("visitor", new Visitor());
+        model.addAttribute("employees", employeeRepository.findAll()); // or employeeService.getAllEmployees()
+        return "visitorRegistration";
+    }
+
     @PostMapping("/register")
     public String registerVisitor(
             @Valid @ModelAttribute("visitor") Visitor visitor,
@@ -84,36 +92,42 @@ public class VisitorController {
         if (bindingResult.hasErrors()) {
             logger.warn("Form validation failed with {} errors", bindingResult.getErrorCount());
 
-            // Add field errors to model for display in template
-            model.addAttribute("fieldErrors", bindingResult.getFieldErrors());
+            // Add field errors and visitor to model for display in template
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            model.addAttribute("fieldErrors", fieldErrors);
+            model.addAttribute("visitor", visitor);
+            model.addAttribute("employees", employeeRepository.findAll()); // Add employees for dropdown
 
             if (hxRequest != null && hxRequest.equals("true")) {
                 return "fragments/validation-errors"; // HTMX error fragment
             }
-            return "index";
+            // Return the registration form template to show validation errors
+            return "visitorRegistration";
         }
 
         resolveAndSetHost(visitor, host, employee);
 
         Visit savedVisit = visitService.registerVisit(visitor);
         model.addAttribute("visitId", savedVisit.getId());
+        model.addAttribute("visit", savedVisit);
 
         if (hxRequest != null && hxRequest.equals("true")) {
             return "fragments/otp-modal";
         }
 
-        // Regular form submission
-        return "otp-modal";
+        // Regular form submission - return result view
+        return "visitorRegistrationResult";
     }
-
 
     @GetMapping("/report")
     public String getReport(@RequestParam String period, Model model) {
         List<Visit> visits;
+        LocalDateTime now = LocalDateTime.now();
+
         if (period.equals("daily")) {
-            visits = visitRepository.findAllByVisitDateBetween(LocalDateTime.now().toLocalDate().atStartOfDay(), LocalDateTime.now());
+            visits = visitRepository.findAllByVisitDateBetween(now.toLocalDate().atStartOfDay(), now);
         } else if (period.equals("monthly")) {
-            visits = visitRepository.findAllByVisitDateBetween(LocalDateTime.now().minusMonths(1), LocalDateTime.now());
+            visits = visitRepository.findAllByVisitDateBetween(now.minusMonths(1), now);
         } else {
             return "error/400";
         }
@@ -177,7 +191,9 @@ public class VisitorController {
     }
 
     @PostMapping("/resend-otp")
-    public String resendOtp(@RequestParam("visitId") Long visitId, Model model) {
+    public String resendOtp(@RequestParam("visitId") Long visitId,
+                            @RequestHeader(value = "HX-Request", required = false) String hxRequest,
+                            Model model) {
         Visit visit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
@@ -186,7 +202,12 @@ public class VisitorController {
         model.addAttribute("result", result);
         model.addAttribute("visitId", visitId);
         model.addAttribute("serverMessage", result.message());
-        return "fragments/otp-modal";
+
+        // Handle both HTMX and regular requests
+        if (hxRequest != null && hxRequest.equals("true")) {
+            return "fragments/otp-modal";
+        }
+        return "otp-modal";
     }
 
     /**
