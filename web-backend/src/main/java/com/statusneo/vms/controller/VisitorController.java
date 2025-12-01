@@ -70,7 +70,6 @@ public class VisitorController {
         return "index";
     }
 
-    // Add this method to serve the registration form
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("visitor", new Visitor());
@@ -89,11 +88,9 @@ public class VisitorController {
 
         logger.info("Processing visitor registration for: {}", visitor.getEmail());
 
-        // Check for validation errors - Spring validation pattern
         if (bindingResult.hasErrors()) {
             logger.warn("Form validation failed with {} errors", bindingResult.getErrorCount());
 
-            // Add field errors and visitor to model for display in template
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             model.addAttribute("fieldErrors", fieldErrors);
             model.addAttribute("visitor", visitor);
@@ -131,7 +128,6 @@ public class VisitorController {
         return ResponseEntity.ok(visit);
     }
 
-    // Optional: Keep for custom error handling if needed
     // @RequestMapping("/error")
     // public String handleError() {
     //     return "Custom error page!";
