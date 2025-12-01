@@ -8,13 +8,21 @@
     <link href="/main.css" rel="stylesheet">
     <script src="/webjars/htmx.org/2.0.7/dist/htmx.min.js"></script>
     <style>
-        html { height: 100%; **overflow: hidden;** }
-        body { height: 100vh; **overflow: hidden;** }
+        /* Keep these for full page scroll prevention */
+        html { height: 100%; overflow: hidden; }
+        body { height: 100vh; overflow: hidden; }
+
+        /* Custom style to make the form content scrollable ONLY if needed */
+        .form-content-wrapper {
+            /* The 'min-h-0' is crucial in flex containers to prevent content from forcing container size */
+            overflow-y: auto;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 h-screen w-screen overflow-hidden">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 h-screen w-screen flex items-center justify-center overflow-hidden">
 <div id="modal-container"></div>
-<div class="container mx-auto px-4 py-8 max-w-3xl h-full flex flex-col justify-center">
+<div class="container mx-auto px-4 py-8 max-w-3xl flex flex-col h-full justify-center">
+
     <div class="text-center mb-6 flex-shrink-0">
         <div class="flex justify-center mb-4">
             <img id="site-logo" src="/images/StatusNeo-logo.png" alt="StatusNeo Logo" style="height:36px !important; max-height:36px !important; width:auto !important;" class="mx-auto">
@@ -23,172 +31,175 @@
         <p class="text-gray-600">Please fill in your details to register your visit</p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+    <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 flex-grow flex flex-col min-h-0">
 
         <form id="visitor-form"
               hx-post="/register"
               hx-target="#modal-container"
               hx-swap="innerHTML"
               hx-trigger="submit"
-              class="space-y-6 h-full flex flex-col">
+              class="space-y-6 flex flex-col flex-grow min-h-0">
             <input type="hidden" name="_csrf" value="">
-            <div id="form-content">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label for="name" class="block text-sm font-medium text-gray-700 flex items-center">
-                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
-                            <span class="align-middle">Full Name *</span>
-                        </label>
-                        <input type="text"
-                               id="name"
-                               name="name"
-                               required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                               placeholder="Enter your full name">
-                    </div>
 
-                    <div class="space-y-2">
-                        <label for="email" class="block text-sm font-medium text-gray-700 flex items-center">
-                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
-                            <span class="align-middle">Email Address *</span>
-                        </label>
-                        <input type="email"
-                               id="email"
-                               name="email"
-                               required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                               placeholder="Enter your email address">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="phone" class="block text-sm font-medium text-gray-700 flex items-center">
-                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                            </svg>
-                            <span class="align-middle">Phone Number *</span>
-                        </label>
-                        <input type="tel"
-                               id="phone"
-                               name="phoneNumber"
-                               required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                               placeholder="Enter your phone number">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="company" class="block text-sm font-medium text-gray-700 flex items-center">
-                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                            <span class="align-middle">Company *</span>
-                        </label>
-                        <input type="text"
-                               id="company"
-                               name="company"
-                               required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                               placeholder="Enter your company name">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="laptop" class="block text-sm font-medium text-gray-700 flex items-center">
-                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
-                            <span class="align-middle">Laptop Number</span>
-                        </label>
-                        <input type="text"
-                               id="laptop"
-                               name="laptop"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                               placeholder="Enter your laptop number (optional)">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="govtId" class="block text-sm font-medium text-gray-700 flex items-center">
-                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-7 0V4a2 2 0 012-2h4a2 2 0 012 2v2M7 12h10m-10 4h10"/>
-                            </svg>
-                            <span class="align-middle">Valid Govt ID (DL / PAN / Aadhaar) *</span>
-                        </label>
-                        <input type="text"
-                               id="govtId"
-                               name="govtId"
-                               required
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                               placeholder="Enter your government ID number">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="host-search" class="block text-sm font-medium text-gray-700 flex items-center">
-                            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                            <span class="align-middle">Who are you visiting? *</span>
-                        </label>
-                        <div class="relative">
-                            <input type="text"
-                                   id="host-search"
-                                   name="hostSearch"
-                                   autocomplete="off"
-                                   hx-get="/search-employees"
-                                   hx-trigger="keyup changed delay:300ms"
-                                   hx-target="#host-results"
-                                   hx-indicator="#search-spinner"
-                                   class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                   placeholder="Search by name or email...">
-                            <input type="hidden" id="host" name="host">
-                            <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                            <div id="search-spinner" class="htmx-indicator absolute right-10 top-1/2 transform -translate-y-1/2">
-                                <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <div class="form-content-wrapper flex-grow min-h-0 pr-1" id="form-content-wrapper">
+                <div id="form-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="name" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
-                            </div>
+                                <span class="align-middle">Full Name *</span>
+                            </label>
+                            <input type="text"
+                                   id="name"
+                                   name="name"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter your full name">
+                        </div>
 
-                            <div id="host-results"
-                                 class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto hidden">
+                        <div class="space-y-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="align-middle">Email Address *</span>
+                            </label>
+                            <input type="email"
+                                   id="email"
+                                   name="email"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter your email address">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="phone" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                </svg>
+                                <span class="align-middle">Phone Number *</span>
+                            </label>
+                            <input type="tel"
+                                   id="phone"
+                                   name="phoneNumber"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter your phone number">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="company" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                <span class="align-middle">Company *</span>
+                            </label>
+                            <input type="text"
+                                   id="company"
+                                   name="company"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter your company name">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="laptop" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="align-middle">Laptop Number</span>
+                            </label>
+                            <input type="text"
+                                   id="laptop"
+                                   name="laptop"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter your laptop number (optional)">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="govtId" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-7 0V4a2 2 0 012-2h4a2 2 0 012 2v2M7 12h10m-10 4h10"/>
+                                </svg>
+                                <span class="align-middle">Valid Govt ID (DL / PAN / Aadhaar) *</span>
+                            </label>
+                            <input type="text"
+                                   id="govtId"
+                                   name="govtId"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                   placeholder="Enter your government ID number">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="host-search" class="block text-sm font-medium text-gray-700 flex items-center">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                <span class="align-middle">Who are you visiting? *</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text"
+                                       id="host-search"
+                                       name="hostSearch"
+                                       autocomplete="off"
+                                       hx-get="/search-employees"
+                                       hx-trigger="keyup changed delay:300ms"
+                                       hx-target="#host-results"
+                                       hx-indicator="#search-spinner"
+                                       class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                       placeholder="Search by name or email...">
+                                <input type="hidden" id="host" name="host">
+                                <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                                <div id="search-spinner" class="htmx-indicator absolute right-10 top-1/2 transform -translate-y-1/2">
+                                    <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
+
+                                <div id="host-results"
+                                     class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto hidden">
+                                </div>
                             </div>
                         </div>
+
+                        <div class="space-y-2">
+                            <label for="visit-purpose" class="block text-sm font-medium text-gray-700">
+                                <svg class="inline w-4 h-4 mr-1 text-gray-500 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span class="align-middle">Visit Purpose <span class="text-gray-700">*</span></span>
+                            </label>
+
+                            <select id="visit-purpose" name="visit-purpose"
+                                    required
+                                    class="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm transition-colors">
+                                <option value="">-- Select purpose --</option>
+
+                                @for (VisitPurpose purpose : VisitPurpose.values())
+                                    <option value="${purpose.getFormValue()}">${purpose.getDisplayName()}</option>
+                                @endfor
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="space-y-2">
-                        <label for="visit-purpose" class="block text-sm font-medium text-gray-700">
-                            <svg class="inline w-4 h-4 mr-1 text-gray-500 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            <span class="align-middle">Visit Purpose <span class="text-gray-700">*</span></span>
-                        </label>
-
-                        <select id="visit-purpose" name="visit-purpose"
-                                required
-                                class="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm transition-colors">
-                            <option value="">-- Select purpose --</option>
-
-                            @for (VisitPurpose purpose : VisitPurpose.values())
-                                <option value="${purpose.getFormValue()}">${purpose.getDisplayName()}</option>
-                            @endfor
-                        </select>
-                    </div>
-                </div>
-
-                <div class="flex justify-center pt-4">
-                    <button type="submit"
-                            id="send-otp-btn"
-                            disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">
-                        <span class="htmx-indicator:hidden">Send OTP</span>
-                        <span class="htmx-indicator absolute inset-0 flex items-center justify-center">
-                            <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Sending...
-                        </span>
-                    </button>
                 </div>
             </div>
-            <div class="mt-6 text-center text-sm text-gray-500">
+            <div class="flex justify-center pt-4 flex-shrink-0">
+                <button type="submit"
+                        id="send-otp-btn"
+                        disabled class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-w-48 text-lg relative flex items-center justify-center">
+                    <span class="htmx-indicator:hidden">Send OTP</span>
+                    <span class="htmx-indicator absolute inset-0 flex items-center justify-center">
+                        <svg class="inline animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sending...
+                    </span>
+                </button>
+            </div>
+
+            <div class="mt-6 text-center text-sm text-gray-500 flex-shrink-0">
                 By checking in, you agree to our visitor policies and terms of service.
             </div>
         </form>
