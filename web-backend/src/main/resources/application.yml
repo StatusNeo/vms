@@ -1,4 +1,5 @@
 spring:
+
   application:
     name: VMS
   docker:
@@ -9,6 +10,11 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+  mvc:
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations: classpath:/static/
   security:
     oauth2:
       client:
@@ -25,6 +31,11 @@ spring:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
+server:
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
 
 visitor:
   system:
@@ -40,6 +51,7 @@ visitor:
 gg:
   jte:
     developmentMode: true
+    precompile: false
 
 vms:
   system-email: test@email.com

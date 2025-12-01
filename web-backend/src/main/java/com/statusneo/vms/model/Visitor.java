@@ -43,7 +43,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDateTime;
@@ -56,9 +56,6 @@ import java.time.LocalDateTime;
 @Table(name = "visitor")
 public class Visitor {
 
-    private static final String PHONE_NUMBER_REGEX = "^\\d{10}$";
-
-
     /**
      * Unique identifier for the visitor.
      */
@@ -69,29 +66,27 @@ public class Visitor {
     /**
      * Full name of the visitor.
      */
-    private String name;
+    public String name;
 
-    /**
-     * Contact phone number of the visitor.
-     */
-    @NotNull(message = "Phone number cannot be null")
-    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be exactly 10 digits")
-    private String phoneNumber;
+    @Column(name = "phone_number")
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^[0-9]+$", message = "Phone number must contain only digits")
+    public String phoneNumber;
 
     /**
      * Email address of the visitor, used for communication and OTP verification.
      */
-    private String email;
+    public String email;
 
     /**
      * Physical address of the visitor.
      */
-    private String address;
+    public String address;
 
     /**
      * Company of the visitor.
      */
-    private String company;
+    public String company;
 
     /**
      * Path to the visitor's profile picture stored in the system.
@@ -99,16 +94,14 @@ public class Visitor {
     @Column(name = "picture_path")
     private String picturePath;
 
-
     @Column(name = "laptop_number")
-    private String laptop;
+    public String laptop;
 
     @Column(name = "valid_govt_id")
-    private String validGovtId;
-
+    public String validGovtId;
 
     @Column(name = "visit_purpose")
-    private String visitPurpose;
+    public String visitPurpose;
 
     @ManyToOne
     @JoinColumn(name = "host_id", referencedColumnName = "id")
@@ -161,7 +154,7 @@ public class Visitor {
         this.createdAt = LocalDateTime.now();
     }
 
-    public LocalDateTime getCreatedAt(){
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
@@ -188,6 +181,7 @@ public class Visitor {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
     public String getEmail() {
         return email;
     }
@@ -215,6 +209,7 @@ public class Visitor {
     public String getPicturePath() {
         return picturePath;
     }
+
     public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
@@ -227,14 +222,21 @@ public class Visitor {
         this.laptop = laptop;
     }
 
-    public String getValidGovtId() { return validGovtId; }
+    public String getValidGovtId() {
+        return validGovtId;
+    }
 
-    public void setValidGovtId(String validGovtId) { this.validGovtId = validGovtId; }
+    public void setValidGovtId(String validGovtId) {
+        this.validGovtId = validGovtId;
+    }
 
-    public String getVisitPurpose() { return visitPurpose; }
+    public String getVisitPurpose() {
+        return visitPurpose;
+    }
 
-    public void setVisitPurpose(String visitPurpose) { this.visitPurpose = visitPurpose; }
-
+    public void setVisitPurpose(String visitPurpose) {
+        this.visitPurpose = visitPurpose;
+    }
 
     @Override
     public String toString() {
@@ -246,10 +248,9 @@ public class Visitor {
                 ", address='" + address + '\'' +
                 ", company='" + company + '\'' +
                 ", picturePath='" + picturePath + '\'' +
-                ", laptop_number='" + laptop + '\'' +
-                ", valid_govt_id='" + validGovtId + '\'' +
-                ", visit_purpose='" + visitPurpose + '\'' +
+                ", laptop='" + laptop + '\'' +
+                ", validGovtId='" + validGovtId + '\'' +
+                ", visitPurpose='" + visitPurpose + '\'' +
                 '}';
     }
-
 }
